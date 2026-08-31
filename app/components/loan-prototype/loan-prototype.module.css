@@ -30,7 +30,7 @@
   color: #5d6675;
   cursor: pointer;
   font-size: 11px;
-  font-weight: 650;
+  font-weight: 600;
   transition:
     background-color 120ms ease,
     transform 100ms ease;
@@ -428,6 +428,51 @@
   stroke-width: 1.4;
 }
 
+.channelRow {
+  display: flex;
+  width: 100%;
+  min-height: 34px;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  padding: 6px 0 6px 24px;
+  color: #9a9da2;
+  cursor: pointer;
+  font-size: 11.5px;
+  text-align: left;
+  transition:
+    color 140ms ease,
+    transform 100ms ease;
+}
+
+.channelRow:active {
+  transform: scale(0.985);
+}
+
+.channelRow svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  fill: none;
+  stroke: #c8ccd1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+  transition:
+    stroke 140ms ease,
+    transform 120ms ease;
+}
+
+.channelChecked {
+  color: #62676e;
+}
+
+.channelChecked svg {
+  stroke: #ef2b30;
+  transform: scale(1.04);
+}
+
 .publicDataBlock {
   margin-top: 47px;
   padding-bottom: 34px;
@@ -475,6 +520,141 @@
   font-size: 10px;
 }
 
+.requiredScrollSpacer {
+  height: 96px;
+}
+
+.optionalScreen .agreementScroll {
+  padding-bottom: 0;
+}
+
+.optionalTitle {
+  padding-top: 17px;
+  padding-bottom: 21px;
+  padding-left: 33px;
+}
+
+.optionalTitle > span {
+  display: none;
+}
+
+.optionalTitle h2 {
+  font-size: 22px;
+  line-height: 1.42;
+}
+
+.optionalTitle > p {
+  margin: 8px 0 0;
+  color: #888d94;
+  font-size: 11px;
+}
+
+.optionalNotice {
+  margin: 0 32px 22px;
+  border-radius: 16px;
+  background: #f5f8fc;
+  padding: 13px 16px 12px;
+}
+
+.optionalNotice strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 11.5px;
+  font-weight: 720;
+}
+
+.optionalNotice p {
+  margin: 0;
+  padding-left: 10px;
+  color: #6f747c;
+  font-size: 9.5px;
+  line-height: 1.7;
+}
+
+.optionalAgreementBlock {
+  padding-right: 35px;
+  padding-left: 35px;
+}
+
+.optionalAgreementBlock .masterAgreementRow {
+  margin-bottom: 6px;
+}
+
+.optionalAgreementBlock .masterAgreementRow strong {
+  font-size: 15px;
+}
+
+.optionalAgreementBlock .agreementHeadingRow {
+  min-height: 42px;
+}
+
+.optionalAgreementBlock .accordionButton {
+  min-height: 42px;
+  font-size: 12px;
+}
+
+.optionalScrollSpacer {
+  height: 112px;
+}
+
+.floatingNextArea {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 5;
+  display: flex;
+  height: 90px;
+  align-items: center;
+  justify-content: flex-end;
+  background: linear-gradient(to top, #ffffff 58%, rgba(255, 255, 255, 0));
+  padding: 22px 34px 16px;
+  pointer-events: none;
+}
+
+.floatingNextButton {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  padding: 0;
+  color: #111111;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 720;
+  pointer-events: auto;
+  transition:
+    opacity 120ms ease,
+    transform 100ms ease;
+}
+
+.floatingNextButton:active {
+  opacity: 0.72;
+  transform: scale(0.96);
+}
+
+.arrowCircle {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 50%;
+  background: #ed252b;
+  color: #ffffff;
+}
+
+.arrowCircle svg {
+  width: 23px;
+  height: 23px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.2;
+}
+
 .sheetLayer {
   position: absolute;
   inset: 0;
@@ -485,6 +665,16 @@
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.56);
+  animation: dim-in 190ms ease-out;
+}
+
+.dismissibleDim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  border: 0;
+  background: rgba(0, 0, 0, 0.56);
+  cursor: pointer;
   animation: dim-in 190ms ease-out;
 }
 
@@ -507,6 +697,34 @@
   background: #dedede;
   opacity: 0;
   transform: translateX(-50%);
+}
+
+.validationSheet {
+  padding: 23px 27px 18px;
+}
+
+.validationSheet .sheetHandle {
+  opacity: 1;
+}
+
+.bottomSheet.validationSheet > p {
+  width: 100%;
+  margin: 0 0 24px;
+  padding: 0 13px;
+  color: #202124;
+  font-size: 16px;
+  font-weight: 480;
+  letter-spacing: -0.035em;
+  line-height: 1.6;
+  text-align: left;
+  word-break: keep-all;
+}
+
+.validationSheet .confirmButton {
+  width: 100%;
+  height: 50px;
+  align-self: auto;
+  margin: 0;
 }
 
 .bottomSheet h2 {

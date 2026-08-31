@@ -15,6 +15,7 @@ type RequiredAgreementScreenProps = {
   allRequiredChecked: boolean;
   scrollRef: RefObject<HTMLDivElement | null>;
   onBack: () => void;
+  onContinue: () => void;
   onToggleLoanAll: () => void;
   onToggleAgreement: (id: string) => void;
   onToggleExpanded: (id: string) => void;
@@ -28,6 +29,7 @@ export function RequiredAgreementScreen({
   allRequiredChecked,
   scrollRef,
   onBack,
+  onContinue,
   onToggleLoanAll,
   onToggleAgreement,
   onToggleExpanded,
@@ -98,22 +100,19 @@ export function RequiredAgreementScreen({
           </div>
         </section>
 
-        <div className={styles.scopeEnd}>
-          <span>PROTOTYPE STEP 02</span>
-          <strong>필수동의 단계까지 구현되었습니다</strong>
-          <p>다음 신청 단계는 아직 연결되지 않았습니다.</p>
-        </div>
+        <div className={styles.requiredScrollSpacer} aria-hidden="true" />
       </div>
 
       {allRequiredChecked ? (
-        <div className={styles.completionToast} role="status">
-          <svg viewBox="0 0 20 20" aria-hidden="true">
-            <path d="m5.2 10.1 3.1 3.1 6.5-7" />
-          </svg>
-          <span>
-            <strong>필수 동의가 완료되었습니다</strong>
-            <small>현재 프로토타입은 여기까지입니다.</small>
-          </span>
+        <div className={styles.floatingNextArea}>
+          <button type="button" className={styles.floatingNextButton} onClick={onContinue}>
+            <span>다음</span>
+            <span className={styles.arrowCircle}>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h13M13 6l6 6-6 6" />
+              </svg>
+            </span>
+          </button>
         </div>
       ) : null}
     </div>

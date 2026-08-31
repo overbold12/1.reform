@@ -7,10 +7,20 @@ import {
   AgreementTypeSheet,
   type AgreementType,
 } from "./agreement-type-sheet";
+import { LpointValidationSheet } from "./lpoint-validation-sheet";
+import {
+  initialOptionalAgreements,
+  optionalAgreementGroups,
+  optionalChildId,
+} from "./optional-agreement-data";
+import { OptionalAgreementScreen } from "./optional-agreement-screen";
 import { RequiredAgreementScreen } from "./required-agreement-screen";
 import styles from "./loan-prototype.module.css";
 
-type PrototypeStep = "agreement-type" | "required-agreement";
+type PrototypeStep =
+  | "agreement-type"
+  | "required-agreement"
+  | "optional-agreement";
 
 const initialAgreements = Object.fromEntries(
   allAgreementGroups.map((group) => [group.id, false]),
@@ -22,6 +32,9 @@ export function LoanAgreementPrototype() {
   const [agreements, setAgreements] =
     useState<Record<string, boolean>>(initialAgreements);
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+  const [optionalAgreements, setOptionalAgreements] =
+    useState<Record<string, boolean>>(initialOptionalAgreements);
+  const [showLpointValidation, setShowLpointValidation] = useState(false);
   const [detailTitle, setDetailTitle] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -30,6 +43,9 @@ export function LoanAgreementPrototype() {
   );
   const allRequiredChecked = allAgreementGroups.every(
     (group) => agreements[group.id],
+  );
+  const allOptionalChecked = optionalAgreementGroups.every(
+    (group) => optionalAgreements[group.id],
   );
 
   function moveToRequiredAgreement() {
@@ -40,6 +56,19 @@ export function LoanAgreementPrototype() {
   function moveBackToAgreementType() {
     setDetailTitle(null);
     setStep("agreement-type");
+    requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
+  }
+
+  function moveToOptionalAgreement() {
+    setDetailTitle(null);
+    setStep("optional-agreement");
+    requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
+  }
+
+  function moveBackToRequiredAgreement() {
+    setDetailTitle(null);
+    setShowLpointValidation(false);
+    setStep("required-agreement");
     requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
   }
 
@@ -66,11 +95,81 @@ export function LoanAgreementPrototype() {
     });
   }
 
+  function toggleOptionalAgreement(id: string) {
+    setOptionalAgreements((current) => {
+      const group = optionalAgreementGroups.find((item) => item.id === id);
+      if (!group) return current;
+
+      const next = { ...current };
+      const nextValue = !current[id];
+      next[id] = nextValue;
+
+      if (group.kind === "channels") {
+        group.children.forEach((child) => {
+          next[optionalChildId(id, child)] = nextValue;
+        });
+      }
+
+      return next;
+    });
+  }
+
+  function toggleOptionalChild(id: string, child: string) {
+    setOptionalAgreements((current) => {
+      const group = optionalAgreementGroups.find((item) => item.id === id);
+      if (!group) return current;
+
+      const next = { ...current };
+      const childId = optionalChildId(id, child);
+      next[childId] = !current[childId];
+      next[id] = group.children.every((item) =>
+        item === child
+          ? next[childId]
+          : Boolean(next[optionalChildId(id, item)]),
+      );
+      return next;
+    });
+  }
+
+  function toggleAllOptionalAgreements() {
+    const nextValue = !allOptionalChecked;
+    setOptionalAgreements(
+      Object.fromEntries(
+        Object.keys(initialOptionalAgreements).map((id) => [id, nextValue]),
+      ),
+    );
+  }
+
+  function handleOptionalNext() {
+    const lpointMarketing = optionalAgreementGroups.find(
+      (group) => group.id === "lpoint-marketing",
+    );
+    const hasLpointMarketingSelection =
+      Boolean(optionalAgreements["lpoint-marketing"]) ||
+      Boolean(
+        lpointMarketing?.children.some(
+          (child) => optionalAgreements[optionalChildId("lpoint-marketing", child)],
+        ),
+      );
+    const requestedLpointBenefit =
+      Boolean(optionalAgreements["lpoint-optional-personal"]) ||
+      hasLpointMarketingSelection;
+    const hasRequiredLpointAgreements =
+      Boolean(optionalAgreements["lotte-members-provide"]) &&
+      Boolean(optionalAgreements["lpoint-required-personal"]);
+
+    if (requestedLpointBenefit && !hasRequiredLpointAgreements) {
+      setShowLpointValidation(true);
+    }
+  }
+
   function resetPrototype() {
     setStep("agreement-type");
     setAgreementType("summary");
-    setAgreements(initialAgreements);
+    setAgreements({ ...initialAgreements });
+    setOptionalAgreements({ ...initialOptionalAgreements });
     setExpandedGroups(new Set());
+    setShowLpointValidation(false);
     setDetailTitle(null);
     requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
   }
@@ -80,11 +179,15 @@ export function LoanAgreementPrototype() {
       <div className="workspace-card-header">
         <div>
           <span className="workspace-kicker">INTERACTIVE MOBILE PROTOTYPE</span>
-          <h2>대출 신청 · 필수동의</h2>
+          <h2>대출 신청 · 약관동의</h2>
         </div>
         <div className={styles.workspaceActions}>
           <span className={styles.stepBadge}>
-            {step === "agreement-type" ? "01 동의서 선택" : "02 필수동의"}
+            {step === "agreement-type"
+              ? "01 동의서 선택"
+              : step === "required-agreement"
+                ? "02 필수동의"
+                : "03 선택동의"}
           </span>
           <button type="button" className={styles.resetButton} onClick={resetPrototype}>
             다시 시작
@@ -94,18 +197,35 @@ export function LoanAgreementPrototype() {
 
       <div className={styles.prototypeStage}>
         <div className={styles.phoneFrame}>
-          <RequiredAgreementScreen
-            agreements={agreements}
-            expandedGroups={expandedGroups}
-            allLoanAgreementsChecked={allLoanAgreementsChecked}
-            allRequiredChecked={allRequiredChecked}
-            scrollRef={scrollRef}
-            onBack={moveBackToAgreementType}
-            onToggleLoanAll={toggleLoanAgreements}
-            onToggleAgreement={toggleAgreement}
-            onToggleExpanded={toggleExpanded}
-            onDocumentOpen={setDetailTitle}
-          />
+          {step === "optional-agreement" ? (
+            <OptionalAgreementScreen
+              agreements={optionalAgreements}
+              expandedGroups={expandedGroups}
+              allOptionalChecked={allOptionalChecked}
+              scrollRef={scrollRef}
+              onBack={moveBackToRequiredAgreement}
+              onNext={handleOptionalNext}
+              onToggleAll={toggleAllOptionalAgreements}
+              onToggleAgreement={toggleOptionalAgreement}
+              onToggleChild={toggleOptionalChild}
+              onToggleExpanded={toggleExpanded}
+              onDocumentOpen={setDetailTitle}
+            />
+          ) : (
+            <RequiredAgreementScreen
+              agreements={agreements}
+              expandedGroups={expandedGroups}
+              allLoanAgreementsChecked={allLoanAgreementsChecked}
+              allRequiredChecked={allRequiredChecked}
+              scrollRef={scrollRef}
+              onBack={moveBackToAgreementType}
+              onContinue={moveToOptionalAgreement}
+              onToggleLoanAll={toggleLoanAgreements}
+              onToggleAgreement={toggleAgreement}
+              onToggleExpanded={toggleExpanded}
+              onDocumentOpen={setDetailTitle}
+            />
+          )}
 
           {step === "agreement-type" ? (
             <AgreementTypeSheet
@@ -117,6 +237,10 @@ export function LoanAgreementPrototype() {
 
           {detailTitle ? (
             <AgreementDetail title={detailTitle} onClose={() => setDetailTitle(null)} />
+          ) : null}
+
+          {showLpointValidation ? (
+            <LpointValidationSheet onClose={() => setShowLpointValidation(false)} />
           ) : null}
         </div>
 
@@ -134,10 +258,10 @@ export function LoanAgreementPrototype() {
             </li>
             <li>
               <b>03</b>
-              <span>하위 서식 펼치기 및 상세 확인</span>
+              <span>선택동의 및 L.POINT 조건 확인</span>
             </li>
           </ol>
-          <p>이번 구현 범위는 필수동의 단계에서 종료됩니다.</p>
+          <p>이번 구현 범위는 선택동의 단계에서 종료됩니다.</p>
         </div>
       </div>
     </section>
