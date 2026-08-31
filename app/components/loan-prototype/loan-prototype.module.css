@@ -44,6 +44,123 @@
   transform: scale(0.97);
 }
 
+.flowGraph {
+  border-top: 1px solid #eef0f3;
+  border-bottom: 1px solid #e5e8ed;
+  background: #ffffff;
+  padding: 18px 24px 20px;
+}
+
+.flowGraphHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.flowGraphHeader span {
+  color: #252b36;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.flowGraphHeader p {
+  margin: 0;
+  color: #9298a3;
+  font-size: 10px;
+}
+
+.flowGraphScroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-color: #d7dce4 transparent;
+  scrollbar-width: thin;
+}
+
+.flowGraphList {
+  position: relative;
+  display: grid;
+  min-width: 1010px;
+  grid-template-columns: repeat(11, minmax(78px, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0 2px 8px;
+  list-style: none;
+}
+
+.flowGraphList::before {
+  position: absolute;
+  top: 15px;
+  right: 43px;
+  left: 43px;
+  height: 1px;
+  background: #e2e5ea;
+  content: "";
+}
+
+.flowGraphList li {
+  position: relative;
+  z-index: 1;
+}
+
+.flowNode {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #8a919c;
+  cursor: pointer;
+  font: inherit;
+}
+
+.flowNode > span {
+  display: grid;
+  width: 31px;
+  height: 31px;
+  place-items: center;
+  border: 1px solid #d8dce3;
+  border-radius: 50%;
+  background: #ffffff;
+  font-size: 9px;
+  font-weight: 750;
+  transition: 160ms ease;
+}
+
+.flowNode strong {
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.flowNode:hover > span {
+  border-color: #aeb5c0;
+  transform: translateY(-1px);
+}
+
+.flowNodeVisited > span {
+  border-color: #b9c4d6;
+  background: #eef3fa;
+  color: #54657e;
+}
+
+.flowNodeActive {
+  color: #e5272e;
+}
+
+.flowNodeActive > span {
+  border-color: #e5272e;
+  background: #e5272e;
+  box-shadow: 0 4px 10px rgba(229, 39, 46, 0.2);
+  color: #ffffff;
+}
+
 .prototypeStage {
   display: flex;
   min-height: 900px;
@@ -1252,6 +1369,323 @@
   letter-spacing: 3px;
 }
 
+.verificationContent {
+  padding: 35px 32px 58px;
+}
+
+.resendButton {
+  display: block;
+  min-width: 118px;
+  height: 38px;
+  margin: 14px 0 0;
+  border: 0;
+  border-radius: 999px;
+  background: #f2f3f5;
+  color: #4f535a;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.fraudWarningImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 37px;
+}
+
+.publicDataEntryContent {
+  padding: 27px 32px 50px;
+  text-align: center;
+}
+
+.publicDataEntryContent h2,
+.receiveContent h2 {
+  margin: 0;
+  color: #151515;
+  font-size: 24px;
+  font-weight: 750;
+  letter-spacing: -0.05em;
+  line-height: 1.43;
+}
+
+.publicDataEntryContent p {
+  margin: 26px 0 0;
+  color: #9a9da3;
+  font-size: 14px;
+  font-weight: 450;
+  letter-spacing: -0.03em;
+  line-height: 1.65;
+}
+
+.signingIllustration {
+  display: block;
+  width: 305px;
+  max-width: 100%;
+  height: auto;
+  margin: 53px auto 0;
+}
+
+.certificateSheet {
+  height: 371px;
+  box-sizing: border-box;
+  padding: 27px 28px 31px;
+}
+
+.certificateHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.certificateHeader h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.45;
+}
+
+.certificateHeader button {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: #3f4248;
+  cursor: pointer;
+  font-size: 25px;
+  font-weight: 350;
+  line-height: 1;
+}
+
+.certificateList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 19px;
+}
+
+.certificateOption {
+  display: grid;
+  width: 100%;
+  height: 80px;
+  grid-template-columns: 28px minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #e1e3e7;
+  border-radius: 9px;
+  background: transparent;
+  padding: 0 22px 0 29px;
+  color: #171717;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background-color 120ms ease,
+    transform 100ms ease;
+}
+
+.certificateOption:active {
+  background: #f7f8fa;
+  transform: scale(0.985);
+}
+
+.certificateIcon {
+  position: relative;
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+}
+
+.kakaoIcon {
+  width: 19px;
+  height: 15px;
+  justify-self: center;
+  border-radius: 2px;
+  background: #fee500;
+  color: #181600;
+  font-size: 5px;
+  font-weight: 900;
+}
+
+.tossIcon i {
+  position: absolute;
+  width: 12px;
+  height: 19px;
+  border-radius: 50% 50% 45% 55%;
+  background: #2f6df6;
+  transform: rotate(28deg);
+}
+
+.tossIcon i:first-child {
+  left: 5px;
+  background: #5a83f8;
+}
+
+.tossIcon i:last-child {
+  right: 5px;
+  transform: rotate(28deg) scale(0.8);
+}
+
+.jointIcon svg {
+  width: 27px;
+  height: 27px;
+  fill: none;
+  stroke: #252a31;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.35;
+}
+
+.certificateOption > span:nth-child(2) {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.certificateOption strong {
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+
+.certificateOption small {
+  color: #a0a3aa;
+  font-size: 10px;
+  letter-spacing: -0.025em;
+}
+
+.certificateOption svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: #a6aab1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+.receiveContent {
+  padding: 27px 32px 54px;
+}
+
+.receiveContent > p:first-of-type {
+  margin: 23px 0 0;
+  color: #9a9da3;
+  font-size: 14px;
+  letter-spacing: -0.035em;
+}
+
+.receiveProgressLabel {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 72px;
+}
+
+.receiveProgressLabel span {
+  color: #777b82;
+  font-size: 12px;
+  font-weight: 560;
+}
+
+.receiveProgressLabel strong {
+  color: #2369dd;
+  font-size: 20px;
+  font-weight: 760;
+}
+
+.receiveProgressTrack {
+  height: 7px;
+  margin-top: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e8eaee;
+}
+
+.receiveProgressTrack span {
+  display: block;
+  width: 36%;
+  height: 100%;
+  border-radius: inherit;
+  background: #2771e7;
+  animation: receive-progress 700ms ease-out;
+}
+
+.receiveGraphic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 17px;
+  margin-top: 78px;
+}
+
+.receiveGraphic > strong {
+  color: #c3c7ce;
+  font-size: 24px;
+  font-weight: 450;
+}
+
+.increaseBadge,
+.decreaseBadge {
+  display: grid;
+  width: 76px;
+  height: 76px;
+  place-items: center;
+  border-radius: 24px;
+  box-shadow: 0 12px 24px rgba(40, 52, 78, 0.13);
+  font-size: 33px;
+  font-weight: 780;
+}
+
+.increaseBadge {
+  position: relative;
+  background: #3978ee;
+  color: #ffffff;
+}
+
+.increaseBadge b {
+  position: absolute;
+  right: 17px;
+  bottom: 16px;
+  font-size: 18px;
+}
+
+.decreaseBadge {
+  background: #ef3a43;
+  color: #ffffff;
+}
+
+.receiveBenefit {
+  margin: 27px 0 0;
+  color: #777b82;
+  font-size: 13px;
+  letter-spacing: -0.035em;
+  line-height: 1.65;
+  text-align: center;
+}
+
+.receiveBenefit strong {
+  color: #282b30;
+  font-weight: 660;
+}
+
+.receiveSpinner {
+  display: block;
+  width: 24px;
+  height: 24px;
+  margin: 37px auto 0;
+  border: 3px solid #e1e4e9;
+  border-top-color: #787d85;
+  border-radius: 50%;
+  animation: receive-spin 900ms linear infinite;
+}
+
 .visuallyHidden {
   position: absolute;
   width: 1px;
@@ -1302,6 +1736,18 @@
   }
 }
 
+@keyframes receive-progress {
+  from {
+    width: 0;
+  }
+}
+
+@keyframes receive-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (max-width: 1100px) {
   .prototypeStage {
     gap: 36px;
@@ -1327,7 +1773,9 @@
   .dimLayer,
   .bottomSheet,
   .completionToast,
-  .detailScreen {
+  .detailScreen,
+  .receiveProgressTrack span,
+  .receiveSpinner {
     animation: none;
   }
 }

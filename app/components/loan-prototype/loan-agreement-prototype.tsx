@@ -23,17 +23,19 @@ import {
   optionalChildId,
 } from "./optional-agreement-data";
 import { OptionalAgreementScreen } from "./optional-agreement-screen";
+import {
+  CertificateSelectionSheet,
+  PublicDataEntryScreen,
+  PublicDataReceiveScreen,
+} from "./public-data-screens";
+import {
+  PrototypeFlowGraph,
+  prototypeStages,
+  type PrototypeStep,
+} from "./prototype-flow-graph";
 import { RequiredAgreementScreen } from "./required-agreement-screen";
+import { VerificationCodeScreen } from "./verification-code-screen";
 import styles from "./loan-prototype.module.css";
-
-type PrototypeStep =
-  | "agreement-type"
-  | "required-agreement"
-  | "optional-agreement"
-  | "carrier-selection"
-  | "name-input"
-  | "phone-input"
-  | "resident-input";
 
 const initialAgreements = Object.fromEntries(
   allAgreementGroups.map((group) => [group.id, false]),
@@ -55,14 +57,17 @@ export function LoanAgreementPrototype() {
   const [birthDate, setBirthDate] = useState("");
   const [genderDigit, setGenderDigit] = useState("");
   const [privateDigits, setPrivateDigits] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
   const genderInputRef = useRef<HTMLInputElement>(null);
   const privateInputRef = useRef<HTMLInputElement>(null);
   const carrierTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const publicDataTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     return () => {
       if (carrierTimerRef.current) clearTimeout(carrierTimerRef.current);
+      if (publicDataTimerRef.current) clearTimeout(publicDataTimerRef.current);
     };
   }, []);
 
@@ -114,6 +119,25 @@ export function LoanAgreementPrototype() {
       setStep("name-input");
       carrierTimerRef.current = null;
     }, 700);
+  }
+
+  function navigateToStep(nextStep: PrototypeStep) {
+    if (carrierTimerRef.current) clearTimeout(carrierTimerRef.current);
+    if (publicDataTimerRef.current) clearTimeout(publicDataTimerRef.current);
+    carrierTimerRef.current = null;
+    publicDataTimerRef.current = null;
+    setDetailTitle(null);
+    setShowLpointValidation(false);
+    setStep(nextStep);
+
+    if (nextStep === "public-data-entry") {
+      publicDataTimerRef.current = setTimeout(() => {
+        setStep("electronic-signature");
+        publicDataTimerRef.current = null;
+      }, 2200);
+    }
+
+    requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
   }
 
   function toggleAgreement(id: string) {
@@ -213,7 +237,9 @@ export function LoanAgreementPrototype() {
 
   function resetPrototype() {
     if (carrierTimerRef.current) clearTimeout(carrierTimerRef.current);
+    if (publicDataTimerRef.current) clearTimeout(publicDataTimerRef.current);
     carrierTimerRef.current = null;
+    publicDataTimerRef.current = null;
     setStep("agreement-type");
     setAgreementType("summary");
     setAgreements({ ...initialAgreements });
@@ -227,6 +253,7 @@ export function LoanAgreementPrototype() {
     setBirthDate("");
     setGenderDigit("");
     setPrivateDigits("");
+    setVerificationCode("");
     requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
   }
 
@@ -286,7 +313,40 @@ export function LoanAgreementPrototype() {
             onGenderDigitChange={setGenderDigit}
             onPrivateDigitsChange={setPrivateDigits}
             onBack={() => setStep("phone-input")}
-            onRequestVerification={() => undefined}
+            onRequestVerification={() => navigateToStep("verification-code")}
+          />
+        );
+      case "verification-code":
+        return (
+          <VerificationCodeScreen
+            code={verificationCode}
+            onCodeChange={setVerificationCode}
+            onBack={() => setStep("resident-input")}
+            onNext={() => navigateToStep("public-data-entry")}
+          />
+        );
+      case "public-data-entry":
+        return (
+          <PublicDataEntryScreen
+            onBack={() => navigateToStep("verification-code")}
+          />
+        );
+      case "electronic-signature":
+        return (
+          <>
+            <PublicDataEntryScreen
+              onBack={() => navigateToStep("verification-code")}
+            />
+            <CertificateSelectionSheet
+              onClose={() => navigateToStep("public-data-entry")}
+              onSelect={() => navigateToStep("public-data-receive")}
+            />
+          </>
+        );
+      case "public-data-receive":
+        return (
+          <PublicDataReceiveScreen
+            onBack={() => navigateToStep("electronic-signature")}
           />
         );
       default:
@@ -308,15 +368,7 @@ export function LoanAgreementPrototype() {
     }
   }
 
-  const stepLabel: Record<PrototypeStep, string> = {
-    "agreement-type": "01 동의서 선택",
-    "required-agreement": "02 필수동의",
-    "optional-agreement": "03 선택동의",
-    "carrier-selection": "04 통신사 선택",
-    "name-input": "05 이름 입력",
-    "phone-input": "06 휴대폰번호 입력",
-    "resident-input": "07 주민등록번호 입력",
-  };
+  const currentStage = prototypeStages.find((stage) => stage.id === step);
 
   return (
     <section className={`workspace-card ${styles.prototypeWorkspace}`}>
@@ -327,13 +379,15 @@ export function LoanAgreementPrototype() {
         </div>
         <div className={styles.workspaceActions}>
           <span className={styles.stepBadge}>
-            {stepLabel[step]}
+            {currentStage?.number} {currentStage?.label}
           </span>
           <button type="button" className={styles.resetButton} onClick={resetPrototype}>
             다시 시작
           </button>
         </div>
       </div>
+
+      <PrototypeFlowGraph currentStep={step} onNavigate={navigateToStep} />
 
       <div className={styles.prototypeStage}>
         <div className={styles.phoneFrame}>
@@ -377,11 +431,15 @@ export function LoanAgreementPrototype() {
               <span>통신사 선택 및 본인정보 입력</span>
             </li>
             <li>
-              <b>07</b>
-              <span>주민등록번호 입력에서 종료</span>
+              <b>08</b>
+              <span>인증번호 입력 및 전자서명</span>
+            </li>
+            <li>
+              <b>11</b>
+              <span>공공마이데이터 서류 수신</span>
             </li>
           </ol>
-          <p>이번 구현 범위는 주민등록번호 입력 단계에서 종료됩니다.</p>
+          <p>이번 구현 범위는 공공마이데이터 수신 단계에서 종료됩니다.</p>
         </div>
       </div>
     </section>
