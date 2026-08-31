@@ -1,12 +1,21 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { allAgreementGroups, loanAgreementGroups } from "./agreement-data";
 import { AgreementDetail } from "./agreement-detail";
 import {
   AgreementTypeSheet,
   type AgreementType,
 } from "./agreement-type-sheet";
+import {
+  CarrierSelectionScreen,
+  type Carrier,
+} from "./carrier-selection-screen";
+import {
+  NameInputScreen,
+  PhoneInputScreen,
+  ResidentInputScreen,
+} from "./identity-input-screens";
 import { LpointValidationSheet } from "./lpoint-validation-sheet";
 import {
   initialOptionalAgreements,
@@ -20,7 +29,11 @@ import styles from "./loan-prototype.module.css";
 type PrototypeStep =
   | "agreement-type"
   | "required-agreement"
-  | "optional-agreement";
+  | "optional-agreement"
+  | "carrier-selection"
+  | "name-input"
+  | "phone-input"
+  | "resident-input";
 
 const initialAgreements = Object.fromEntries(
   allAgreementGroups.map((group) => [group.id, false]),
@@ -36,7 +49,22 @@ export function LoanAgreementPrototype() {
     useState<Record<string, boolean>>(initialOptionalAgreements);
   const [showLpointValidation, setShowLpointValidation] = useState(false);
   const [detailTitle, setDetailTitle] = useState<string | null>(null);
+  const [selectedCarrier, setSelectedCarrier] = useState<Carrier | null>(null);
+  const [customerName, setCustomerName] = useState("김롯데");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [genderDigit, setGenderDigit] = useState("");
+  const [privateDigits, setPrivateDigits] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
+  const genderInputRef = useRef<HTMLInputElement>(null);
+  const privateInputRef = useRef<HTMLInputElement>(null);
+  const carrierTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (carrierTimerRef.current) clearTimeout(carrierTimerRef.current);
+    };
+  }, []);
 
   const allLoanAgreementsChecked = loanAgreementGroups.every(
     (group) => agreements[group.id],
@@ -70,6 +98,22 @@ export function LoanAgreementPrototype() {
     setShowLpointValidation(false);
     setStep("required-agreement");
     requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
+  }
+
+  function moveBackToOptionalAgreement() {
+    if (carrierTimerRef.current) clearTimeout(carrierTimerRef.current);
+    carrierTimerRef.current = null;
+    setSelectedCarrier(null);
+    setStep("optional-agreement");
+  }
+
+  function handleCarrierSelect(carrier: Carrier) {
+    if (carrierTimerRef.current) clearTimeout(carrierTimerRef.current);
+    setSelectedCarrier(carrier);
+    carrierTimerRef.current = setTimeout(() => {
+      setStep("name-input");
+      carrierTimerRef.current = null;
+    }, 700);
   }
 
   function toggleAgreement(id: string) {
@@ -160,10 +204,16 @@ export function LoanAgreementPrototype() {
 
     if (requestedLpointBenefit && !hasRequiredLpointAgreements) {
       setShowLpointValidation(true);
+      return;
     }
+
+    setSelectedCarrier(null);
+    setStep("carrier-selection");
   }
 
   function resetPrototype() {
+    if (carrierTimerRef.current) clearTimeout(carrierTimerRef.current);
+    carrierTimerRef.current = null;
     setStep("agreement-type");
     setAgreementType("summary");
     setAgreements({ ...initialAgreements });
@@ -171,23 +221,113 @@ export function LoanAgreementPrototype() {
     setExpandedGroups(new Set());
     setShowLpointValidation(false);
     setDetailTitle(null);
+    setSelectedCarrier(null);
+    setCustomerName("김롯데");
+    setPhoneNumber("");
+    setBirthDate("");
+    setGenderDigit("");
+    setPrivateDigits("");
     requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
   }
+
+  function renderPrototypeScreen() {
+    switch (step) {
+      case "optional-agreement":
+        return (
+          <OptionalAgreementScreen
+            agreements={optionalAgreements}
+            expandedGroups={expandedGroups}
+            allOptionalChecked={allOptionalChecked}
+            scrollRef={scrollRef}
+            onBack={moveBackToRequiredAgreement}
+            onNext={handleOptionalNext}
+            onToggleAll={toggleAllOptionalAgreements}
+            onToggleAgreement={toggleOptionalAgreement}
+            onToggleChild={toggleOptionalChild}
+            onToggleExpanded={toggleExpanded}
+            onDocumentOpen={setDetailTitle}
+          />
+        );
+      case "carrier-selection":
+        return (
+          <CarrierSelectionScreen
+            selectedCarrier={selectedCarrier}
+            onBack={moveBackToOptionalAgreement}
+            onSelect={handleCarrierSelect}
+          />
+        );
+      case "name-input":
+        return (
+          <NameInputScreen
+            name={customerName}
+            onNameChange={setCustomerName}
+            onBack={() => setStep("carrier-selection")}
+            onNext={() => setStep("phone-input")}
+          />
+        );
+      case "phone-input":
+        return (
+          <PhoneInputScreen
+            phoneNumber={phoneNumber}
+            onPhoneNumberChange={setPhoneNumber}
+            onBack={() => setStep("name-input")}
+            onNext={() => setStep("resident-input")}
+          />
+        );
+      case "resident-input":
+        return (
+          <ResidentInputScreen
+            birthDate={birthDate}
+            genderDigit={genderDigit}
+            privateDigits={privateDigits}
+            genderInputRef={genderInputRef}
+            privateInputRef={privateInputRef}
+            onBirthDateChange={setBirthDate}
+            onGenderDigitChange={setGenderDigit}
+            onPrivateDigitsChange={setPrivateDigits}
+            onBack={() => setStep("phone-input")}
+            onRequestVerification={() => undefined}
+          />
+        );
+      default:
+        return (
+          <RequiredAgreementScreen
+            agreements={agreements}
+            expandedGroups={expandedGroups}
+            allLoanAgreementsChecked={allLoanAgreementsChecked}
+            allRequiredChecked={allRequiredChecked}
+            scrollRef={scrollRef}
+            onBack={moveBackToAgreementType}
+            onContinue={moveToOptionalAgreement}
+            onToggleLoanAll={toggleLoanAgreements}
+            onToggleAgreement={toggleAgreement}
+            onToggleExpanded={toggleExpanded}
+            onDocumentOpen={setDetailTitle}
+          />
+        );
+    }
+  }
+
+  const stepLabel: Record<PrototypeStep, string> = {
+    "agreement-type": "01 동의서 선택",
+    "required-agreement": "02 필수동의",
+    "optional-agreement": "03 선택동의",
+    "carrier-selection": "04 통신사 선택",
+    "name-input": "05 이름 입력",
+    "phone-input": "06 휴대폰번호 입력",
+    "resident-input": "07 주민등록번호 입력",
+  };
 
   return (
     <section className={`workspace-card ${styles.prototypeWorkspace}`}>
       <div className="workspace-card-header">
         <div>
           <span className="workspace-kicker">INTERACTIVE MOBILE PROTOTYPE</span>
-          <h2>대출 신청 · 약관동의</h2>
+          <h2>대출 신청 · 본인확인</h2>
         </div>
         <div className={styles.workspaceActions}>
           <span className={styles.stepBadge}>
-            {step === "agreement-type"
-              ? "01 동의서 선택"
-              : step === "required-agreement"
-                ? "02 필수동의"
-                : "03 선택동의"}
+            {stepLabel[step]}
           </span>
           <button type="button" className={styles.resetButton} onClick={resetPrototype}>
             다시 시작
@@ -197,35 +337,7 @@ export function LoanAgreementPrototype() {
 
       <div className={styles.prototypeStage}>
         <div className={styles.phoneFrame}>
-          {step === "optional-agreement" ? (
-            <OptionalAgreementScreen
-              agreements={optionalAgreements}
-              expandedGroups={expandedGroups}
-              allOptionalChecked={allOptionalChecked}
-              scrollRef={scrollRef}
-              onBack={moveBackToRequiredAgreement}
-              onNext={handleOptionalNext}
-              onToggleAll={toggleAllOptionalAgreements}
-              onToggleAgreement={toggleOptionalAgreement}
-              onToggleChild={toggleOptionalChild}
-              onToggleExpanded={toggleExpanded}
-              onDocumentOpen={setDetailTitle}
-            />
-          ) : (
-            <RequiredAgreementScreen
-              agreements={agreements}
-              expandedGroups={expandedGroups}
-              allLoanAgreementsChecked={allLoanAgreementsChecked}
-              allRequiredChecked={allRequiredChecked}
-              scrollRef={scrollRef}
-              onBack={moveBackToAgreementType}
-              onContinue={moveToOptionalAgreement}
-              onToggleLoanAll={toggleLoanAgreements}
-              onToggleAgreement={toggleAgreement}
-              onToggleExpanded={toggleExpanded}
-              onDocumentOpen={setDetailTitle}
-            />
-          )}
+          {renderPrototypeScreen()}
 
           {step === "agreement-type" ? (
             <AgreementTypeSheet
@@ -260,8 +372,16 @@ export function LoanAgreementPrototype() {
               <b>03</b>
               <span>선택동의 및 L.POINT 조건 확인</span>
             </li>
+            <li>
+              <b>04</b>
+              <span>통신사 선택 및 본인정보 입력</span>
+            </li>
+            <li>
+              <b>07</b>
+              <span>주민등록번호 입력에서 종료</span>
+            </li>
           </ol>
-          <p>이번 구현 범위는 선택동의 단계에서 종료됩니다.</p>
+          <p>이번 구현 범위는 주민등록번호 입력 단계에서 종료됩니다.</p>
         </div>
       </div>
     </section>
