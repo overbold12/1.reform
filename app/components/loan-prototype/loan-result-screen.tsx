@@ -4,39 +4,39 @@ import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import simsaImage from "../../../references/to-be/simasa.png";
 import { LoadingSpinner } from "./loading-spinner";
+import {
+  ANNUAL_RATE,
+  calculateMonthlyPayment,
+  getMaximumPeriod,
+  MAX_AMOUNT_MANWON,
+  MIN_AMOUNT_MANWON,
+  PERIOD_OPTIONS,
+} from "./loan-terms";
 import { MobileStatusBar } from "./mobile-status-bar";
 import styles from "./loan-prototype.module.css";
 
-const ANNUAL_RATE = 16.98;
-const MIN_AMOUNT_MANWON = 100;
-const MAX_AMOUNT_MANWON = 3000;
-const PERIOD_OPTIONS = [12, 24, 36, 48, 60, 72, 84, 96, 108, 120] as const;
-
-function calculateMonthlyPayment(
-  amountManwon: number,
-  periodMonths: number,
-) {
-  const principal = amountManwon * 10_000;
-  const monthlyRate = ANNUAL_RATE / 100 / 12;
-  const compoundRate = Math.pow(1 + monthlyRate, periodMonths);
-
-  return Math.round(
-    (principal * monthlyRate * compoundRate) / (compoundRate - 1),
-  );
-}
-
 type LoanResultScreenProps = {
+  amountManwon: number;
+  periodMonths: number;
   onClose: () => void;
+  onNext: () => void;
+  onAmountChange: (amount: number) => void;
+  onPeriodChange: (period: number) => void;
 };
 
-export function LoanResultScreen({ onClose }: LoanResultScreenProps) {
-  const [amountManwon, setAmountManwon] = useState(3000);
-  const [amountInput, setAmountInput] = useState("3000");
+export function LoanResultScreen({
+  amountManwon,
+  periodMonths,
+  onClose,
+  onNext,
+  onAmountChange,
+  onPeriodChange,
+}: LoanResultScreenProps) {
+  const [amountInput, setAmountInput] = useState(String(amountManwon));
   const [amountError, setAmountError] = useState<string | null>(null);
-  const [periodMonths, setPeriodMonths] = useState(72);
   const initialPayment = useMemo(
-    () => calculateMonthlyPayment(3000, 72),
-    [],
+    () => calculateMonthlyPayment(amountManwon, periodMonths),
+    [amountManwon, periodMonths],
   );
   const [monthlyPayment, setMonthlyPayment] = useState(initialPayment);
   const [isCalculating, setIsCalculating] = useState(false);
@@ -60,10 +60,11 @@ export function LoanResultScreen({ onClose }: LoanResultScreenProps) {
   }, [amountManwon, periodMonths]);
 
   function commitAmount(nextAmount: number) {
-    setAmountManwon(nextAmount);
+    onAmountChange(nextAmount);
     setAmountError(null);
-    if (nextAmount < 1000 && periodMonths > 60) {
-      setPeriodMonths(60);
+    const maximumPeriod = getMaximumPeriod(nextAmount);
+    if (periodMonths > maximumPeriod) {
+      onPeriodChange(maximumPeriod);
     }
   }
 
@@ -174,7 +175,7 @@ export function LoanResultScreen({ onClose }: LoanResultScreenProps) {
             <legend>기간(개월)</legend>
             <div className={styles.periodOptions}>
               {PERIOD_OPTIONS.map((period) => {
-                const maximumPeriod = amountManwon < 1000 ? 60 : 72;
+                const maximumPeriod = getMaximumPeriod(amountManwon);
                 const disabled = period > maximumPeriod;
                 const selected = periodMonths === period;
 
@@ -185,7 +186,7 @@ export function LoanResultScreen({ onClose }: LoanResultScreenProps) {
                     className={selected ? styles.periodSelected : ""}
                     disabled={disabled}
                     aria-pressed={selected}
-                    onClick={() => setPeriodMonths(period)}
+                    onClick={() => onPeriodChange(period)}
                   >
                     {period}
                   </button>
@@ -213,7 +214,7 @@ export function LoanResultScreen({ onClose }: LoanResultScreenProps) {
             </div>
           </dl>
 
-          <button type="button" className={styles.resultDetailButton}>
+          <button type="button" className={styles.resultDetailButton} onClick={onNext}>
             더 자세한 조건 알아보기
           </button>
         </section>

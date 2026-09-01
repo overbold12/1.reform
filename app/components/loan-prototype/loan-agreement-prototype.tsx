@@ -17,6 +17,7 @@ import {
   ResidentInputScreen,
 } from "./identity-input-screens";
 import { LpointValidationSheet } from "./lpoint-validation-sheet";
+import { LoanConditionScreen } from "./loan-condition-screen";
 import { LoanResultScreen } from "./loan-result-screen";
 import {
   initialOptionalAgreements,
@@ -60,6 +61,8 @@ export function LoanAgreementPrototype() {
   const [genderDigit, setGenderDigit] = useState("");
   const [privateDigits, setPrivateDigits] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
+  const [loanAmountManwon, setLoanAmountManwon] = useState(3000);
+  const [loanPeriodMonths, setLoanPeriodMonths] = useState(72);
   const scrollRef = useRef<HTMLDivElement>(null);
   const genderInputRef = useRef<HTMLInputElement>(null);
   const privateInputRef = useRef<HTMLInputElement>(null);
@@ -256,6 +259,8 @@ export function LoanAgreementPrototype() {
     setGenderDigit("");
     setPrivateDigits("");
     setVerificationCode("");
+    setLoanAmountManwon(3000);
+    setLoanPeriodMonths(72);
     requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
   }
 
@@ -359,7 +364,29 @@ export function LoanAgreementPrototype() {
         );
       case "loan-result":
         return (
-          <LoanResultScreen onClose={() => navigateToStep("screening")} />
+          <LoanResultScreen
+            amountManwon={loanAmountManwon}
+            periodMonths={loanPeriodMonths}
+            onAmountChange={setLoanAmountManwon}
+            onPeriodChange={setLoanPeriodMonths}
+            onClose={() => navigateToStep("screening")}
+            onNext={() => navigateToStep("loan-condition")}
+          />
+        );
+      case "loan-condition":
+        return (
+          <LoanConditionScreen
+            amountManwon={loanAmountManwon}
+            periodMonths={loanPeriodMonths}
+            onAmountChange={(amount) => {
+              setLoanAmountManwon(amount);
+              if (amount < 1000 && loanPeriodMonths > 60) {
+                setLoanPeriodMonths(60);
+              }
+            }}
+            onPeriodChange={setLoanPeriodMonths}
+            onBack={() => navigateToStep("loan-result")}
+          />
         );
       default:
         return (
@@ -459,7 +486,11 @@ export function LoanAgreementPrototype() {
               <span>심사결과 및 조건 조정</span>
             </li>
           </ol>
-          <p>이번 구현 범위는 심사결과 단계에서 종료되며 상세 조건 화면으로 이동하지 않습니다.</p>
+          <div className={styles.demoGuideAddedStep}>
+            <b>14</b>
+            <span>대출조건 설정 및 상환방식 선택</span>
+          </div>
+          <p>심사결과에서 확정한 금액과 기간이 대출조건 설정 화면에 그대로 이어집니다.</p>
         </div>
       </div>
     </section>

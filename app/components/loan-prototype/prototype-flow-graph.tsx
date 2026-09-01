@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import styles from "./loan-prototype.module.css";
 
 export type PrototypeStep =
@@ -13,7 +16,8 @@ export type PrototypeStep =
   | "electronic-signature"
   | "public-data-receive"
   | "screening"
-  | "loan-result";
+  | "loan-result"
+  | "loan-condition";
 
 export const prototypeStages: Array<{
   id: PrototypeStep;
@@ -33,6 +37,7 @@ export const prototypeStages: Array<{
   { id: "public-data-receive", number: "11", label: "정보수신" },
   { id: "screening", number: "12", label: "심사중" },
   { id: "loan-result", number: "13", label: "심사결과" },
+  { id: "loan-condition", number: "14", label: "대출조건 설정" },
 ];
 
 type PrototypeFlowGraphProps = {
@@ -44,17 +49,35 @@ export function PrototypeFlowGraph({
   currentStep,
   onNavigate,
 }: PrototypeFlowGraphProps) {
+  const activeNodeRef = useRef<HTMLButtonElement>(null);
+  const graphScrollRef = useRef<HTMLDivElement>(null);
   const currentIndex = prototypeStages.findIndex(
     (stage) => stage.id === currentStep,
   );
+
+  useEffect(() => {
+    const node = activeNodeRef.current;
+    const container = graphScrollRef.current;
+    if (!node || !container) return;
+
+    const nodeBounds = node.getBoundingClientRect();
+    const containerBounds = container.getBoundingClientRect();
+    const left =
+      container.scrollLeft +
+      nodeBounds.left -
+      containerBounds.left -
+      (container.clientWidth - nodeBounds.width) / 2;
+
+    container.scrollTo({ left, behavior: "smooth" });
+  }, [currentStep]);
 
   return (
     <nav className={styles.flowGraph} aria-label="프로토타입 단계 바로가기">
       <div className={styles.flowGraphHeader}>
         <span>CONSENT &amp; IDENTITY FLOW</span>
-        <p>단계를 선택하면 해당 화면으로 바로 이동합니다. 13단계 이후는 진행되지 않습니다.</p>
+        <p>단계를 선택하면 해당 화면으로 바로 이동합니다. 14단계까지 직접 확인할 수 있습니다.</p>
       </div>
-      <div className={styles.flowGraphScroll}>
+      <div ref={graphScrollRef} className={styles.flowGraphScroll}>
         <ol className={styles.flowGraphList}>
           {prototypeStages.map((stage, index) => {
             const active = stage.id === currentStep;
@@ -63,6 +86,7 @@ export function PrototypeFlowGraph({
               <li key={stage.id}>
                 <button
                   type="button"
+                  ref={active ? activeNodeRef : undefined}
                   className={`${styles.flowNode} ${active ? styles.flowNodeActive : ""} ${visited ? styles.flowNodeVisited : ""}`}
                   aria-current={active ? "step" : undefined}
                   onClick={() => onNavigate(stage.id)}

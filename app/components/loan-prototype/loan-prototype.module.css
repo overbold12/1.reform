@@ -82,8 +82,8 @@
 .flowGraphList {
   position: relative;
   display: grid;
-  min-width: 1190px;
-  grid-template-columns: repeat(13, minmax(78px, 1fr));
+  min-width: 1280px;
+  grid-template-columns: repeat(14, minmax(78px, 1fr));
   gap: 10px;
   margin: 0;
   padding: 0 2px 8px;
@@ -1185,6 +1185,28 @@
   line-height: 1.6;
 }
 
+.demoGuideAddedStep {
+  display: flex;
+  min-height: 52px;
+  align-items: center;
+  gap: 12px;
+  color: #5c6575;
+  font-size: 12px;
+}
+
+.demoGuideAddedStep b {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  place-items: center;
+  border: 1px solid #e5272e;
+  border-radius: 50%;
+  background: #fff4f4;
+  color: #e5272e;
+  font-size: 9px;
+}
+
 .flowScreen {
   animation: detail-in 220ms ease-out;
 }
@@ -2040,6 +2062,497 @@
   font-weight: 720;
 }
 
+.loanConditionScreen {
+  overflow: hidden;
+  background: #192038;
+  animation: detail-in 220ms ease-out;
+}
+
+.loanConditionScroll {
+  min-height: 0;
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: #192038;
+  scrollbar-width: none;
+}
+
+.loanConditionScroll::-webkit-scrollbar {
+  display: none;
+}
+
+.loanConditionHeader {
+  height: 118px;
+  background: #192038;
+  color: #ffffff;
+}
+
+.loanConditionNav {
+  position: relative;
+  display: flex;
+  height: 76px;
+  align-items: center;
+  justify-content: center;
+}
+
+.conditionCloseButton {
+  position: absolute;
+  top: 20px;
+  left: 31px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 120ms ease, transform 100ms ease;
+}
+
+.conditionCloseButton:active {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(0.92);
+}
+
+.conditionCloseButton span {
+  position: absolute;
+  top: 16px;
+  left: 7px;
+  width: 21px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transform: rotate(45deg);
+}
+
+.conditionCloseButton span:last-child {
+  transform: rotate(-45deg);
+}
+
+.conditionProgress {
+  position: absolute;
+  right: 32px;
+  bottom: 17px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.conditionProgress li {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #74809a;
+}
+
+.conditionProgress li > span {
+  display: grid;
+  width: 18px;
+  height: 18px;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.conditionProgress li strong {
+  color: #a9bedf;
+  font-size: 14px;
+  font-weight: 680;
+  letter-spacing: -0.04em;
+}
+
+.conditionProgress .conditionProgressActive {
+  color: #a9bedf;
+}
+
+.conditionProgressActive > span {
+  border-color: #a9bedf;
+  background: #a9bedf;
+  color: #192038;
+}
+
+.loanConditionPanel {
+  position: relative;
+  min-height: 748px;
+  box-sizing: border-box;
+  border-radius: 16px 16px 0 0;
+  background: #ffffff;
+  padding: 38px 32px 48px;
+}
+
+.conditionHandle {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  width: 134px;
+  height: 5px;
+  border-radius: 999px;
+  background: #8a8a8a;
+  transform: translateX(-50%);
+}
+
+.conditionFields {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 94px;
+  gap: 31px;
+}
+
+.conditionAmountField label,
+.conditionFieldLabel {
+  display: block;
+  color: #222326;
+  font-size: 14px;
+  font-weight: 530;
+  letter-spacing: -0.035em;
+}
+
+.conditionValueLine,
+.conditionPeriodButton {
+  display: flex;
+  width: 100%;
+  height: 42px;
+  box-sizing: border-box;
+  align-items: center;
+  border: 0;
+  border-bottom: 1px solid #a9abb0;
+  background: transparent;
+  color: #111216;
+}
+
+.conditionValueLine {
+  width: fit-content;
+  gap: 1px;
+  transition: border-color 150ms ease;
+}
+
+.conditionValueLine:focus-within {
+  border-bottom-color: #2558c7;
+}
+
+.conditionValueInvalid {
+  border-bottom-color: #e32930;
+}
+
+.conditionValueLine input {
+  width: auto;
+  max-width: 7ch;
+  flex: 0 0 auto;
+  min-width: 0;
+  field-sizing: content;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #111216;
+  caret-color: #e32930;
+  font: inherit;
+  font-size: 20px;
+  font-weight: 520;
+  letter-spacing: -0.04em;
+  outline: none;
+}
+
+.conditionValueLine > span {
+  flex: 0 0 auto;
+  font-size: 15px;
+  font-weight: 520;
+}
+
+.conditionPeriodField {
+  position: relative;
+}
+
+.conditionPeriodButton {
+  justify-content: space-between;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 20px;
+  font-weight: 520;
+  letter-spacing: -0.04em;
+  transition: border-color 150ms ease, transform 100ms ease;
+}
+
+.conditionPeriodButton:active {
+  transform: scale(0.98);
+}
+
+.conditionPeriodButton svg {
+  width: 10px;
+  height: 7px;
+  fill: none;
+  stroke: #111216;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+  transition: transform 160ms ease;
+}
+
+.conditionPeriodButton[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+.periodDropdown {
+  position: absolute;
+  top: 67px;
+  right: 0;
+  z-index: 20;
+  width: 124px;
+  overflow: hidden;
+  border: 1px solid #e0e3e8;
+  border-radius: 9px;
+  background: #ffffff;
+  box-shadow: 0 12px 28px rgba(25, 32, 56, 0.18);
+  animation: dropdown-in 180ms ease-out;
+}
+
+.periodDropdown button {
+  display: flex;
+  width: 100%;
+  height: 38px;
+  align-items: center;
+  justify-content: space-between;
+  border: 0;
+  border-bottom: 1px solid #f0f1f3;
+  background: #ffffff;
+  padding: 0 13px;
+  color: #555960;
+  cursor: pointer;
+  font-size: 13px;
+  text-align: left;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.periodDropdown button:last-child {
+  border-bottom: 0;
+}
+
+.periodDropdown button:active {
+  background: #f4f6fa;
+}
+
+.periodDropdown .periodDropdownSelected {
+  background: #f1f5ff;
+  color: #2859c3;
+  font-weight: 700;
+}
+
+.conditionNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  min-height: 48px;
+  margin: 12px 0 0;
+  color: #6d8fc8;
+  font-size: 10px;
+  letter-spacing: -0.025em;
+  line-height: 1.55;
+}
+
+.conditionNotice > span {
+  display: grid;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  place-items: center;
+  border-radius: 50%;
+  background: #a8c0e6;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.conditionNoticeError {
+  color: #df3037;
+}
+
+.conditionNoticeError > span {
+  background: #df3037;
+}
+
+.repaymentFieldset {
+  margin: 21px 0 0;
+  border: 0;
+  padding: 0;
+}
+
+.repaymentFieldset legend {
+  color: #5f6268;
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+}
+
+.repaymentOptions {
+  display: flex;
+  margin-top: 13px;
+  flex-direction: column;
+}
+
+.repaymentOptions > button {
+  display: grid;
+  width: 100%;
+  min-height: 66px;
+  grid-template-columns: 23px minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+  border: 0;
+  border-bottom: 1px solid #e4e5e8;
+  background: transparent;
+  padding: 6px 0;
+  color: #8c9097;
+  cursor: pointer;
+  text-align: left;
+  transition: color 160ms ease, transform 100ms ease;
+}
+
+.repaymentOptions > button:active {
+  transform: scale(0.985);
+}
+
+.repaymentOptions > button:last-child {
+  border-bottom: 0;
+}
+
+.repaymentRadio {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  box-sizing: border-box;
+  place-items: center;
+  border: 1px solid #d5d8dd;
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
+}
+
+.repaymentOptions button > span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.repaymentOptions strong {
+  font-size: 14px;
+  font-weight: 680;
+  letter-spacing: -0.035em;
+}
+
+.repaymentOptions small {
+  color: #7f838a;
+  font-size: 11px;
+  letter-spacing: -0.025em;
+}
+
+.repaymentOptions .repaymentSelected {
+  color: #6e8fc6;
+}
+
+.repaymentSelected .repaymentRadio {
+  border-color: #ee292f;
+  background: #ee292f;
+  transform: scale(1.03);
+}
+
+.repaymentImageFrame {
+  display: grid;
+  width: 100%;
+  height: 95px;
+  margin-top: 3px;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 11px;
+  background: #f1f6ff;
+}
+
+.repaymentImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  animation: repayment-image-in 220ms ease-out;
+}
+
+.conditionSummary {
+  display: flex;
+  margin: 26px 0 0;
+  flex-direction: column;
+  gap: 17px;
+}
+
+.conditionSummary > div {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.conditionSummary dt {
+  color: #777a80;
+  font-size: 13px;
+}
+
+.conditionSummary dd {
+  margin: 0;
+  color: #17181b;
+  font-size: 14px;
+  font-weight: 520;
+}
+
+.schedulePreviewButton {
+  display: flex;
+  width: 100%;
+  height: 46px;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 9px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #676a70;
+  font-size: 12px;
+}
+
+.schedulePreviewButton svg {
+  width: 7px;
+  height: 12px;
+  fill: none;
+  stroke: #1d1e20;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+.conditionSubmitButton {
+  display: grid;
+  width: 100%;
+  height: 58px;
+  margin-top: 25px;
+  place-items: center;
+  border: 0;
+  border-radius: 3px;
+  background: #ee252b;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 720;
+  transition: background-color 140ms ease, transform 100ms ease;
+}
+
+.conditionSubmitButton:active {
+  background: #d91f25;
+  transform: scale(0.985);
+}
+
 .visuallyHidden {
   position: absolute;
   width: 1px;
@@ -2087,6 +2600,24 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes repayment-image-in {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
