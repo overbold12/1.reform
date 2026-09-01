@@ -1,8 +1,15 @@
 import styles from "./loan-prototype.module.css";
 
-export function MobileStatusBar() {
+type MobileStatusBarProps = {
+  inverse?: boolean;
+};
+
+export function MobileStatusBar({ inverse = false }: MobileStatusBarProps) {
   return (
-    <div className={styles.statusBar} aria-label="모바일 상태 표시줄">
+    <div
+      className={`${styles.statusBar} ${inverse ? styles.statusBarInverse : ""}`}
+      aria-label="모바일 상태 표시줄"
+    >
       <strong>9:41</strong>
       <div className={styles.statusIcons} aria-hidden="true">
         <span className={styles.signalIcon} />

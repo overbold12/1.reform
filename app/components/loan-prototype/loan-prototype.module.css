@@ -82,8 +82,8 @@
 .flowGraphList {
   position: relative;
   display: grid;
-  min-width: 1100px;
-  grid-template-columns: repeat(12, minmax(78px, 1fr));
+  min-width: 1190px;
+  grid-template-columns: repeat(13, minmax(78px, 1fr));
   gap: 10px;
   margin: 0;
   padding: 0 2px 8px;
@@ -214,6 +214,29 @@
   font-size: 15px;
   font-weight: 750;
   letter-spacing: -0.02em;
+}
+
+.statusBarInverse {
+  background: #192038;
+  color: #ffffff;
+}
+
+.statusBarInverse .signalIcon {
+  background: #ffffff;
+}
+
+.statusBarInverse .wifiIcon {
+  fill: #ffffff;
+  stroke: #ffffff;
+}
+
+.statusBarInverse .batteryIcon {
+  border-color: #ffffff;
+}
+
+.statusBarInverse .batteryIcon::before,
+.statusBarInverse .batteryIcon::after {
+  background: #ffffff;
 }
 
 .statusIcons {
@@ -1721,6 +1744,300 @@
 
 .screeningContent .processingSpinner {
   margin-top: 38px;
+}
+
+.resultScreen {
+  overflow: hidden;
+  background: #192038;
+  animation: detail-in 220ms ease-out;
+}
+
+.resultScroll {
+  min-height: 0;
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: #192038;
+  scrollbar-width: none;
+}
+
+.resultScroll::-webkit-scrollbar {
+  display: none;
+}
+
+.resultHero {
+  position: relative;
+  min-height: 414px;
+  box-sizing: border-box;
+  background: #192038;
+  color: #ffffff;
+}
+
+.resultCloseButton {
+  position: relative;
+  display: block;
+  width: 34px;
+  height: 34px;
+  margin: 19px 0 0 31px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 120ms ease, transform 100ms ease;
+}
+
+.resultCloseButton:active {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(0.92);
+}
+
+.resultCloseButton span {
+  position: absolute;
+  top: 16px;
+  left: 7px;
+  width: 21px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transform: rotate(45deg);
+}
+
+.resultCloseButton span:last-child {
+  transform: rotate(-45deg);
+}
+
+.resultHero h2 {
+  margin: 25px 32px 0;
+  font-size: 21px;
+  font-weight: 450;
+  letter-spacing: -0.045em;
+  line-height: 1.47;
+}
+
+.resultHero mark {
+  background: #3355b4;
+  color: #ffffff;
+}
+
+.resultCoachImage {
+  position: absolute;
+  right: 25px;
+  bottom: 0;
+  width: 275px;
+  height: auto;
+}
+
+.resultConditionPanel {
+  min-height: 710px;
+  box-sizing: border-box;
+  border-radius: 16px 16px 0 0;
+  background: #ffffff;
+  padding: 42px 32px 49px;
+}
+
+.resultField > label,
+.periodFieldset legend {
+  color: #64666b;
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+}
+
+.resultAmountValue {
+  display: flex;
+  height: 62px;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  border-bottom: 1px solid #63666c;
+  transition: border-color 150ms ease;
+}
+
+.resultAmountValue:focus-within {
+  border-bottom-color: #2255c7;
+}
+
+.resultAmountInvalid {
+  border-bottom-color: #e52d33;
+}
+
+.resultAmountValue input {
+  width: 210px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #0b0b0c;
+  caret-color: #e52d33;
+  font: inherit;
+  font-size: 30px;
+  font-weight: 730;
+  letter-spacing: -0.045em;
+  outline: none;
+  text-align: right;
+}
+
+.resultAmountValue span {
+  color: #6f7278;
+  font-size: 13px;
+}
+
+.amountValidationMessage {
+  min-height: 17px;
+  margin: 7px 0 0;
+  color: #8b8f96;
+  font-size: 10px;
+  letter-spacing: -0.025em;
+  text-align: right;
+}
+
+.resultAmountInvalid + .amountValidationMessage {
+  color: #df3037;
+}
+
+.loanResultNotice {
+  position: relative;
+  margin: 10px 0 0;
+  border-radius: 4px;
+  background: #f1f6ff;
+  padding: 12px 10px;
+  color: #2f63c6;
+  font-size: 12px;
+  letter-spacing: -0.025em;
+  line-height: 1.65;
+}
+
+.loanResultNotice::before {
+  position: absolute;
+  top: -8px;
+  right: 10px;
+  border-right: 8px solid transparent;
+  border-bottom: 9px solid #f1f6ff;
+  border-left: 8px solid transparent;
+  content: "";
+}
+
+.periodFieldset {
+  margin: 50px 0 0;
+  border: 0;
+  padding: 0;
+}
+
+.periodOptions {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 16px;
+}
+
+.periodOptions button {
+  height: 41px;
+  border: 1px solid #e0e2e6;
+  border-radius: 3px;
+  background: #ffffff;
+  color: #64676d;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, transform 100ms ease;
+}
+
+.periodOptions button:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.periodOptions button:disabled {
+  background: #f7f8fa;
+  color: #c4c8cf;
+  cursor: default;
+}
+
+.periodOptions .periodSelected {
+  border-color: #ec2b31;
+  background: #ec2b31;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.periodHelp {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  margin: 10px 0 0;
+  color: #6e8fc7;
+  font-size: 10px;
+  letter-spacing: -0.02em;
+  line-height: 1.55;
+}
+
+.periodHelp > span {
+  display: grid;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  place-items: center;
+  border-radius: 50%;
+  background: #a9c2e9;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.resultSummary {
+  display: flex;
+  margin: 50px 5px 0;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.resultSummary > div {
+  display: flex;
+  min-height: 23px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.resultSummary dt {
+  color: #74777c;
+  font-size: 14px;
+}
+
+.resultSummary dd {
+  margin: 0;
+  color: #17181b;
+  font-size: 15px;
+  font-weight: 520;
+  text-align: right;
+}
+
+.resultSummary .paymentCalculating {
+  color: #9a9da4;
+}
+
+.calculationOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.56);
+  backdrop-filter: blur(1px);
+  animation: dim-in 160ms ease-out;
+}
+
+.resultDetailButton {
+  display: grid;
+  width: 100%;
+  height: 59px;
+  margin-top: 40px;
+  place-items: center;
+  border: 2px solid #2854ba;
+  border-radius: 3px;
+  background: #ffffff;
+  color: #2854ba;
+  font-size: 15px;
+  font-weight: 720;
 }
 
 .visuallyHidden {

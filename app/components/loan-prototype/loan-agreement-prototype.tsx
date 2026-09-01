@@ -17,6 +17,7 @@ import {
   ResidentInputScreen,
 } from "./identity-input-screens";
 import { LpointValidationSheet } from "./lpoint-validation-sheet";
+import { LoanResultScreen } from "./loan-result-screen";
 import {
   initialOptionalAgreements,
   optionalAgreementGroups,
@@ -351,7 +352,15 @@ export function LoanAgreementPrototype() {
           />
         );
       case "screening":
-        return <ScreeningScreen />;
+        return (
+          <ScreeningScreen
+            onComplete={() => navigateToStep("loan-result")}
+          />
+        );
+      case "loan-result":
+        return (
+          <LoanResultScreen onClose={() => navigateToStep("screening")} />
+        );
       default:
         return (
           <RequiredAgreementScreen
@@ -445,8 +454,12 @@ export function LoanAgreementPrototype() {
               <b>12</b>
               <span>최대한도와 금리 심사</span>
             </li>
+            <li>
+              <b>13</b>
+              <span>심사결과 및 조건 조정</span>
+            </li>
           </ol>
-          <p>이번 구현 범위는 심사중 단계에서 종료되며 결과 화면으로 이동하지 않습니다.</p>
+          <p>이번 구현 범위는 심사결과 단계에서 종료되며 상세 조건 화면으로 이동하지 않습니다.</p>
         </div>
       </div>
     </section>

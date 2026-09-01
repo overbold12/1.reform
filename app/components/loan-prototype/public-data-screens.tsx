@@ -145,7 +145,11 @@ export function PublicDataReceiveScreen({
   );
 }
 
-export function ScreeningScreen() {
+type ScreeningScreenProps = {
+  onComplete: () => void;
+};
+
+export function ScreeningScreen({ onComplete }: ScreeningScreenProps) {
   return (
     <div className={`${styles.appScreen} ${styles.flowScreen}`}>
       <MobileStatusBar />
@@ -157,7 +161,11 @@ export function ScreeningScreen() {
         </h2>
         <p>지금 앱을 끄면 처음부터 진행해야 돼요.</p>
 
-        <AnimatedProgress durationMs={5200} label="대출 심사 진행률" />
+        <AnimatedProgress
+          durationMs={5200}
+          label="대출 심사 진행률"
+          onComplete={onComplete}
+        />
 
         <div className={styles.limitGauge} aria-hidden="true" />
         <p className={styles.screeningNotice}>
