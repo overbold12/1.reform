@@ -82,8 +82,8 @@
 .flowGraphList {
   position: relative;
   display: grid;
-  min-width: 1010px;
-  grid-template-columns: repeat(11, minmax(78px, 1fr));
+  min-width: 1100px;
+  grid-template-columns: repeat(12, minmax(78px, 1fr));
   gap: 10px;
   margin: 0;
   padding: 0 2px 8px;
@@ -1571,7 +1571,7 @@
 }
 
 .receiveContent {
-  padding: 27px 32px 54px;
+  padding: 84px 32px 54px;
 }
 
 .receiveContent > p:first-of-type {
@@ -1585,7 +1585,11 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  margin-top: 72px;
+  margin-top: 25px;
+}
+
+.animatedProgress {
+  display: block;
 }
 
 .receiveProgressLabel span {
@@ -1601,6 +1605,7 @@
 }
 
 .receiveProgressTrack {
+  position: relative;
   height: 7px;
   margin-top: 10px;
   overflow: hidden;
@@ -1609,81 +1614,113 @@
 }
 
 .receiveProgressTrack span {
+  position: relative;
   display: block;
-  width: 36%;
+  width: 0;
   height: 100%;
   border-radius: inherit;
   background: #2771e7;
-  animation: receive-progress 700ms ease-out;
+  will-change: width;
 }
 
-.receiveGraphic {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 17px;
-  margin-top: 78px;
-}
-
-.receiveGraphic > strong {
-  color: #c3c7ce;
-  font-size: 24px;
-  font-weight: 450;
-}
-
-.increaseBadge,
-.decreaseBadge {
-  display: grid;
-  width: 76px;
-  height: 76px;
-  place-items: center;
-  border-radius: 24px;
-  box-shadow: 0 12px 24px rgba(40, 52, 78, 0.13);
-  font-size: 33px;
-  font-weight: 780;
-}
-
-.increaseBadge {
-  position: relative;
-  background: #3978ee;
-  color: #ffffff;
-}
-
-.increaseBadge b {
+.receiveProgressTrack span i {
   position: absolute;
-  right: 17px;
-  bottom: 16px;
-  font-size: 18px;
+  top: 50%;
+  right: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2771e7;
+  transform: translate(45%, -50%) scale(1);
+  transition: opacity 120ms ease, transform 120ms ease;
 }
 
-.decreaseBadge {
-  background: #ef3a43;
-  color: #ffffff;
+.receiveProgressTrack span .progressDotHidden {
+  opacity: 0;
+  transform: translate(45%, -50%) scale(0.4);
 }
 
-.receiveBenefit {
-  margin: 27px 0 0;
-  color: #777b82;
+.myDataIllustration {
+  display: block;
+  width: 229px;
+  height: auto;
+  margin: 89px auto 0;
+}
+
+.loadingSpinner {
+  display: block;
+  width: 40px;
+  height: 40px;
+  animation: loading-spinner-rotate 900ms linear infinite;
+}
+
+.loadingSpinner img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.processingSpinner {
+  margin: 43px auto 0;
+}
+
+.screeningContent {
+  padding-top: 76px;
+  text-align: center;
+}
+
+.screeningContent > p:first-of-type {
+  margin-top: 18px;
+  color: #555960;
+}
+
+.screeningContent .receiveProgressLabel {
+  margin-top: 17px;
+  text-align: left;
+}
+
+.limitGauge {
+  position: relative;
+  width: 116px;
+  height: 58px;
+  margin: 91px auto 0;
+  overflow: hidden;
+  border-radius: 116px 116px 0 0;
+  background: conic-gradient(
+    from 270deg at 50% 100%,
+    #ef372f 0deg 24deg,
+    #ffad42 24deg 50deg,
+    #a8df61 50deg 80deg,
+    #75d786 80deg 111deg,
+    #4c83e9 111deg 180deg,
+    transparent 180deg
+  );
+  filter: drop-shadow(0 6px 8px rgba(38, 73, 133, 0.12));
+}
+
+.limitGauge::after {
+  position: absolute;
+  right: 12px;
+  bottom: -1px;
+  left: 12px;
+  height: 45px;
+  border-radius: 90px 90px 0 0;
+  background: #ffffff;
+  content: "";
+}
+
+.screeningNotice {
+  margin: 24px 0 0;
+  color: #4e78c5;
   font-size: 13px;
+  font-weight: 650;
   letter-spacing: -0.035em;
   line-height: 1.65;
   text-align: center;
 }
 
-.receiveBenefit strong {
-  color: #282b30;
-  font-weight: 660;
-}
-
-.receiveSpinner {
-  display: block;
-  width: 24px;
-  height: 24px;
-  margin: 37px auto 0;
-  border: 3px solid #e1e4e9;
-  border-top-color: #787d85;
-  border-radius: 50%;
-  animation: receive-spin 900ms linear infinite;
+.screeningContent .processingSpinner {
+  margin-top: 38px;
 }
 
 .visuallyHidden {
@@ -1736,13 +1773,7 @@
   }
 }
 
-@keyframes receive-progress {
-  from {
-    width: 0;
-  }
-}
-
-@keyframes receive-spin {
+@keyframes loading-spinner-rotate {
   to {
     transform: rotate(360deg);
   }
@@ -1774,8 +1805,7 @@
   .bottomSheet,
   .completionToast,
   .detailScreen,
-  .receiveProgressTrack span,
-  .receiveSpinner {
+  .loadingSpinner {
     animation: none;
   }
 }

@@ -1,6 +1,10 @@
 import Image from "next/image";
 import signingStartImage from "../../../references/to-be/start.png";
+import myDataImage from "../../../references/to-be/image-mydata.png";
+import { AnimatedProgress } from "./animated-progress";
 import { FlowScreen } from "./flow-navigation";
+import { LoadingSpinner } from "./loading-spinner";
+import { MobileStatusBar } from "./mobile-status-bar";
 import styles from "./loan-prototype.module.css";
 
 type PublicDataEntryScreenProps = {
@@ -107,12 +111,15 @@ export function CertificateSelectionSheet({
 }
 
 type PublicDataReceiveScreenProps = {
-  onBack: () => void;
+  onComplete: () => void;
 };
 
-export function PublicDataReceiveScreen({ onBack }: PublicDataReceiveScreenProps) {
+export function PublicDataReceiveScreen({
+  onComplete,
+}: PublicDataReceiveScreenProps) {
   return (
-    <FlowScreen onBack={onBack} backLabel="전자서명으로 돌아가기">
+    <div className={`${styles.appScreen} ${styles.flowScreen}`}>
+      <MobileStatusBar />
       <div className={styles.receiveContent}>
         <h2>
           기관에서 서류를
@@ -120,25 +127,46 @@ export function PublicDataReceiveScreen({ onBack }: PublicDataReceiveScreenProps
         </h2>
         <p>지금 앱을 끄면 서류 수신이 중단돼요.</p>
 
-        <div className={styles.receiveProgressLabel}>
-          <span>진행중</span>
-          <strong>36%</strong>
-        </div>
-        <div className={styles.receiveProgressTrack}>
-          <span />
-        </div>
+        <AnimatedProgress
+          durationMs={3600}
+          label="공공마이데이터 서류 수신 진행률"
+          onComplete={onComplete}
+        />
 
-        <div className={styles.receiveGraphic} aria-hidden="true">
-          <span className={styles.increaseBadge}>↑<b>₩</b></span>
-          <strong>+</strong>
-          <span className={styles.decreaseBadge}>%</span>
-        </div>
-        <p className={styles.receiveBenefit}>
-          기관에서 가져온 서류로 고객님의
-          <br /><strong>한도는 늘리고, 금리는 낮출 수 있어요.</strong>
-        </p>
-        <span className={styles.receiveSpinner} aria-label="서류 수신 중" />
+        <Image
+          className={styles.myDataIllustration}
+          src={myDataImage}
+          alt="기관 서류로 한도는 늘리고 금리는 낮출 수 있어요"
+        />
+        <LoadingSpinner label="서류 수신 중" className={styles.processingSpinner} />
       </div>
-    </FlowScreen>
+      <div className={styles.homeIndicator} aria-hidden="true" />
+    </div>
+  );
+}
+
+export function ScreeningScreen() {
+  return (
+    <div className={`${styles.appScreen} ${styles.flowScreen}`}>
+      <MobileStatusBar />
+      <div className={`${styles.receiveContent} ${styles.screeningContent}`}>
+        <h2>
+          김롯데님을 위한
+          <br />최대한도와 금리를
+          <br />계산하고 있어요
+        </h2>
+        <p>지금 앱을 끄면 처음부터 진행해야 돼요.</p>
+
+        <AnimatedProgress durationMs={5200} label="대출 심사 진행률" />
+
+        <div className={styles.limitGauge} aria-hidden="true" />
+        <p className={styles.screeningNotice}>
+          한도조회만으로는 신용점수에
+          <br />영향을 주지 않아요.
+        </p>
+        <LoadingSpinner label="대출 심사 중" className={styles.processingSpinner} />
+      </div>
+      <div className={styles.homeIndicator} aria-hidden="true" />
+    </div>
   );
 }

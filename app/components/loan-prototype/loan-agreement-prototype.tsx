@@ -27,6 +27,7 @@ import {
   CertificateSelectionSheet,
   PublicDataEntryScreen,
   PublicDataReceiveScreen,
+  ScreeningScreen,
 } from "./public-data-screens";
 import {
   PrototypeFlowGraph,
@@ -346,9 +347,11 @@ export function LoanAgreementPrototype() {
       case "public-data-receive":
         return (
           <PublicDataReceiveScreen
-            onBack={() => navigateToStep("electronic-signature")}
+            onComplete={() => navigateToStep("screening")}
           />
         );
+      case "screening":
+        return <ScreeningScreen />;
       default:
         return (
           <RequiredAgreementScreen
@@ -438,8 +441,12 @@ export function LoanAgreementPrototype() {
               <b>11</b>
               <span>공공마이데이터 서류 수신</span>
             </li>
+            <li>
+              <b>12</b>
+              <span>최대한도와 금리 심사</span>
+            </li>
           </ol>
-          <p>이번 구현 범위는 공공마이데이터 수신 단계에서 종료됩니다.</p>
+          <p>이번 구현 범위는 심사중 단계에서 종료되며 결과 화면으로 이동하지 않습니다.</p>
         </div>
       </div>
     </section>

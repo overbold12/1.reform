@@ -478,18 +478,19 @@ prototype 내부에서 external-auth simulation screen을 사용한다.
 
 # 20. Loading Spinner
 
-로딩이 발생하는 화면에서는
-정적인 spinner 이미지를 사용하지 않는다.
+이 프로젝트의 모든 로딩 UI는 `references/to-be/Spinner Animation.png` 이미지를
+공통 `LoadingSpinner` 컴포넌트에서 사용한다. 다른 CSS 도형 spinner나 별도 로딩
+이미지를 새로 만들지 않는다.
 
-CSS animation 또는 component animation으로 구현한다.
+이미지 자체를 정적으로 표시하지 않고 wrapper에 회전 animation을 적용한다.
 
 예:
 
 ```css
-animation: spin 0.8s linear infinite;
+animation: loading-spinner-rotate 0.9s linear infinite;
 ```
 
-spinner는 너무 크거나 화려하게 만들지 않는다.
+spinner는 원본 크기인 40px을 기본으로 하며 너무 크거나 화려하게 만들지 않는다.
 
 원본 금융 앱처럼
 작고 명확한 processing feedback을 제공한다.

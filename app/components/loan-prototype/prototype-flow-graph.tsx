@@ -11,7 +11,8 @@ export type PrototypeStep =
   | "verification-code"
   | "public-data-entry"
   | "electronic-signature"
-  | "public-data-receive";
+  | "public-data-receive"
+  | "screening";
 
 export const prototypeStages: Array<{
   id: PrototypeStep;
@@ -29,6 +30,7 @@ export const prototypeStages: Array<{
   { id: "public-data-entry", number: "09", label: "마이데이터" },
   { id: "electronic-signature", number: "10", label: "전자서명" },
   { id: "public-data-receive", number: "11", label: "정보수신" },
+  { id: "screening", number: "12", label: "심사중" },
 ];
 
 type PrototypeFlowGraphProps = {
@@ -48,7 +50,7 @@ export function PrototypeFlowGraph({
     <nav className={styles.flowGraph} aria-label="프로토타입 단계 바로가기">
       <div className={styles.flowGraphHeader}>
         <span>CONSENT &amp; IDENTITY FLOW</span>
-        <p>단계를 선택하면 해당 화면으로 바로 이동합니다.</p>
+        <p>단계를 선택하면 해당 화면으로 바로 이동합니다. 12단계 이후는 진행되지 않습니다.</p>
       </div>
       <div className={styles.flowGraphScroll}>
         <ol className={styles.flowGraphList}>
