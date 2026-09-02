@@ -27,8 +27,12 @@ import {
   INITIAL_CUSTOMER_INFO,
   type CustomerInfoValues,
 } from "./customer-info-screen";
+import { ApplicationReviewScreen } from "./application-review-screen";
 import { LpointValidationSheet } from "./lpoint-validation-sheet";
-import { LoanConditionScreen } from "./loan-condition-screen";
+import {
+  LoanConditionScreen,
+  type RepaymentMethod,
+} from "./loan-condition-screen";
 import { LoanKeyTermsScreen } from "./loan-key-terms-screen";
 import { LoanResultScreen } from "./loan-result-screen";
 import {
@@ -85,6 +89,8 @@ export function LoanAgreementPrototype() {
   const [verificationCode, setVerificationCode] = useState("");
   const [loanAmountManwon, setLoanAmountManwon] = useState(3000);
   const [loanPeriodMonths, setLoanPeriodMonths] = useState(72);
+  const [repaymentMethod, setRepaymentMethod] =
+    useState<RepaymentMethod>("equal-payment");
   const [prepaymentBenefit, setPrepaymentBenefit] =
     useState<PrepaymentBenefit | null>(null);
   const [selectedBank, setSelectedBank] = useState<BankId | null>(null);
@@ -311,6 +317,7 @@ export function LoanAgreementPrototype() {
     setVerificationCode("");
     setLoanAmountManwon(3000);
     setLoanPeriodMonths(72);
+    setRepaymentMethod("equal-payment");
     setPrepaymentBenefit(null);
     setSelectedBank(null);
     setAccountNumber("");
@@ -457,6 +464,7 @@ export function LoanAgreementPrototype() {
           <LoanConditionScreen
             amountManwon={loanAmountManwon}
             periodMonths={loanPeriodMonths}
+            repaymentMethod={repaymentMethod}
             onAmountChange={(amount) => {
               setLoanAmountManwon(amount);
               if (amount < 1000 && loanPeriodMonths > 60) {
@@ -464,6 +472,7 @@ export function LoanAgreementPrototype() {
               }
             }}
             onPeriodChange={setLoanPeriodMonths}
+            onRepaymentMethodChange={setRepaymentMethod}
             onBack={() => navigateToStep("loan-result")}
             onNext={() => navigateToStep("prepayment-benefit")}
           />
@@ -614,6 +623,24 @@ export function LoanAgreementPrototype() {
               setStep("customer-info");
               requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
             }}
+            onNext={() => navigateToStep("application-review")}
+          />
+        );
+      case "application-review":
+        return (
+          <ApplicationReviewScreen
+            customerName={customerName}
+            amountManwon={loanAmountManwon}
+            periodMonths={loanPeriodMonths}
+            bank={selectedBank}
+            accountNumber={accountNumber}
+            repaymentMethod={repaymentMethod}
+            prepaymentBenefit={prepaymentBenefit}
+            invoiceDestination={invoiceDestination}
+            email={emailAddress}
+            agreementType={agreementType}
+            onAgreementTypeChange={setAgreementType}
+            onBack={() => navigateToStep("loan-key-terms")}
           />
         );
       default:
@@ -758,7 +785,11 @@ export function LoanAgreementPrototype() {
             <b>28</b>
             <span>대출 주요 내용 확인</span>
           </div>
-          <p>대출 주요 내용의 모든 질문에 답변하는 단계까지 체험할 수 있으며, 마지막 CTA에서는 더 진행되지 않습니다.</p>
+          <div className={styles.demoGuideAddedStep}>
+            <b>29</b>
+            <span>신청정보 확인</span>
+          </div>
+          <p>입력한 대출 신청정보를 최종 확인하는 단계까지 체험할 수 있으며, 마지막 CTA에서는 더 진행되지 않습니다.</p>
         </div>
       </div>
     </section>

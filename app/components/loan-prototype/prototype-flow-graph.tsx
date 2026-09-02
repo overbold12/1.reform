@@ -31,7 +31,8 @@ export type PrototypeStep =
   | "office-phone"
   | "email-address"
   | "customer-info"
-  | "loan-key-terms";
+  | "loan-key-terms"
+  | "application-review";
 
 export const prototypeStages: Array<{
   id: PrototypeStep;
@@ -66,6 +67,7 @@ export const prototypeStages: Array<{
   { id: "email-address", number: "26", label: "이메일주소" },
   { id: "customer-info", number: "27", label: "고객 정보 확인" },
   { id: "loan-key-terms", number: "28", label: "대출주요내용확인" },
+  { id: "application-review", number: "29", label: "신청정보확인" },
 ];
 
 type PrototypeFlowGraphProps = {
@@ -103,7 +105,7 @@ export function PrototypeFlowGraph({
     <nav className={styles.flowGraph} aria-label="프로토타입 단계 바로가기">
       <div className={styles.flowGraphHeader}>
         <span>CONSENT &amp; IDENTITY FLOW</span>
-        <p>단계를 선택하면 해당 화면으로 바로 이동합니다. 28단계까지 직접 확인할 수 있습니다.</p>
+        <p>단계를 선택하면 해당 화면으로 바로 이동합니다. 29단계까지 직접 확인할 수 있습니다.</p>
       </div>
       <div ref={graphScrollRef} className={styles.flowGraphScroll}>
         <ol

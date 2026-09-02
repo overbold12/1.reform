@@ -56,7 +56,7 @@ const INITIAL_ANSWERS = Object.fromEntries(
   KEY_TERM_QUESTIONS.map((question) => [question.id, null]),
 ) as Record<(typeof KEY_TERM_QUESTIONS)[number]["id"], Answer>;
 
-export function LoanKeyTermsScreen({ onBack }: { onBack: () => void }) {
+export function LoanKeyTermsScreen({ onBack, onNext }: { onBack: () => void; onNext: () => void }) {
   const [answers, setAnswers] = useState({ ...INITIAL_ANSWERS });
   const allYes = KEY_TERM_QUESTIONS.every((question) => answers[question.id] === "yes");
 
@@ -109,7 +109,7 @@ export function LoanKeyTermsScreen({ onBack }: { onBack: () => void }) {
           </div>
 
           {allYes ? (
-            <button type="button" className={styles.keyTermsNextButton} aria-label="다음 버튼은 프로토타입 UI로만 제공됩니다">
+            <button type="button" className={styles.keyTermsNextButton} onClick={onNext}>
               <span>다음</span>
               <span className={styles.paymentArrow} aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" /></svg></span>
             </button>

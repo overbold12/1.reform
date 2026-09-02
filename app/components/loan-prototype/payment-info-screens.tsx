@@ -43,6 +43,10 @@ const BANKS: Array<{ id: BankId; name: string; mark: string; color: string; word
   { id: "toss", name: "토스뱅크", mark: "◒", color: "#315efb" },
 ];
 
+export function getBankName(bankId: BankId | null) {
+  return BANKS.find((bank) => bank.id === bankId)?.name ?? "토스뱅크";
+}
+
 export function PaymentScreenShell({ children, onClose }: { children: ReactNode; onClose: () => void }) {
   return (
     <div className={`${styles.appScreen} ${styles.paymentScreen}`}>

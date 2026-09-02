@@ -21,8 +21,10 @@ export type RepaymentMethod = "equal-payment" | "equal-principal";
 type LoanConditionScreenProps = {
   amountManwon: number;
   periodMonths: number;
+  repaymentMethod: RepaymentMethod;
   onAmountChange: (amount: number) => void;
   onPeriodChange: (period: number) => void;
+  onRepaymentMethodChange: (method: RepaymentMethod) => void;
   onBack: () => void;
   onNext: () => void;
 };
@@ -47,16 +49,16 @@ const REPAYMENT_OPTIONS: Array<{
 export function LoanConditionScreen({
   amountManwon,
   periodMonths,
+  repaymentMethod,
   onAmountChange,
   onPeriodChange,
+  onRepaymentMethodChange,
   onBack,
   onNext,
 }: LoanConditionScreenProps) {
   const [amountInput, setAmountInput] = useState(String(amountManwon));
   const [amountError, setAmountError] = useState<string | null>(null);
   const [isPeriodOpen, setIsPeriodOpen] = useState(false);
-  const [repaymentMethod, setRepaymentMethod] =
-    useState<RepaymentMethod>("equal-payment");
 
   const availablePeriods = useMemo(
     () => getAvailablePeriods(amountManwon),
@@ -198,7 +200,7 @@ export function LoanConditionScreen({
                     key={option.id}
                     className={selected ? styles.repaymentSelected : ""}
                     aria-pressed={selected}
-                    onClick={() => setRepaymentMethod(option.id)}
+                    onClick={() => onRepaymentMethodChange(option.id)}
                   >
                     <span className={styles.repaymentRadio} aria-hidden="true">
                       ✓
