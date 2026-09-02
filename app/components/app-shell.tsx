@@ -15,12 +15,12 @@ const pageInformation: Record<
 > = {
   "affiliate-credit": {
     eyebrow: "PROTOTYPE WORKSPACE",
-    title: "to-be(제휴대출-신용)",
+    title: "To-be(제휴대출-신용)",
     description: "제휴 신용대출 신청 프로세스의 목표 화면을 확인할 수 있어요.",
   },
   "credit-consent": {
     eyebrow: "PROTOTYPE WORKSPACE",
-    title: "to-be(신용정보조회동의)",
+    title: "To-be(신용정보조회동의)",
     description: "신용정보조회동의 프로토타입을 구성할 영역입니다.",
   },
   comparison: {
@@ -51,7 +51,7 @@ export function AppShell() {
               <ToBePanel />
             ) : activeMenu === "credit-consent" ? (
               <EmptyWorkspace
-                label="to-be(신용정보조회동의)"
+                label="To-be(신용정보조회동의)"
                 description="아직 구현된 화면이 없습니다."
               />
             ) : (
