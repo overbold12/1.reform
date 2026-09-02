@@ -17,6 +17,7 @@ import loanPurposeSheet from "../../../references/to-be/바텀시트(대출목�
 import beneficialOwnerSheet from "../../../references/to-be/바텀시트(실소유자).png";
 import beneficialOwnerHelpSheet from "../../../references/to-be/바텀시트(실소유자 설명).png";
 import guardianSheet from "../../../references/to-be/바텀시트(피후견인).png";
+import guardianProgressSheet from "../../../references/to-be/바텀시트(피후견인 진행).png";
 import { MobileStatusBar } from "./mobile-status-bar";
 import styles from "./loan-prototype.module.css";
 
@@ -57,7 +58,7 @@ type ChoiceSheetKey =
   | "beneficialOwner"
   | "guardianStatus";
 
-type ActiveSheet = ChoiceSheetKey | "payday" | "beneficialOwnerHelp" | null;
+type ActiveSheet = ChoiceSheetKey | "payday" | "beneficialOwnerHelp" | "guardianProgress" | null;
 
 const SHEET_CONFIG: Record<ChoiceSheetKey, { image: StaticImageData; options: string[]; label: string }> = {
   annualIncome: {
@@ -150,16 +151,18 @@ function ChoiceImageSheet({
   sheetKey,
   value,
   onSelect,
+  onClose,
 }: {
   sheetKey: ChoiceSheetKey;
   value: string;
   onSelect: (value: string) => void;
+  onClose: () => void;
 }) {
   const config = SHEET_CONFIG[sheetKey];
 
   return (
     <div className={styles.customerSheetLayer}>
-      <div className={styles.customerSheetDim} aria-hidden="true" />
+      <button type="button" className={styles.customerSheetDim} onClick={onClose} aria-label="바텀시트 닫기" />
       <div className={styles.customerChoiceSheet} role="dialog" aria-modal="true" aria-label={`${config.label} 선택`}>
         <Image src={config.image} alt={`${config.label} 선택 항목`} priority />
         <div className={styles.customerChoiceHitArea}>
@@ -183,10 +186,21 @@ function ChoiceImageSheet({
 function BeneficialOwnerHelpSheet({ onClose }: { onClose: () => void }) {
   return (
     <div className={styles.customerSheetLayer}>
-      <div className={styles.customerSheetDim} aria-hidden="true" />
+      <button type="button" className={styles.customerSheetDim} onClick={onClose} aria-label="실소유자 설명 닫기" />
       <div className={`${styles.customerChoiceSheet} ${styles.customerHelpSheet}`} role="dialog" aria-modal="true" aria-label="실소유자 설명">
         <Image src={beneficialOwnerHelpSheet} alt="실소유자 설명" priority />
         <button type="button" onClick={onClose} aria-label="실소유자 설명 확인" />
+      </div>
+    </div>
+  );
+}
+
+function GuardianProgressSheet({ onClose }: { onClose: () => void }) {
+  return (
+    <div className={styles.customerSheetLayer}>
+      <button type="button" className={styles.customerSheetDim} onClick={onClose} aria-label="피후견인 안내 닫기" />
+      <div className={`${styles.customerChoiceSheet} ${styles.customerGuardianProgressSheet}`} role="dialog" aria-modal="true" aria-label="피후견인 대출 진행 안내">
+        <Image src={guardianProgressSheet} alt="피성년·피한정 후견인은 서류 확인 후 대출 진행이 가능합니다." priority />
       </div>
     </div>
   );
@@ -404,10 +418,9 @@ function PaydayDatePicker({
 
   return (
     <div className={styles.customerSheetLayer}>
-      <div className={styles.customerSheetDim} aria-hidden="true" />
+      <button type="button" className={styles.customerSheetDim} onClick={onCancel} aria-label="급여일 선택 닫기" />
       <div className={styles.paydayPickerSheet} role="dialog" aria-modal="true" aria-label="급여일 선택">
         <div className={styles.paydayPickerHeader}>
-          <button type="button" onClick={onCancel}>취소</button>
           <div>
             <strong>급여일을 선택해주세요</strong>
             <span>매월 {selectedDay}일</span>
@@ -470,6 +483,7 @@ export function CustomerInfoScreen({
   onBack: () => void;
 }) {
   const [activeSheet, setActiveSheet] = useState<ActiveSheet>(null);
+  const allInformationEntered = Object.values(values).every((value) => value.trim().length > 0);
   const rows: Array<{ key: ChoiceSheetKey; label: string; required?: boolean; help?: boolean }> = [
     { key: "annualIncome", label: "연간 소득" },
     { key: "debt", label: "부채" },
@@ -477,7 +491,7 @@ export function CustomerInfoScreen({
     { key: "fixedExpense", label: "고정 지출" },
     { key: "incomeType", label: "소득 유형" },
     { key: "vulnerableCustomer", label: "취약금융소비자 확인" },
-    { key: "loanPurpose", label: "대출 목적" },
+    { key: "loanPurpose", label: "대출 목적", required: true },
     { key: "beneficialOwner", label: "실소유자 여부", required: true, help: true },
     { key: "guardianStatus", label: "피성년·피한정 후견인 여부", required: true },
   ];
@@ -497,7 +511,7 @@ export function CustomerInfoScreen({
       <main className={styles.customerInfoPanel}>
         <div className={styles.customerInfoScroll}>
           <h1>정보를 확인해주세요</h1>
-          <p>변동내역이 있을 경우 항목을 다시 고를 수 있어요.</p>
+          <p>선택한 정보들은 대출상품이 고객님의 상황에 적합한지 여부를 확인하기 위해 활용해요.</p>
           <p>변동내역이 있을 경우 항목을 다시 고를 수 있어요.</p>
 
           <div className={styles.customerInfoRows}>
@@ -512,17 +526,31 @@ export function CustomerInfoScreen({
                 key={row.key}
                 label={row.label}
                 value={values[row.key]}
-                required={row.required}
+                required={Boolean(row.required && !values[row.key])}
                 onClick={() => setActiveSheet(row.key)}
                 onHelp={row.help ? () => setActiveSheet("beneficialOwnerHelp") : undefined}
               />
             ))}
           </div>
+
+          {allInformationEntered ? (
+            <button
+              type="button"
+              className={styles.customerInfoNextButton}
+              onClick={() => {
+                if (values.guardianStatus === "네") setActiveSheet("guardianProgress");
+              }}
+              aria-label={values.guardianStatus === "네" ? "피후견인 대출 진행 안내 확인" : "다음 버튼은 프로토타입 UI로만 제공됩니다"}
+            >
+              <span>다음</span>
+              <span className={styles.paymentArrow} aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" /></svg></span>
+            </button>
+          ) : null}
         </div>
       </main>
       <div className={styles.homeIndicator} aria-hidden="true" />
 
-      {activeSheet && activeSheet !== "beneficialOwnerHelp" && activeSheet !== "payday" ? (
+      {activeSheet && activeSheet !== "beneficialOwnerHelp" && activeSheet !== "payday" && activeSheet !== "guardianProgress" ? (
         <ChoiceImageSheet
           sheetKey={activeSheet}
           value={values[activeSheet]}
@@ -530,6 +558,7 @@ export function CustomerInfoScreen({
             onChange(activeSheet, value);
             setActiveSheet(null);
           }}
+          onClose={() => setActiveSheet(null)}
         />
       ) : null}
       {activeSheet === "payday" ? (
@@ -543,6 +572,7 @@ export function CustomerInfoScreen({
         />
       ) : null}
       {activeSheet === "beneficialOwnerHelp" ? <BeneficialOwnerHelpSheet onClose={() => setActiveSheet(null)} /> : null}
+      {activeSheet === "guardianProgress" ? <GuardianProgressSheet onClose={() => setActiveSheet(null)} /> : null}
     </div>
   );
 }

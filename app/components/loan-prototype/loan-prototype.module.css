@@ -3693,7 +3693,12 @@ button.customerInfoRow:active {
 .customerSheetDim {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
   background: rgba(0, 0, 0, 0.45);
+  padding: 0;
+  cursor: pointer;
   animation: dim-in 190ms ease-out;
 }
 
@@ -3780,6 +3785,18 @@ button.customerInfoRow:active {
   transform: scale(0.99);
 }
 
+.customerGuardianProgressSheet {
+  right: 0;
+  left: 0;
+  width: 375px;
+}
+
+.customerGuardianProgressSheet > img {
+  display: block;
+  width: 375px;
+  height: auto;
+}
+
 .paydayPickerSheet {
   position: absolute;
   right: 0;
@@ -3800,27 +3817,6 @@ button.customerInfoRow:active {
   min-height: 55px;
   align-items: flex-start;
   justify-content: center;
-}
-
-.paydayPickerHeader > button {
-  position: absolute;
-  top: -5px;
-  left: -8px;
-  min-width: 50px;
-  height: 36px;
-  border: 0;
-  background: transparent;
-  padding: 0;
-  color: #73777e;
-  cursor: pointer;
-  font: inherit;
-  font-size: 14px;
-  transition: opacity 100ms ease, transform 100ms ease;
-}
-
-.paydayPickerHeader > button:active {
-  opacity: 0.58;
-  transform: scale(0.96);
 }
 
 .paydayPickerHeader > div {
@@ -3955,6 +3951,28 @@ button.customerInfoRow:active {
 .paydayPickerConfirm:active {
   background: #d91f25;
   transform: scale(0.985);
+}
+
+.customerInfoNextButton {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  gap: 8px;
+  margin: 17px 0 20px auto;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #151619;
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 720;
+  animation: action-in 180ms ease-out;
+  transition: transform 100ms ease;
+}
+
+.customerInfoNextButton:active {
+  transform: scale(0.96);
 }
 
 .visuallyHidden {
