@@ -22,8 +22,11 @@ import { LoanResultScreen } from "./loan-result-screen";
 import {
   AccountNumberScreen,
   BankSelectionScreen,
+  InvoiceSelectionScreen,
+  MicroDepositScreen,
   PrepaymentBenefitScreen,
   type BankId,
+  type InvoiceDestination,
   type PrepaymentBenefit,
 } from "./payment-info-screens";
 import {
@@ -75,6 +78,9 @@ export function LoanAgreementPrototype() {
   const [selectedBank, setSelectedBank] = useState<BankId | null>(null);
   const [accountNumber, setAccountNumber] = useState("");
   const [automaticTransferAgreed, setAutomaticTransferAgreed] = useState(false);
+  const [microDepositName, setMicroDepositName] = useState("");
+  const [invoiceDestination, setInvoiceDestination] =
+    useState<InvoiceDestination | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const genderInputRef = useRef<HTMLInputElement>(null);
   const privateInputRef = useRef<HTMLInputElement>(null);
@@ -147,6 +153,8 @@ export function LoanAgreementPrototype() {
     setShowLpointValidation(false);
     if (nextStep === "bank-selection") setSelectedBank(null);
     if (nextStep === "account-number") setAutomaticTransferAgreed(false);
+    if (nextStep === "micro-deposit") setMicroDepositName("");
+    if (nextStep === "invoice-selection") setInvoiceDestination(null);
     setStep(nextStep);
 
     if (nextStep === "public-data-entry") {
@@ -279,6 +287,8 @@ export function LoanAgreementPrototype() {
     setSelectedBank(null);
     setAccountNumber("");
     setAutomaticTransferAgreed(false);
+    setMicroDepositName("");
+    setInvoiceDestination(null);
     requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
   }
 
@@ -433,6 +443,24 @@ export function LoanAgreementPrototype() {
             onAccountNumberChange={setAccountNumber}
             onAgreementChange={setAutomaticTransferAgreed}
             onBack={() => navigateToStep("bank-selection")}
+            onNext={() => navigateToStep("micro-deposit")}
+          />
+        );
+      case "micro-deposit":
+        return (
+          <MicroDepositScreen
+            value={microDepositName}
+            onValueChange={setMicroDepositName}
+            onBack={() => navigateToStep("account-number")}
+            onNext={() => navigateToStep("invoice-selection")}
+          />
+        );
+      case "invoice-selection":
+        return (
+          <InvoiceSelectionScreen
+            selectedDestination={invoiceDestination}
+            onDestinationChange={setInvoiceDestination}
+            onBack={() => navigateToStep("micro-deposit")}
           />
         );
       default:
@@ -549,7 +577,15 @@ export function LoanAgreementPrototype() {
             <b>17</b>
             <span>계좌번호 입력 및 약관 동의</span>
           </div>
-          <p>결제정보 입력은 계좌번호 단계까지 체험할 수 있으며, 마지막 CTA에서는 더 진행되지 않습니다.</p>
+          <div className={styles.demoGuideAddedStep}>
+            <b>18</b>
+            <span>1원인증 적요 입력</span>
+          </div>
+          <div className={styles.demoGuideAddedStep}>
+            <b>19</b>
+            <span>청구서 수령지 선택</span>
+          </div>
+          <p>결제정보 입력은 청구서 선택 단계까지 체험할 수 있으며, 마지막 CTA에서는 더 진행되지 않습니다.</p>
         </div>
       </div>
     </section>

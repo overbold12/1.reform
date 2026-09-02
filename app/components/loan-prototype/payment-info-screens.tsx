@@ -2,11 +2,13 @@
 
 import Image from "next/image";
 import { type ReactNode } from "react";
+import depositorGuideImage from "../../../references/to-be/입금자명 확인.png";
 import stopImage from "../../../references/to-be/Stop-4.png";
 import { MobileStatusBar } from "./mobile-status-bar";
 import styles from "./loan-prototype.module.css";
 
 export type PrepaymentBenefit = "interest" | "late-fee";
+export type InvoiceDestination = "home" | "office" | "none";
 
 export type BankId =
   | "kdb" | "ibk" | "kb" | "shinhan" | "keb" | "suhyup"
@@ -141,12 +143,13 @@ export function BankSelectionScreen({ selectedBank, onBankChange, onBack, onNext
   );
 }
 
-export function AccountNumberScreen({ accountNumber, agreed, onAccountNumberChange, onAgreementChange, onBack }: {
+export function AccountNumberScreen({ accountNumber, agreed, onAccountNumberChange, onAgreementChange, onBack, onNext }: {
   accountNumber: string;
   agreed: boolean;
   onAccountNumberChange: (value: string) => void;
   onAgreementChange: (agreed: boolean) => void;
   onBack: () => void;
+  onNext: () => void;
 }) {
   const canShowNext = accountNumber.length > 0 && agreed;
 
@@ -166,8 +169,111 @@ export function AccountNumberScreen({ accountNumber, agreed, onAccountNumberChan
         <Image className={styles.accountStopImage} src={stopImage}
           alt="로또 피해 및 코인 손실 보상, 검사 및 금감원 재산 보호 등을 주장하는 대출 전화는 보이스피싱입니다." priority />
         {canShowNext ? (
-          <button type="button" className={styles.paymentNextButton}
-            aria-label="다음 단계는 프로토타입 범위에 포함되지 않습니다">
+          <button type="button" className={styles.paymentNextButton} onClick={onNext}>
+            <span>다음</span><span className={styles.paymentArrow} aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" /></svg></span>
+          </button>
+        ) : null}
+      </section>
+    </PaymentScreenShell>
+  );
+}
+
+export function MicroDepositScreen({ value, onValueChange, onBack, onNext }: {
+  value: string;
+  onValueChange: (value: string) => void;
+  onBack: () => void;
+  onNext: () => void;
+}) {
+  const canShowNext = Array.from(value).length === 4;
+
+  return (
+    <PaymentScreenShell onClose={onBack}>
+      <section className={styles.microDepositContent}>
+        <label htmlFor="micro-deposit-name">
+          1원이 입금된 입금자명 4자리를 아래에 입력해<br />주세요.
+        </label>
+        <input
+          id="micro-deposit-name"
+          type="text"
+          autoComplete="off"
+          value={value}
+          maxLength={4}
+          onChange={(event) => onValueChange(Array.from(event.target.value).slice(0, 4).join(""))}
+        />
+        <p className={styles.microDepositTimer}>
+          <span aria-hidden="true">i</span>
+          유효 시간은 15분이에요.
+        </p>
+
+        {canShowNext ? (
+          <button type="button" className={styles.paymentNextButton} onClick={onNext}>
+            <span>다음</span><span className={styles.paymentArrow} aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" /></svg></span>
+          </button>
+        ) : null}
+
+        <Image
+          className={styles.depositorGuideImage}
+          src={depositorGuideImage}
+          alt="입금자명 확인 예시: 입금자명 네 자리와 입금 금액 1원"
+          priority
+        />
+
+        <button type="button" className={styles.depositHelpButton} aria-label="도움말은 프로토타입 UI로만 제공됩니다">
+          혹시 도움이 필요하신가요?
+          <svg viewBox="0 0 12 20" aria-hidden="true"><path d="m2 2 7 8-7 8" /></svg>
+        </button>
+      </section>
+    </PaymentScreenShell>
+  );
+}
+
+const INVOICE_DESTINATIONS: Array<{ id: InvoiceDestination; label: string }> = [
+  { id: "home", label: "자택" },
+  { id: "office", label: "직장" },
+  { id: "none", label: "받지 않음" },
+];
+
+export function InvoiceSelectionScreen({ selectedDestination, onDestinationChange, onBack }: {
+  selectedDestination: InvoiceDestination | null;
+  onDestinationChange: (destination: InvoiceDestination) => void;
+  onBack: () => void;
+}) {
+  return (
+    <PaymentScreenShell onClose={onBack}>
+      <section className={styles.invoiceContent}>
+        <h1>청구서는 어디로 받으시겠어요?</h1>
+        <p>반드시 하나를 선택해주세요</p>
+
+        <div className={styles.invoiceOptions} role="radiogroup" aria-label="청구서 수령지 선택">
+          {INVOICE_DESTINATIONS.map((destination) => {
+            const selected = selectedDestination === destination.id;
+            return (
+              <button
+                type="button"
+                key={destination.id}
+                role="radio"
+                aria-checked={selected}
+                className={selected ? styles.invoiceSelected : ""}
+                onClick={() => onDestinationChange(destination.id)}
+              >
+                <span aria-hidden="true">✓</span>
+                <strong>{destination.label}</strong>
+              </button>
+            );
+          })}
+        </div>
+
+        <p className={styles.invoiceNotice}>
+          <span aria-hidden="true">i</span>
+          연체시에는 자택 또는 법정주소지로 우편물이 발송<br />될 수 있습니다.
+        </p>
+
+        {selectedDestination ? (
+          <button
+            type="button"
+            className={styles.paymentNextButton}
+            aria-label="다음 단계는 프로토타입 범위에 포함되지 않습니다"
+          >
             <span>다음</span><span className={styles.paymentArrow} aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" /></svg></span>
           </button>
         ) : null}

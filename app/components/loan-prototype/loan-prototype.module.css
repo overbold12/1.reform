@@ -3033,6 +3033,215 @@
   animation: action-in 180ms ease-out;
 }
 
+.microDepositContent,
+.invoiceContent {
+  position: relative;
+  height: 100%;
+  box-sizing: border-box;
+  animation: detail-in 220ms ease-out;
+}
+
+.microDepositContent {
+  padding: 84px 33px 34px;
+}
+
+.microDepositContent > label {
+  display: block;
+  color: #74777d;
+  font-size: 15px;
+  letter-spacing: -0.04em;
+  line-height: 1.6;
+}
+
+.microDepositContent > input {
+  width: 100%;
+  height: 50px;
+  box-sizing: border-box;
+  border: 0;
+  border-bottom: 1px solid #63666b;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  color: #0a0b0d;
+  caret-color: #ec272e;
+  font: inherit;
+  font-size: 28px;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  outline: none;
+  transition: border-color 150ms ease;
+}
+
+.microDepositContent > input:focus {
+  border-bottom-color: #25282d;
+}
+
+.microDepositTimer,
+.invoiceNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  color: #6e91c8;
+  font-size: 12px;
+  letter-spacing: -0.025em;
+  line-height: 1.55;
+}
+
+.microDepositTimer {
+  margin: 11px 0 0;
+}
+
+.microDepositTimer > span,
+.invoiceNotice > span {
+  display: grid;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  place-items: center;
+  border-radius: 50%;
+  background: #a8c0e6;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.microDepositContent > .paymentNextButton {
+  position: absolute;
+  top: 217px;
+  right: 24px;
+  animation: action-in 180ms ease-out;
+}
+
+.depositorGuideImage {
+  position: absolute;
+  top: 306px;
+  left: 33px;
+  display: block;
+  width: 311px;
+  height: auto;
+}
+
+.depositHelpButton {
+  position: absolute;
+  top: 541px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  padding: 8px 10px;
+  color: #2c57b2;
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.depositHelpButton:active {
+  opacity: 0.72;
+}
+
+.depositHelpButton svg {
+  width: 7px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.invoiceContent {
+  padding: 43px 32px 34px;
+}
+
+.invoiceContent h1 {
+  margin: 0;
+  color: #111215;
+  font-size: 21px;
+  font-weight: 730;
+  letter-spacing: -0.055em;
+}
+
+.invoiceContent > p:first-of-type {
+  margin: 26px 0 0;
+  color: #1f2023;
+  font-size: 15px;
+  letter-spacing: -0.04em;
+}
+
+.invoiceOptions {
+  display: flex;
+  margin-top: 17px;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.invoiceOptions button {
+  display: grid;
+  width: 100%;
+  min-height: 28px;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #17181b;
+  cursor: pointer;
+  text-align: left;
+  transition: color 150ms ease, transform 100ms ease;
+}
+
+.invoiceOptions button:active {
+  transform: scale(0.985);
+}
+
+.invoiceOptions button > span {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  box-sizing: border-box;
+  place-items: center;
+  border: 1px solid #d4d7dc;
+  border-radius: 50%;
+  color: #c7cbd1;
+  font-size: 13px;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
+}
+
+.invoiceOptions strong {
+  font-size: 16px;
+  font-weight: 520;
+  letter-spacing: -0.045em;
+}
+
+.invoiceOptions .invoiceSelected {
+  color: #e9272e;
+}
+
+.invoiceSelected > span {
+  border-color: #ed272d;
+  background: #ed272d;
+  color: #ffffff;
+  transform: scale(1.03);
+}
+
+.invoiceNotice {
+  margin: 13px 0 0;
+}
+
+.invoiceContent > .paymentNextButton {
+  position: absolute;
+  top: 350px;
+  right: 24px;
+  animation: action-in 180ms ease-out;
+}
+
 .visuallyHidden {
   position: absolute;
   width: 1px;
