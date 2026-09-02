@@ -2429,7 +2429,7 @@
   place-items: center;
   border: 1px solid #d5d8dd;
   border-radius: 50%;
-  color: #ffffff;
+  color: #c7cbd1;
   font-size: 12px;
   font-weight: 800;
   transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
@@ -2460,6 +2460,7 @@
 .repaymentSelected .repaymentRadio {
   border-color: #ee292f;
   background: #ee292f;
+  color: #ffffff;
   transform: scale(1.03);
 }
 
@@ -2990,7 +2991,7 @@
   place-items: center;
   border: 1px solid #d4d7dc;
   border-radius: 50%;
-  color: transparent;
+  color: #c7cbd1;
   font-size: 13px;
   transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
@@ -3019,10 +3020,10 @@
 
 .accountStopImage {
   display: block;
-  width: 343px;
+  width: 100%;
   height: auto;
   margin-top: -6px;
-  margin-left: -17px;
+  margin-left: 0;
 }
 
 .accountContent > .paymentNextButton {

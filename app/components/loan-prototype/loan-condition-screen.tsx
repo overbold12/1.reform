@@ -201,7 +201,7 @@ export function LoanConditionScreen({
                     onClick={() => setRepaymentMethod(option.id)}
                   >
                     <span className={styles.repaymentRadio} aria-hidden="true">
-                      {selected ? "✓" : ""}
+                      ✓
                     </span>
                     <span>
                       <strong>{option.label}</strong>
