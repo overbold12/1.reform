@@ -3683,10 +3683,6 @@ button.customerInfoRow:active {
   stroke-width: 1.7;
 }
 
-.customerInfoStaticRow {
-  cursor: default;
-}
-
 .customerSheetLayer {
   position: absolute;
   z-index: 30;
@@ -3782,6 +3778,183 @@ button.customerInfoRow:active {
 .customerHelpSheet > button:active {
   background: rgba(255, 255, 255, 0.1);
   transform: scale(0.99);
+}
+
+.paydayPickerSheet {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 474px;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-radius: 18px 18px 0 0;
+  background: #ffffff;
+  padding: 27px 32px 28px;
+  animation: sheet-up 260ms ease-out;
+}
+
+.paydayPickerHeader {
+  position: relative;
+  display: flex;
+  min-height: 55px;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.paydayPickerHeader > button {
+  position: absolute;
+  top: -5px;
+  left: -8px;
+  min-width: 50px;
+  height: 36px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #73777e;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  transition: opacity 100ms ease, transform 100ms ease;
+}
+
+.paydayPickerHeader > button:active {
+  opacity: 0.58;
+  transform: scale(0.96);
+}
+
+.paydayPickerHeader > div {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.paydayPickerHeader strong {
+  color: #15171a;
+  font-size: 18px;
+  font-weight: 730;
+  letter-spacing: -0.045em;
+}
+
+.paydayPickerHeader span {
+  color: #777b81;
+  font-size: 12px;
+  letter-spacing: -0.035em;
+}
+
+.paydayPickerWheel {
+  position: relative;
+  height: 260px;
+  margin-top: 5px;
+  overflow: hidden;
+}
+
+.paydaySelectionBand {
+  position: absolute;
+  z-index: 0;
+  top: 104px;
+  right: 30px;
+  left: 30px;
+  height: 52px;
+  border-top: 1px solid #e5e7ea;
+  border-bottom: 1px solid #e5e7ea;
+  border-radius: 8px;
+  background: #f7f8fa;
+}
+
+.paydayPickerScroll {
+  position: relative;
+  z-index: 1;
+  height: 260px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+  scrollbar-width: none;
+  cursor: grab;
+  touch-action: none;
+  -webkit-overflow-scrolling: touch;
+  mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 78%, transparent 100%);
+}
+
+.paydayPickerScroll.paydayPickerMoving {
+  cursor: grabbing;
+  scroll-behavior: auto;
+  scroll-snap-type: none;
+}
+
+.paydayPickerScroll::-webkit-scrollbar {
+  display: none;
+}
+
+.paydayPickerScroll > button {
+  display: grid;
+  width: 100%;
+  height: 52px;
+  box-sizing: border-box;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  padding: 0 26px 0 0;
+  color: #a1a5ab;
+  cursor: inherit;
+  font: inherit;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 520;
+  scroll-snap-align: center;
+  transition: color 100ms linear, font-size 100ms linear, opacity 100ms linear;
+  user-select: none;
+}
+
+.paydayPickerScroll > button:active {
+  cursor: inherit;
+}
+
+.paydayPickerScroll > .paydayPickerSelected {
+  color: #111317;
+  font-size: 23px;
+  font-weight: 750;
+}
+
+.paydayPickerSpacer {
+  height: 104px;
+  pointer-events: none;
+}
+
+.paydayPickerUnit {
+  position: absolute;
+  z-index: 2;
+  top: 120px;
+  left: calc(50% + 21px);
+  color: #111317;
+  font-size: 17px;
+  font-weight: 650;
+  pointer-events: none;
+}
+
+.paydayPickerConfirm {
+  display: grid;
+  width: 100%;
+  height: 57px;
+  margin-top: 19px;
+  place-items: center;
+  border: 0;
+  border-radius: 4px;
+  background: #ed252c;
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 720;
+  transition: background-color 120ms ease, transform 100ms ease;
+}
+
+.paydayPickerConfirm:active {
+  background: #d91f25;
+  transform: scale(0.985);
 }
 
 .visuallyHidden {

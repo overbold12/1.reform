@@ -1,7 +1,12 @@
 "use client";
 
 import Image, { type StaticImageData } from "next/image";
-import { useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import annualIncomeSheet from "../../../references/to-be/바텀시트(연간소득).png";
 import debtSheet from "../../../references/to-be/바텀시트(부채).png";
 import assetsSheet from "../../../references/to-be/바텀시트(보유자산).png";
@@ -52,7 +57,7 @@ type ChoiceSheetKey =
   | "beneficialOwner"
   | "guardianStatus";
 
-type ActiveSheet = ChoiceSheetKey | "beneficialOwnerHelp" | null;
+type ActiveSheet = ChoiceSheetKey | "payday" | "beneficialOwnerHelp" | null;
 
 const SHEET_CONFIG: Record<ChoiceSheetKey, { image: StaticImageData; options: string[]; label: string }> = {
   annualIncome: {
@@ -187,6 +192,274 @@ function BeneficialOwnerHelpSheet({ onClose }: { onClose: () => void }) {
   );
 }
 
+const DATE_PICKER_ITEM_HEIGHT = 52;
+
+function PaydayDatePicker({
+  value,
+  onCancel,
+  onConfirm,
+}: {
+  value: string;
+  onCancel: () => void;
+  onConfirm: (value: string) => void;
+}) {
+  const initialDay = Math.min(31, Math.max(1, Number.parseInt(value, 10) || 21));
+  const [selectedDay, setSelectedDay] = useState(initialDay);
+  const [isWheelMoving, setIsWheelMoving] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollFrameRef = useRef<number | null>(null);
+  const inertiaFrameRef = useRef<number | null>(null);
+  const settleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isWheelMovingRef = useRef(false);
+  const suppressClickRef = useRef(false);
+  const suppressClickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const dragRef = useRef({
+    active: false,
+    startY: 0,
+    startScrollTop: 0,
+    lastY: 0,
+    lastTime: 0,
+    velocity: 0,
+    moved: false,
+  });
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      scrollRef.current?.scrollTo({
+        top: (initialDay - 1) * DATE_PICKER_ITEM_HEIGHT,
+        behavior: "auto",
+      });
+    });
+
+    return () => {
+      cancelAnimationFrame(frame);
+      if (scrollFrameRef.current !== null) cancelAnimationFrame(scrollFrameRef.current);
+      if (inertiaFrameRef.current !== null) cancelAnimationFrame(inertiaFrameRef.current);
+      if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
+      if (suppressClickTimerRef.current) clearTimeout(suppressClickTimerRef.current);
+    };
+  }, [initialDay]);
+
+  function selectNearestDay() {
+    const picker = scrollRef.current;
+    if (!picker) return;
+
+    const day = Math.min(31, Math.max(1, Math.round(picker.scrollTop / DATE_PICKER_ITEM_HEIGHT) + 1));
+    setSelectedDay(day);
+  }
+
+  function handleScroll() {
+    if (scrollFrameRef.current !== null) cancelAnimationFrame(scrollFrameRef.current);
+    scrollFrameRef.current = requestAnimationFrame(selectNearestDay);
+
+    if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
+    if (isWheelMovingRef.current) return;
+    settleTimerRef.current = setTimeout(() => {
+      const picker = scrollRef.current;
+      if (!picker) return;
+      const day = Math.min(31, Math.max(1, Math.round(picker.scrollTop / DATE_PICKER_ITEM_HEIGHT) + 1));
+      picker.scrollTo({
+        top: (day - 1) * DATE_PICKER_ITEM_HEIGHT,
+        behavior: "smooth",
+      });
+    }, 110);
+  }
+
+  function stopInertia() {
+    if (inertiaFrameRef.current !== null) {
+      cancelAnimationFrame(inertiaFrameRef.current);
+      inertiaFrameRef.current = null;
+    }
+  }
+
+  function finishPointerMotion() {
+    isWheelMovingRef.current = false;
+    setIsWheelMoving(false);
+
+    const picker = scrollRef.current;
+    if (!picker) return;
+    const day = Math.min(31, Math.max(1, Math.round(picker.scrollTop / DATE_PICKER_ITEM_HEIGHT) + 1));
+    setSelectedDay(day);
+    requestAnimationFrame(() => {
+      picker.scrollTo({
+        top: (day - 1) * DATE_PICKER_ITEM_HEIGHT,
+        behavior: "smooth",
+      });
+    });
+  }
+
+  function startInertia(initialVelocity: number) {
+    const picker = scrollRef.current;
+    if (!picker) {
+      finishPointerMotion();
+      return;
+    }
+
+    let velocity = Math.max(-2.8, Math.min(2.8, initialVelocity));
+    let previousTime = performance.now();
+
+    const glide = (time: number) => {
+      const deltaTime = Math.min(32, time - previousTime);
+      previousTime = time;
+      const previousTop = picker.scrollTop;
+      picker.scrollTop += velocity * deltaTime;
+      velocity *= Math.pow(0.935, deltaTime / 16.67);
+
+      const reachedBoundary = Math.abs(picker.scrollTop - previousTop) < 0.1;
+      if (Math.abs(velocity) > 0.018 && !reachedBoundary) {
+        inertiaFrameRef.current = requestAnimationFrame(glide);
+        return;
+      }
+
+      inertiaFrameRef.current = null;
+      finishPointerMotion();
+    };
+
+    inertiaFrameRef.current = requestAnimationFrame(glide);
+  }
+
+  function handlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
+    if (event.button !== 0) return;
+    const picker = scrollRef.current;
+    if (!picker) return;
+
+    stopInertia();
+    if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
+    isWheelMovingRef.current = true;
+    setIsWheelMoving(true);
+    dragRef.current = {
+      active: true,
+      startY: event.clientY,
+      startScrollTop: picker.scrollTop,
+      lastY: event.clientY,
+      lastTime: performance.now(),
+      velocity: 0,
+      moved: false,
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
+    const drag = dragRef.current;
+    const picker = scrollRef.current;
+    if (!drag.active || !picker) return;
+
+    const now = performance.now();
+    const deltaY = event.clientY - drag.startY;
+    const elapsed = Math.max(1, now - drag.lastTime);
+    const instantaneousVelocity = (drag.lastY - event.clientY) / elapsed;
+
+    if (Math.abs(deltaY) > 2) drag.moved = true;
+    drag.velocity = drag.velocity * 0.62 + instantaneousVelocity * 0.38;
+    drag.lastY = event.clientY;
+    drag.lastTime = now;
+    picker.scrollTop = drag.startScrollTop - deltaY;
+    event.preventDefault();
+  }
+
+  function handlePointerEnd(event: ReactPointerEvent<HTMLDivElement>) {
+    const drag = dragRef.current;
+    if (!drag.active) return;
+    drag.active = false;
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    if (!drag.moved) {
+      isWheelMovingRef.current = false;
+      setIsWheelMoving(false);
+      return;
+    }
+
+    suppressClickRef.current = true;
+    if (suppressClickTimerRef.current) clearTimeout(suppressClickTimerRef.current);
+    suppressClickTimerRef.current = setTimeout(() => {
+      suppressClickRef.current = false;
+      suppressClickTimerRef.current = null;
+    }, 260);
+    if (Math.abs(drag.velocity) > 0.035) {
+      startInertia(drag.velocity);
+    } else {
+      finishPointerMotion();
+    }
+  }
+
+  function handleWheelStart() {
+    stopInertia();
+    if (isWheelMovingRef.current) {
+      isWheelMovingRef.current = false;
+      setIsWheelMoving(false);
+    }
+  }
+
+  function scrollToDay(day: number) {
+    if (suppressClickRef.current) return;
+    setSelectedDay(day);
+    scrollRef.current?.scrollTo({
+      top: (day - 1) * DATE_PICKER_ITEM_HEIGHT,
+      behavior: "smooth",
+    });
+  }
+
+  return (
+    <div className={styles.customerSheetLayer}>
+      <div className={styles.customerSheetDim} aria-hidden="true" />
+      <div className={styles.paydayPickerSheet} role="dialog" aria-modal="true" aria-label="급여일 선택">
+        <div className={styles.paydayPickerHeader}>
+          <button type="button" onClick={onCancel}>취소</button>
+          <div>
+            <strong>급여일을 선택해주세요</strong>
+            <span>매월 {selectedDay}일</span>
+          </div>
+        </div>
+
+        <div className={styles.paydayPickerWheel}>
+          <div className={styles.paydaySelectionBand} aria-hidden="true" />
+          <div
+            ref={scrollRef}
+            className={`${styles.paydayPickerScroll} ${isWheelMoving ? styles.paydayPickerMoving : ""}`}
+            role="listbox"
+            aria-label="1일부터 31일까지 급여일"
+            aria-activedescendant={`payday-option-${selectedDay}`}
+            onScroll={handleScroll}
+            onWheel={handleWheelStart}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerEnd}
+            onPointerCancel={handlePointerEnd}
+          >
+            <div className={styles.paydayPickerSpacer} aria-hidden="true" />
+            {Array.from({ length: 31 }, (_, index) => index + 1).map((day) => (
+              <button
+                type="button"
+                id={`payday-option-${day}`}
+                key={day}
+                role="option"
+                aria-selected={selectedDay === day}
+                className={selectedDay === day ? styles.paydayPickerSelected : ""}
+                onClick={() => scrollToDay(day)}
+              >
+                {day}
+              </button>
+            ))}
+            <div className={styles.paydayPickerSpacer} aria-hidden="true" />
+          </div>
+          <span className={styles.paydayPickerUnit} aria-hidden="true">일</span>
+        </div>
+
+        <button
+          type="button"
+          className={styles.paydayPickerConfirm}
+          onClick={() => onConfirm(`${selectedDay}일`)}
+        >
+          완료
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function CustomerInfoScreen({
   values,
   onChange,
@@ -232,11 +505,7 @@ export function CustomerInfoScreen({
               <CustomerRow key={row.key} label={row.label} value={values[row.key]} onClick={() => setActiveSheet(row.key)} />
             ))}
 
-            <div className={`${styles.customerInfoRow} ${styles.customerInfoStaticRow}`}>
-              <span className={styles.customerInfoLabel}>급여일</span>
-              <strong>{values.payday}</strong>
-              <Chevron />
-            </div>
+            <CustomerRow label="급여일" value={values.payday} onClick={() => setActiveSheet("payday")} />
 
             {rows.slice(5).map((row) => (
               <CustomerRow
@@ -253,12 +522,22 @@ export function CustomerInfoScreen({
       </main>
       <div className={styles.homeIndicator} aria-hidden="true" />
 
-      {activeSheet && activeSheet !== "beneficialOwnerHelp" ? (
+      {activeSheet && activeSheet !== "beneficialOwnerHelp" && activeSheet !== "payday" ? (
         <ChoiceImageSheet
           sheetKey={activeSheet}
           value={values[activeSheet]}
           onSelect={(value) => {
             onChange(activeSheet, value);
+            setActiveSheet(null);
+          }}
+        />
+      ) : null}
+      {activeSheet === "payday" ? (
+        <PaydayDatePicker
+          value={values.payday}
+          onCancel={() => setActiveSheet(null)}
+          onConfirm={(value) => {
+            onChange("payday", value);
             setActiveSheet(null);
           }}
         />
