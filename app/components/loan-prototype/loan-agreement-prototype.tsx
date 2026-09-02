@@ -669,7 +669,7 @@ export function LoanAgreementPrototype() {
       <div className="workspace-card-header">
         <div>
           <span className="workspace-kicker">INTERACTIVE MOBILE PROTOTYPE</span>
-          <h2>대출 신청 · 본인확인</h2>
+          <h2>신용대출</h2>
         </div>
         <div className={styles.workspaceActions}>
           <span className={styles.stepBadge}>

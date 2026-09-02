@@ -153,18 +153,24 @@ export function LoanResultScreen({
                 onChange={(event) => handleAmountInput(event.target.value)}
                 onBlur={normalizeAmountInput}
                 onFocus={(event) => event.currentTarget.select()}
-                aria-describedby="loan-amount-help loan-amount-error"
+                aria-describedby={
+                  amountError
+                    ? "loan-amount-help loan-amount-error"
+                    : "loan-amount-help"
+                }
                 aria-invalid={Boolean(amountError)}
               />
               <span>만원</span>
             </div>
-            <p
-              id="loan-amount-error"
-              className={styles.amountValidationMessage}
-              aria-live="polite"
-            >
-              {amountError ?? "100만~3,000만원, 10만원 단위로 입력"}
-            </p>
+            {amountError ? (
+              <p
+                id="loan-amount-error"
+                className={styles.amountValidationMessage}
+                aria-live="polite"
+              >
+                {amountError}
+              </p>
+            ) : null}
             <p id="loan-amount-help" className={styles.loanResultNotice}>
               대출기간이 {periodMonths}개월 일 때
               <br />대출 가능한 최대금액은 3,000만원이에요.

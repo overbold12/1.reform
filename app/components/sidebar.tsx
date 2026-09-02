@@ -6,8 +6,8 @@ type SidebarProps = {
 };
 
 const menus: Array<{ id: MenuId; label: string }> = [
-  { id: "affiliate-credit", label: "to-be(제휴대출-신용)" },
-  { id: "credit-consent", label: "to-be(신용정보조회동의)" },
+  { id: "affiliate-credit", label: "To-be(제휴대출-신용)" },
+  { id: "credit-consent", label: "To-be(신용정보조회동의)" },
   { id: "comparison", label: "비교" },
 ];
 
