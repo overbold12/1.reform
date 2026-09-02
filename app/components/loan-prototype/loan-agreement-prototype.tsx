@@ -29,6 +29,7 @@ import {
 } from "./customer-info-screen";
 import { LpointValidationSheet } from "./lpoint-validation-sheet";
 import { LoanConditionScreen } from "./loan-condition-screen";
+import { LoanKeyTermsScreen } from "./loan-key-terms-screen";
 import { LoanResultScreen } from "./loan-result-screen";
 import {
   AccountNumberScreen,
@@ -603,6 +604,16 @@ export function LoanAgreementPrototype() {
               setCustomerInfo((current) => ({ ...current, [key]: value }));
             }}
             onBack={() => navigateToStep("email-address")}
+            onNext={() => navigateToStep("loan-key-terms")}
+          />
+        );
+      case "loan-key-terms":
+        return (
+          <LoanKeyTermsScreen
+            onBack={() => {
+              setStep("customer-info");
+              requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
+            }}
           />
         );
       default:
@@ -743,7 +754,11 @@ export function LoanAgreementPrototype() {
             <b>27</b>
             <span>고객 정보 확인 및 항목별 수정</span>
           </div>
-          <p>고객 정보 확인과 항목별 바텀시트 수정까지 체험할 수 있으며, 이후 단계로는 진행되지 않습니다.</p>
+          <div className={styles.demoGuideAddedStep}>
+            <b>28</b>
+            <span>대출 주요 내용 확인</span>
+          </div>
+          <p>대출 주요 내용의 모든 질문에 답변하는 단계까지 체험할 수 있으며, 마지막 CTA에서는 더 진행되지 않습니다.</p>
         </div>
       </div>
     </section>

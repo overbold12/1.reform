@@ -477,10 +477,12 @@ export function CustomerInfoScreen({
   values,
   onChange,
   onBack,
+  onNext,
 }: {
   values: CustomerInfoValues;
   onChange: (key: keyof CustomerInfoValues, value: string) => void;
   onBack: () => void;
+  onNext: () => void;
 }) {
   const [activeSheet, setActiveSheet] = useState<ActiveSheet>(null);
   const allInformationEntered = Object.values(values).every((value) => value.trim().length > 0);
@@ -539,8 +541,9 @@ export function CustomerInfoScreen({
               className={styles.customerInfoNextButton}
               onClick={() => {
                 if (values.guardianStatus === "네") setActiveSheet("guardianProgress");
+                else onNext();
               }}
-              aria-label={values.guardianStatus === "네" ? "피후견인 대출 진행 안내 확인" : "다음 버튼은 프로토타입 UI로만 제공됩니다"}
+              aria-label={values.guardianStatus === "네" ? "피후견인 대출 진행 안내 확인" : "대출 주요 내용 확인으로 이동"}
             >
               <span>다음</span>
               <span className={styles.paymentArrow} aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" /></svg></span>
