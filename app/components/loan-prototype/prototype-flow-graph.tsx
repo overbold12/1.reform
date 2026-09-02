@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import styles from "./loan-prototype.module.css";
 
 export type PrototypeStep =
@@ -17,7 +17,10 @@ export type PrototypeStep =
   | "public-data-receive"
   | "screening"
   | "loan-result"
-  | "loan-condition";
+  | "loan-condition"
+  | "prepayment-benefit"
+  | "bank-selection"
+  | "account-number";
 
 export const prototypeStages: Array<{
   id: PrototypeStep;
@@ -38,6 +41,9 @@ export const prototypeStages: Array<{
   { id: "screening", number: "12", label: "심사중" },
   { id: "loan-result", number: "13", label: "심사결과" },
   { id: "loan-condition", number: "14", label: "대출조건 설정" },
+  { id: "prepayment-benefit", number: "15", label: "선납혜택" },
+  { id: "bank-selection", number: "16", label: "자동이체은행" },
+  { id: "account-number", number: "17", label: "계좌번호" },
 ];
 
 type PrototypeFlowGraphProps = {
@@ -75,10 +81,13 @@ export function PrototypeFlowGraph({
     <nav className={styles.flowGraph} aria-label="프로토타입 단계 바로가기">
       <div className={styles.flowGraphHeader}>
         <span>CONSENT &amp; IDENTITY FLOW</span>
-        <p>단계를 선택하면 해당 화면으로 바로 이동합니다. 14단계까지 직접 확인할 수 있습니다.</p>
+        <p>단계를 선택하면 해당 화면으로 바로 이동합니다. 17단계까지 직접 확인할 수 있습니다.</p>
       </div>
       <div ref={graphScrollRef} className={styles.flowGraphScroll}>
-        <ol className={styles.flowGraphList}>
+        <ol
+          className={styles.flowGraphList}
+          style={{ "--flow-stage-count": prototypeStages.length } as CSSProperties}
+        >
           {prototypeStages.map((stage, index) => {
             const active = stage.id === currentStep;
             const visited = index < currentIndex;

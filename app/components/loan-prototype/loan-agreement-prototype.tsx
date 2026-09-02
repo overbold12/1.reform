@@ -20,6 +20,13 @@ import { LpointValidationSheet } from "./lpoint-validation-sheet";
 import { LoanConditionScreen } from "./loan-condition-screen";
 import { LoanResultScreen } from "./loan-result-screen";
 import {
+  AccountNumberScreen,
+  BankSelectionScreen,
+  PrepaymentBenefitScreen,
+  type BankId,
+  type PrepaymentBenefit,
+} from "./payment-info-screens";
+import {
   initialOptionalAgreements,
   optionalAgreementGroups,
   optionalChildId,
@@ -63,6 +70,11 @@ export function LoanAgreementPrototype() {
   const [verificationCode, setVerificationCode] = useState("");
   const [loanAmountManwon, setLoanAmountManwon] = useState(3000);
   const [loanPeriodMonths, setLoanPeriodMonths] = useState(72);
+  const [prepaymentBenefit, setPrepaymentBenefit] =
+    useState<PrepaymentBenefit | null>(null);
+  const [selectedBank, setSelectedBank] = useState<BankId | null>(null);
+  const [accountNumber, setAccountNumber] = useState("");
+  const [automaticTransferAgreed, setAutomaticTransferAgreed] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const genderInputRef = useRef<HTMLInputElement>(null);
   const privateInputRef = useRef<HTMLInputElement>(null);
@@ -133,6 +145,8 @@ export function LoanAgreementPrototype() {
     publicDataTimerRef.current = null;
     setDetailTitle(null);
     setShowLpointValidation(false);
+    if (nextStep === "bank-selection") setSelectedBank(null);
+    if (nextStep === "account-number") setAutomaticTransferAgreed(false);
     setStep(nextStep);
 
     if (nextStep === "public-data-entry") {
@@ -261,6 +275,10 @@ export function LoanAgreementPrototype() {
     setVerificationCode("");
     setLoanAmountManwon(3000);
     setLoanPeriodMonths(72);
+    setPrepaymentBenefit(null);
+    setSelectedBank(null);
+    setAccountNumber("");
+    setAutomaticTransferAgreed(false);
     requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
   }
 
@@ -386,6 +404,35 @@ export function LoanAgreementPrototype() {
             }}
             onPeriodChange={setLoanPeriodMonths}
             onBack={() => navigateToStep("loan-result")}
+            onNext={() => navigateToStep("prepayment-benefit")}
+          />
+        );
+      case "prepayment-benefit":
+        return (
+          <PrepaymentBenefitScreen
+            selectedBenefit={prepaymentBenefit}
+            onBenefitChange={setPrepaymentBenefit}
+            onBack={() => navigateToStep("loan-condition")}
+            onNext={() => navigateToStep("bank-selection")}
+          />
+        );
+      case "bank-selection":
+        return (
+          <BankSelectionScreen
+            selectedBank={selectedBank}
+            onBankChange={setSelectedBank}
+            onBack={() => navigateToStep("prepayment-benefit")}
+            onNext={() => navigateToStep("account-number")}
+          />
+        );
+      case "account-number":
+        return (
+          <AccountNumberScreen
+            accountNumber={accountNumber}
+            agreed={automaticTransferAgreed}
+            onAccountNumberChange={setAccountNumber}
+            onAgreementChange={setAutomaticTransferAgreed}
+            onBack={() => navigateToStep("bank-selection")}
           />
         );
       default:
@@ -490,7 +537,19 @@ export function LoanAgreementPrototype() {
             <b>14</b>
             <span>대출조건 설정 및 상환방식 선택</span>
           </div>
-          <p>심사결과에서 확정한 금액과 기간이 대출조건 설정 화면에 그대로 이어집니다.</p>
+          <div className={styles.demoGuideAddedStep}>
+            <b>15</b>
+            <span>선납혜택 선택</span>
+          </div>
+          <div className={styles.demoGuideAddedStep}>
+            <b>16</b>
+            <span>자동이체은행 선택</span>
+          </div>
+          <div className={styles.demoGuideAddedStep}>
+            <b>17</b>
+            <span>계좌번호 입력 및 약관 동의</span>
+          </div>
+          <p>결제정보 입력은 계좌번호 단계까지 체험할 수 있으며, 마지막 CTA에서는 더 진행되지 않습니다.</p>
         </div>
       </div>
     </section>

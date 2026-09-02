@@ -82,8 +82,8 @@
 .flowGraphList {
   position: relative;
   display: grid;
-  min-width: 1280px;
-  grid-template-columns: repeat(14, minmax(78px, 1fr));
+  min-width: calc(var(--flow-stage-count, 14) * 91px);
+  grid-template-columns: repeat(var(--flow-stage-count, 14), minmax(78px, 1fr));
   gap: 10px;
   margin: 0;
   padding: 0 2px 8px;
@@ -2553,6 +2553,485 @@
   transform: scale(0.985);
 }
 
+.paymentScreen {
+  overflow: hidden;
+  background: #192038;
+  animation: detail-in 220ms ease-out;
+}
+
+.paymentHeader {
+  height: 122px;
+  flex: 0 0 122px;
+  background: #192038;
+  color: #ffffff;
+}
+
+.paymentNav {
+  position: relative;
+  display: flex;
+  height: 80px;
+  align-items: center;
+}
+
+.paymentCloseButton {
+  position: absolute;
+  top: 19px;
+  left: 31px;
+  width: 35px;
+  height: 35px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 120ms ease, transform 100ms ease;
+}
+
+.paymentCloseButton:active {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(0.92);
+}
+
+.paymentCloseButton span {
+  position: absolute;
+  top: 16px;
+  left: 7px;
+  width: 21px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transform: rotate(45deg);
+}
+
+.paymentCloseButton span:last-child {
+  transform: rotate(-45deg);
+}
+
+.paymentStep {
+  position: absolute;
+  top: 24px;
+  right: 35px;
+  display: flex;
+  height: 28px;
+  align-items: center;
+  gap: 7px;
+  color: #71809c;
+}
+
+.paymentStep i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #9bb3d6;
+}
+
+.paymentStep b,
+.paymentStep > span {
+  display: grid;
+  width: 23px;
+  height: 23px;
+  box-sizing: border-box;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.paymentStep b {
+  border-color: #b6cce8;
+  background: #b6cce8;
+  color: #1a2238;
+}
+
+.paymentStep strong {
+  margin-right: 3px;
+  color: #bed1eb;
+  font-size: 17px;
+  font-weight: 680;
+  letter-spacing: -0.04em;
+}
+
+.paymentStep > span {
+  width: 18px;
+  height: 18px;
+  font-size: 10px;
+}
+
+.paymentPanel {
+  position: relative;
+  min-height: 0;
+  flex: 1;
+  border-radius: 16px 16px 0 0;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.paymentHandle {
+  position: absolute;
+  z-index: 3;
+  top: 16px;
+  left: 50%;
+  width: 134px;
+  height: 5px;
+  border-radius: 999px;
+  background: #898989;
+  transform: translateX(-50%);
+}
+
+.prepaymentContent,
+.bankSelectionContent,
+.accountContent {
+  position: relative;
+  height: 100%;
+  box-sizing: border-box;
+  animation: detail-in 220ms ease-out;
+}
+
+.prepaymentContent {
+  padding: 43px 32px 34px;
+}
+
+.prepaymentContent h1,
+.bankSelectionContent h1 {
+  margin: 0;
+  color: #111215;
+  font-size: 20px;
+  font-weight: 720;
+  letter-spacing: -0.05em;
+  line-height: 1.45;
+}
+
+.prepaymentContent > p {
+  margin: 2px 0 0;
+  color: #74777d;
+  font-size: 13px;
+  letter-spacing: -0.035em;
+  line-height: 1.58;
+}
+
+.prepaymentContent h2 {
+  margin: 41px 0 0;
+  color: #696c72;
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  line-height: 1.55;
+}
+
+.prepaymentOptions {
+  display: flex;
+  margin-top: 20px;
+  flex-direction: column;
+  gap: 21px;
+}
+
+.prepaymentOptions button {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: start;
+  gap: 9px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #17181b;
+  cursor: pointer;
+  text-align: left;
+  transition: color 150ms ease, transform 100ms ease;
+}
+
+.prepaymentOptions button:active {
+  transform: scale(0.985);
+}
+
+.prepaymentCheck {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  box-sizing: border-box;
+  place-items: center;
+  border: 1px solid #d6d9de;
+  border-radius: 50%;
+  color: #c7cbd1;
+  font-size: 13px;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
+}
+
+.prepaymentOptions button > span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.prepaymentOptions strong {
+  font-size: 17px;
+  font-weight: 520;
+  letter-spacing: -0.045em;
+}
+
+.prepaymentOptions small {
+  color: #6e7177;
+  font-size: 13px;
+  letter-spacing: -0.03em;
+  line-height: 1.55;
+}
+
+.prepaymentOptions .prepaymentSelected {
+  color: #e9272e;
+}
+
+.prepaymentSelected .prepaymentCheck {
+  border-color: #ed272d;
+  background: #ed272d;
+  color: #ffffff;
+  transform: scale(1.04);
+}
+
+.prepaymentContent > .paymentNextButton {
+  position: absolute;
+  top: 486px;
+  right: 23px;
+  animation: action-in 180ms ease-out;
+}
+
+.bankSelectionContent {
+  padding: 41px 32px 34px;
+}
+
+.bankGrid {
+  display: grid;
+  width: 329px;
+  height: 321px;
+  grid-template-columns: repeat(3, 105px);
+  grid-template-rows: repeat(8, 34px);
+  gap: 7px;
+  margin-top: 25px;
+}
+
+.bankGrid button {
+  position: relative;
+  display: flex;
+  width: 105px;
+  height: 34px;
+  box-sizing: border-box;
+  align-items: center;
+  gap: 4px;
+  overflow: hidden;
+  border: 1px solid #dfe1e5;
+  border-radius: 4px;
+  background: #ffffff;
+  padding: 0 6px 0 5px;
+  color: #666a70;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition: border-color 150ms ease, background-color 150ms ease, transform 100ms ease;
+}
+
+.bankGrid button:active {
+  transform: scale(0.97);
+}
+
+.bankGrid .bankSelected {
+  border-color: #ef262d;
+  background: #fffdfd;
+}
+
+.bankLogo {
+  display: grid;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  place-items: center;
+  border-radius: 5px;
+  font-size: 17px;
+  font-weight: 850;
+  letter-spacing: -0.08em;
+  line-height: 1;
+}
+
+.bankWordmark {
+  font-size: 9px;
+  letter-spacing: -0.08em;
+}
+
+.bankName {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 10px;
+  font-weight: 520;
+  letter-spacing: -0.055em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bankBullet {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ef252c;
+  animation: bank-bullet-in 150ms ease-out;
+}
+
+.paymentNextButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #151619;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 720;
+  transition: opacity 150ms ease, transform 100ms ease;
+}
+
+.bankSelectionContent > .paymentNextButton {
+  position: absolute;
+  top: 486px;
+  right: 23px;
+  animation: action-in 180ms ease-out;
+}
+
+.paymentNextButton:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.paymentNextButton:disabled {
+  cursor: default;
+  opacity: 0.34;
+}
+
+.paymentArrow {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 50%;
+  background: #ed252c;
+  color: #ffffff;
+}
+
+.paymentArrow svg {
+  width: 23px;
+  height: 23px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.5;
+}
+
+.accountContent {
+  padding: 84px 33px 34px;
+}
+
+.accountContent > label {
+  display: block;
+  color: #767980;
+  font-size: 14px;
+  letter-spacing: -0.035em;
+}
+
+.accountContent > input {
+  width: 100%;
+  height: 61px;
+  box-sizing: border-box;
+  border: 0;
+  border-bottom: 1px solid #696b70;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  color: #090a0c;
+  caret-color: #ed252c;
+  font: inherit;
+  font-size: 30px;
+  font-weight: 620;
+  letter-spacing: -0.035em;
+  outline: none;
+  transition: border-color 150ms ease;
+}
+
+.accountContent > input:focus {
+  border-bottom-color: #22252a;
+}
+
+.accountAgreement {
+  display: grid;
+  width: 100%;
+  height: 69px;
+  grid-template-columns: 24px minmax(0, 1fr) 12px;
+  align-items: center;
+  gap: 9px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #17181b;
+  cursor: pointer;
+  text-align: left;
+  transition: transform 100ms ease;
+}
+
+.accountAgreement:active {
+  transform: scale(0.985);
+}
+
+.accountAgreement > span {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  box-sizing: border-box;
+  place-items: center;
+  border: 1px solid #d4d7dc;
+  border-radius: 50%;
+  color: transparent;
+  font-size: 13px;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.accountAgreement .accountAgreementChecked {
+  border-color: #ed252c;
+  background: #ed252c;
+  color: #ffffff;
+}
+
+.accountAgreement strong {
+  font-size: 16px;
+  font-weight: 520;
+  letter-spacing: -0.045em;
+}
+
+.accountAgreement svg {
+  width: 8px;
+  height: 14px;
+  fill: none;
+  stroke: #9da1a8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+
+.accountStopImage {
+  display: block;
+  width: 343px;
+  height: auto;
+  margin-top: -6px;
+  margin-left: -17px;
+}
+
+.accountContent > .paymentNextButton {
+  position: absolute;
+  top: 376px;
+  right: 24px;
+  animation: action-in 180ms ease-out;
+}
+
 .visuallyHidden {
   position: absolute;
   width: 1px;
@@ -2618,6 +3097,17 @@
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+@keyframes bank-bullet-in {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 

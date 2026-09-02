@@ -24,6 +24,7 @@ type LoanConditionScreenProps = {
   onAmountChange: (amount: number) => void;
   onPeriodChange: (period: number) => void;
   onBack: () => void;
+  onNext: () => void;
 };
 
 const REPAYMENT_OPTIONS: Array<{
@@ -49,6 +50,7 @@ export function LoanConditionScreen({
   onAmountChange,
   onPeriodChange,
   onBack,
+  onNext,
 }: LoanConditionScreenProps) {
   const [amountInput, setAmountInput] = useState(String(amountManwon));
   const [amountError, setAmountError] = useState<string | null>(null);
@@ -239,7 +241,7 @@ export function LoanConditionScreen({
             </svg>
           </button>
 
-          <button type="button" className={styles.conditionSubmitButton}>
+          <button type="button" className={styles.conditionSubmitButton} onClick={onNext}>
             이 조건으로 대출 신청하기
           </button>
         </main>
