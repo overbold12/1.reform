@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
-import equalPrincipalImage from "../../../references/to-be/원금균등.png";
-import equalPaymentImage from "../../../references/to-be/원리금균등.png";
+import equalPrincipalImage from "../../../references/to-be(platform)/원금균등.png";
+import equalPaymentImage from "../../../references/to-be(platform)/원리금균등.png";
 import {
   ANNUAL_RATE,
   calculateEqualPrincipalFirstPayment,

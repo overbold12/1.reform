@@ -1,6 +1,6 @@
 import type { ChangeEvent } from "react";
 import Image from "next/image";
-import stopWarningImage from "../../../references/to-be/Stop-4.png";
+import stopWarningImage from "../../../references/to-be(platform)/Stop-4.png";
 import { FlowScreen, InlineNextButton } from "./flow-navigation";
 import styles from "./loan-prototype.module.css";
 

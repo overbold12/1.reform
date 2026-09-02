@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { type ReactNode } from "react";
-import depositorGuideImage from "../../../references/to-be/입금자명 확인.png";
-import stopImage from "../../../references/to-be/Stop-4.png";
+import depositorGuideImage from "../../../references/to-be(platform)/입금자명 확인.png";
+import stopImage from "../../../references/to-be(platform)/Stop-4.png";
 import { MobileStatusBar } from "./mobile-status-bar";
 import styles from "./loan-prototype.module.css";
 

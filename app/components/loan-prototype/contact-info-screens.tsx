@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import addressInfoSheetImage from "../../../references/to-be/Bottom Sheet(주소정보).png";
+import addressInfoSheetImage from "../../../references/to-be(platform)/Bottom Sheet(주소정보).png";
 import { PaymentScreenShell } from "./payment-info-screens";
 import styles from "./loan-prototype.module.css";
 

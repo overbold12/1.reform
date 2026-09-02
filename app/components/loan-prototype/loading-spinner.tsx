@@ -1,5 +1,5 @@
 import Image from "next/image";
-import spinnerImage from "../../../references/to-be/Spinner Animation.png";
+import spinnerImage from "../../../references/to-be(platform)/Spinner Animation.png";
 import styles from "./loan-prototype.module.css";
 
 type LoadingSpinnerProps = {

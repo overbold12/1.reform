@@ -7,17 +7,17 @@ import {
   useState,
   type PointerEvent as ReactPointerEvent,
 } from "react";
-import annualIncomeSheet from "../../../references/to-be/바텀시트(연간소득).png";
-import debtSheet from "../../../references/to-be/바텀시트(부채).png";
-import assetsSheet from "../../../references/to-be/바텀시트(보유자산).png";
-import fixedExpenseSheet from "../../../references/to-be/바텀시트(고정지출).png";
-import incomeTypeSheet from "../../../references/to-be/바텀시트(소득유형).png";
-import vulnerableSheet from "../../../references/to-be/바텀시트(취약금융소비자 확인).png";
-import loanPurposeSheet from "../../../references/to-be/바텀시트(대출목적).png";
-import beneficialOwnerSheet from "../../../references/to-be/바텀시트(실소유자).png";
-import beneficialOwnerHelpSheet from "../../../references/to-be/바텀시트(실소유자 설명).png";
-import guardianSheet from "../../../references/to-be/바텀시트(피후견인).png";
-import guardianProgressSheet from "../../../references/to-be/바텀시트(피후견인 진행).png";
+import annualIncomeSheet from "../../../references/to-be(platform)/바텀시트(연간소득).png";
+import debtSheet from "../../../references/to-be(platform)/바텀시트(부채).png";
+import assetsSheet from "../../../references/to-be(platform)/바텀시트(보유자산).png";
+import fixedExpenseSheet from "../../../references/to-be(platform)/바텀시트(고정지출).png";
+import incomeTypeSheet from "../../../references/to-be(platform)/바텀시트(소득유형).png";
+import vulnerableSheet from "../../../references/to-be(platform)/바텀시트(취약금융소비자 확인).png";
+import loanPurposeSheet from "../../../references/to-be(platform)/바텀시트(대출목적).png";
+import beneficialOwnerSheet from "../../../references/to-be(platform)/바텀시트(실소유자).png";
+import beneficialOwnerHelpSheet from "../../../references/to-be(platform)/바텀시트(실소유자 설명).png";
+import guardianSheet from "../../../references/to-be(platform)/바텀시트(피후견인).png";
+import guardianProgressSheet from "../../../references/to-be(platform)/바텀시트(피후견인 진행).png";
 import { MobileStatusBar } from "./mobile-status-bar";
 import styles from "./loan-prototype.module.css";
 

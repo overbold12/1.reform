@@ -6,7 +6,8 @@ type SidebarProps = {
 };
 
 const menus: Array<{ id: MenuId; label: string }> = [
-  { id: "to-be", label: "TO-BE" },
+  { id: "affiliate-credit", label: "to-be(제휴대출-신용)" },
+  { id: "credit-consent", label: "to-be(신용정보조회동의)" },
   { id: "comparison", label: "비교" },
 ];
 
@@ -69,7 +70,7 @@ export function Sidebar({ activeMenu, onMenuChange }: SidebarProps) {
 
       <div className="sidebar-footer">
         <span className="status-dot" aria-hidden="true" />
-        <span>기획 시연용 환경</span>
+        <span>기획 시연 환경</span>
       </div>
     </aside>
   );

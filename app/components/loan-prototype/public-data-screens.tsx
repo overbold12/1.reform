@@ -1,6 +1,6 @@
 import Image from "next/image";
-import signingStartImage from "../../../references/to-be/start.png";
-import myDataImage from "../../../references/to-be/image-mydata.png";
+import signingStartImage from "../../../references/to-be(platform)/start.png";
+import myDataImage from "../../../references/to-be(platform)/image-mydata.png";
 import { AnimatedProgress } from "./animated-progress";
 import { FlowScreen } from "./flow-navigation";
 import { LoadingSpinner } from "./loading-spinner";

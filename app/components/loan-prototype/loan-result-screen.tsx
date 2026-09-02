@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
-import simsaImage from "../../../references/to-be/simasa.png";
+import simsaImage from "../../../references/to-be(platform)/simasa.png";
 import { LoadingSpinner } from "./loading-spinner";
 import {
   ANNUAL_RATE,
