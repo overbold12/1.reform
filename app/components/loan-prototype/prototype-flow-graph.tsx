@@ -22,7 +22,14 @@ export type PrototypeStep =
   | "bank-selection"
   | "account-number"
   | "micro-deposit"
-  | "invoice-selection";
+  | "invoice-selection"
+  | "home-address"
+  | "home-address-detail"
+  | "home-phone"
+  | "office-address"
+  | "office-address-detail"
+  | "office-phone"
+  | "email-address";
 
 export const prototypeStages: Array<{
   id: PrototypeStep;
@@ -48,6 +55,13 @@ export const prototypeStages: Array<{
   { id: "account-number", number: "17", label: "계좌번호" },
   { id: "micro-deposit", number: "18", label: "1원인증" },
   { id: "invoice-selection", number: "19", label: "청구서 선택" },
+  { id: "home-address", number: "20", label: "자택주소(1)" },
+  { id: "home-address-detail", number: "21", label: "자택주소(2)" },
+  { id: "home-phone", number: "22", label: "자택 전화번호" },
+  { id: "office-address", number: "23", label: "직장주소(1)" },
+  { id: "office-address-detail", number: "24", label: "직장주소(2)" },
+  { id: "office-phone", number: "25", label: "직장 전화번호" },
+  { id: "email-address", number: "26", label: "이메일주소" },
 ];
 
 type PrototypeFlowGraphProps = {
@@ -85,7 +99,7 @@ export function PrototypeFlowGraph({
     <nav className={styles.flowGraph} aria-label="프로토타입 단계 바로가기">
       <div className={styles.flowGraphHeader}>
         <span>CONSENT &amp; IDENTITY FLOW</span>
-        <p>단계를 선택하면 해당 화면으로 바로 이동합니다. 19단계까지 직접 확인할 수 있습니다.</p>
+        <p>단계를 선택하면 해당 화면으로 바로 이동합니다. 26단계까지 직접 확인할 수 있습니다.</p>
       </div>
       <div ref={graphScrollRef} className={styles.flowGraphScroll}>
         <ol

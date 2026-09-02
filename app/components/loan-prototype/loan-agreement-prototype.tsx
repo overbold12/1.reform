@@ -16,6 +16,12 @@ import {
   PhoneInputScreen,
   ResidentInputScreen,
 } from "./identity-input-screens";
+import {
+  AddressAutofillSheet,
+  AddressInputScreen,
+  EmailInputScreen,
+  PhoneInputScreen as ContactPhoneInputScreen,
+} from "./contact-info-screens";
 import { LpointValidationSheet } from "./lpoint-validation-sheet";
 import { LoanConditionScreen } from "./loan-condition-screen";
 import { LoanResultScreen } from "./loan-result-screen";
@@ -81,6 +87,16 @@ export function LoanAgreementPrototype() {
   const [microDepositName, setMicroDepositName] = useState("");
   const [invoiceDestination, setInvoiceDestination] =
     useState<InvoiceDestination | null>(null);
+  const [homeAddress, setHomeAddress] = useState("");
+  const [homeAddressDetail, setHomeAddressDetail] = useState("");
+  const [homePhone, setHomePhone] = useState("");
+  const [hasNoHomePhone, setHasNoHomePhone] = useState(false);
+  const [officeAddress, setOfficeAddress] = useState("");
+  const [officeAddressDetail, setOfficeAddressDetail] = useState("");
+  const [officePhone, setOfficePhone] = useState("");
+  const [hasNoOfficePhone, setHasNoOfficePhone] = useState(false);
+  const [emailAddress, setEmailAddress] = useState("");
+  const [showAddressAutofill, setShowAddressAutofill] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const genderInputRef = useRef<HTMLInputElement>(null);
   const privateInputRef = useRef<HTMLInputElement>(null);
@@ -151,6 +167,7 @@ export function LoanAgreementPrototype() {
     publicDataTimerRef.current = null;
     setDetailTitle(null);
     setShowLpointValidation(false);
+    setShowAddressAutofill(nextStep === "home-address");
     if (nextStep === "bank-selection") setSelectedBank(null);
     if (nextStep === "account-number") setAutomaticTransferAgreed(false);
     if (nextStep === "micro-deposit") setMicroDepositName("");
@@ -289,7 +306,29 @@ export function LoanAgreementPrototype() {
     setAutomaticTransferAgreed(false);
     setMicroDepositName("");
     setInvoiceDestination(null);
+    setHomeAddress("");
+    setHomeAddressDetail("");
+    setHomePhone("");
+    setHasNoHomePhone(false);
+    setOfficeAddress("");
+    setOfficeAddressDetail("");
+    setOfficePhone("");
+    setHasNoOfficePhone(false);
+    setEmailAddress("");
+    setShowAddressAutofill(false);
     requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
+  }
+
+  function confirmAddressAutofill() {
+    setHomeAddress("서울 강남구 테헤란로 142");
+    setHomeAddressDetail("8층");
+    setHomePhone("");
+    setHasNoHomePhone(true);
+    setOfficeAddress("서울 강남구 테헤란로 142");
+    setOfficeAddressDetail("8층");
+    setOfficePhone("");
+    setHasNoOfficePhone(true);
+    setShowAddressAutofill(false);
   }
 
   function renderPrototypeScreen() {
@@ -461,6 +500,87 @@ export function LoanAgreementPrototype() {
             selectedDestination={invoiceDestination}
             onDestinationChange={setInvoiceDestination}
             onBack={() => navigateToStep("micro-deposit")}
+            onNext={() => navigateToStep("home-address")}
+          />
+        );
+      case "home-address":
+        return (
+          <AddressInputScreen
+            kind="자택"
+            value={homeAddress}
+            onValueChange={setHomeAddress}
+            onBack={() => navigateToStep("invoice-selection")}
+            onNext={() => navigateToStep("home-address-detail")}
+          />
+        );
+      case "home-address-detail":
+        return (
+          <AddressInputScreen
+            kind="자택"
+            detail
+            value={homeAddressDetail}
+            onValueChange={setHomeAddressDetail}
+            onBack={() => navigateToStep("home-address")}
+            onNext={() => navigateToStep("home-phone")}
+          />
+        );
+      case "home-phone":
+        return (
+          <ContactPhoneInputScreen
+            kind="자택"
+            value={homePhone}
+            noPhone={hasNoHomePhone}
+            onValueChange={setHomePhone}
+            onNoPhoneChange={(checked) => {
+              setHasNoHomePhone(checked);
+              if (checked) setHomePhone("");
+            }}
+            onBack={() => navigateToStep("home-address-detail")}
+            onNext={() => navigateToStep("office-address")}
+          />
+        );
+      case "office-address":
+        return (
+          <AddressInputScreen
+            kind="직장"
+            value={officeAddress}
+            onValueChange={setOfficeAddress}
+            onBack={() => navigateToStep("home-phone")}
+            onNext={() => navigateToStep("office-address-detail")}
+          />
+        );
+      case "office-address-detail":
+        return (
+          <AddressInputScreen
+            kind="직장"
+            detail
+            value={officeAddressDetail}
+            onValueChange={setOfficeAddressDetail}
+            onBack={() => navigateToStep("office-address")}
+            onNext={() => navigateToStep("office-phone")}
+          />
+        );
+      case "office-phone":
+        return (
+          <ContactPhoneInputScreen
+            kind="직장"
+            value={officePhone}
+            noPhone={hasNoOfficePhone}
+            onValueChange={setOfficePhone}
+            onNoPhoneChange={(checked) => {
+              setHasNoOfficePhone(checked);
+              if (checked) setOfficePhone("");
+            }}
+            onBack={() => navigateToStep("office-address-detail")}
+            onNext={() => navigateToStep("email-address")}
+          />
+        );
+      case "email-address":
+        return (
+          <EmailInputScreen
+            value={emailAddress}
+            onValueChange={setEmailAddress}
+            onBack={() => navigateToStep("office-phone")}
           />
         );
       default:
@@ -521,6 +641,10 @@ export function LoanAgreementPrototype() {
 
           {showLpointValidation ? (
             <LpointValidationSheet onClose={() => setShowLpointValidation(false)} />
+          ) : null}
+
+          {step === "home-address" && showAddressAutofill ? (
+            <AddressAutofillSheet onConfirm={confirmAddressAutofill} />
           ) : null}
         </div>
 
@@ -585,7 +709,15 @@ export function LoanAgreementPrototype() {
             <b>19</b>
             <span>청구서 수령지 선택</span>
           </div>
-          <p>결제정보 입력은 청구서 선택 단계까지 체험할 수 있으며, 마지막 CTA에서는 더 진행되지 않습니다.</p>
+          <div className={styles.demoGuideAddedStep}>
+            <b>20–25</b>
+            <span>주소정보 불러오기 및 연락처 확인</span>
+          </div>
+          <div className={styles.demoGuideAddedStep}>
+            <b>26</b>
+            <span>이메일주소 직접 입력</span>
+          </div>
+          <p>주소정보 확인과 이메일 입력까지 체험할 수 있으며, 마지막 CTA에서는 더 진행되지 않습니다.</p>
         </div>
       </div>
     </section>

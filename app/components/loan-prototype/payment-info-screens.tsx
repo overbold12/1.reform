@@ -43,7 +43,7 @@ const BANKS: Array<{ id: BankId; name: string; mark: string; color: string; word
   { id: "toss", name: "토스뱅크", mark: "◒", color: "#315efb" },
 ];
 
-function PaymentScreenShell({ children, onClose }: { children: ReactNode; onClose: () => void }) {
+export function PaymentScreenShell({ children, onClose }: { children: ReactNode; onClose: () => void }) {
   return (
     <div className={`${styles.appScreen} ${styles.paymentScreen}`}>
       <header className={styles.paymentHeader}>
@@ -233,10 +233,11 @@ const INVOICE_DESTINATIONS: Array<{ id: InvoiceDestination; label: string }> = [
   { id: "none", label: "받지 않음" },
 ];
 
-export function InvoiceSelectionScreen({ selectedDestination, onDestinationChange, onBack }: {
+export function InvoiceSelectionScreen({ selectedDestination, onDestinationChange, onBack, onNext }: {
   selectedDestination: InvoiceDestination | null;
   onDestinationChange: (destination: InvoiceDestination) => void;
   onBack: () => void;
+  onNext: () => void;
 }) {
   return (
     <PaymentScreenShell onClose={onBack}>
@@ -272,7 +273,7 @@ export function InvoiceSelectionScreen({ selectedDestination, onDestinationChang
           <button
             type="button"
             className={styles.paymentNextButton}
-            aria-label="다음 단계는 프로토타입 범위에 포함되지 않습니다"
+            onClick={onNext}
           >
             <span>다음</span><span className={styles.paymentArrow} aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" /></svg></span>
           </button>
