@@ -123,10 +123,12 @@ export function EmailInputScreen({
   value,
   onValueChange,
   onBack,
+  onNext,
 }: {
   value: string;
   onValueChange: (value: string) => void;
   onBack: () => void;
+  onNext: () => void;
 }) {
   const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
@@ -143,7 +145,7 @@ export function EmailInputScreen({
           onChange={(event) => onValueChange(event.target.value)}
           autoFocus
         />
-        {isValid ? <NextButton inert /> : null}
+        {isValid ? <NextButton onClick={onNext} /> : null}
       </section>
     </PaymentScreenShell>
   );

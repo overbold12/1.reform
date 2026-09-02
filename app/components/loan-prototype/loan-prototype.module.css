@@ -3458,6 +3458,332 @@
   transform: scale(0.985);
 }
 
+.customerInfoScreen {
+  overflow: hidden;
+  background: #192038;
+  animation: detail-in 220ms ease-out;
+}
+
+.customerInfoHeader {
+  height: 116px;
+  flex: 0 0 116px;
+  background: #192038;
+  color: #ffffff;
+}
+
+.customerInfoStep {
+  position: absolute;
+  top: 24px;
+  right: 31px;
+  display: flex;
+  height: 28px;
+  align-items: center;
+  gap: 7px;
+  color: #71809c;
+}
+
+.customerInfoStep i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #9bb3d6;
+}
+
+.customerInfoStep b,
+.customerInfoStep > span {
+  display: grid;
+  width: 23px;
+  height: 23px;
+  box-sizing: border-box;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.customerInfoStep b {
+  border-color: #b6cce8;
+  background: #b6cce8;
+  color: #1a2238;
+}
+
+.customerInfoStep strong {
+  margin-right: 3px;
+  color: #bed1eb;
+  font-size: 17px;
+  font-weight: 680;
+  letter-spacing: -0.04em;
+}
+
+.customerInfoStep > span {
+  width: 18px;
+  height: 18px;
+  font-size: 10px;
+}
+
+.customerInfoPanel {
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+  border-radius: 16px 16px 0 0;
+  background: #ffffff;
+}
+
+.customerInfoScroll {
+  height: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 43px 32px 34px;
+  scrollbar-width: none;
+}
+
+.customerInfoScroll::-webkit-scrollbar {
+  display: none;
+}
+
+.customerInfoScroll h1 {
+  margin: 0;
+  color: #111215;
+  font-size: 25px;
+  font-weight: 730;
+  letter-spacing: -0.055em;
+}
+
+.customerInfoScroll > p {
+  margin: 15px 0 0;
+  color: #74777d;
+  font-size: 15px;
+  letter-spacing: -0.04em;
+  line-height: 1.7;
+}
+
+.customerInfoScroll > p + p {
+  margin-top: 10px;
+}
+
+.customerInfoRows {
+  display: flex;
+  margin-top: 25px;
+  flex-direction: column;
+}
+
+.customerInfoRowWrap {
+  position: relative;
+}
+
+.customerInfoRow {
+  position: relative;
+  display: grid;
+  width: 100%;
+  min-height: 67px;
+  box-sizing: border-box;
+  grid-template-columns: minmax(0, 1fr) 12px;
+  grid-template-rows: auto auto;
+  align-content: center;
+  align-items: center;
+  column-gap: 10px;
+  border: 0;
+  background: transparent;
+  padding: 5px 0;
+  color: #17181b;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition: opacity 100ms ease, transform 100ms ease;
+}
+
+button.customerInfoRow:active {
+  opacity: 0.68;
+  transform: scale(0.99);
+}
+
+.customerInfoLabel {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 3px;
+  color: #74777d;
+  font-size: 15px;
+  letter-spacing: -0.045em;
+  line-height: 1.4;
+}
+
+.customerInfoLabel i {
+  color: #ed252c;
+  font-size: 14px;
+  font-style: normal;
+  line-height: 1;
+}
+
+.customerInfoHelp {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 88px;
+  display: grid;
+  width: 15px;
+  height: 15px;
+  box-sizing: border-box;
+  place-items: center;
+  border: 1px solid #8b8e94;
+  border-radius: 50%;
+  background: #ffffff;
+  padding: 0;
+  color: #777a80;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.customerInfoHelp:active {
+  transform: scale(0.9);
+}
+
+.customerInfoHelpRequired {
+  position: absolute;
+  top: 11px;
+  left: 107px;
+  color: #ed252c;
+  font-size: 14px;
+  font-style: normal;
+  line-height: 1;
+}
+
+.customerInfoRow strong {
+  min-width: 0;
+  overflow: hidden;
+  color: #111215;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.customerInfoRow .customerInfoPlaceholder {
+  color: #c0c5cc;
+  font-weight: 620;
+}
+
+.customerInfoRow > svg {
+  width: 8px;
+  height: 13px;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  fill: none;
+  stroke: #8f949b;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.customerInfoStaticRow {
+  cursor: default;
+}
+
+.customerSheetLayer {
+  position: absolute;
+  z-index: 30;
+  inset: 0;
+  overflow: hidden;
+}
+
+.customerSheetDim {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  animation: dim-in 190ms ease-out;
+}
+
+.customerChoiceSheet {
+  position: absolute;
+  right: 12px;
+  bottom: 0;
+  left: 12px;
+  width: 351px;
+  overflow: hidden;
+  border-radius: 16px 16px 0 0;
+  animation: sheet-up 260ms ease-out;
+}
+
+.customerChoiceSheet > img {
+  display: block;
+  width: 351px;
+  height: auto;
+}
+
+.customerChoiceHitArea {
+  position: absolute;
+  top: 63px;
+  right: 0;
+  left: 0;
+  display: grid;
+  grid-auto-rows: 45px;
+}
+
+.customerChoiceHitArea button {
+  display: flex;
+  width: 100%;
+  min-height: 0;
+  align-items: center;
+  justify-content: flex-end;
+  border: 0;
+  background: transparent;
+  padding: 0 38px;
+  cursor: pointer;
+  transition: background-color 100ms ease, transform 100ms ease;
+}
+
+.customerChoiceHitArea button:active {
+  background: rgba(237, 37, 44, 0.045);
+  transform: scale(0.99);
+}
+
+.customerChoiceHitArea button > span {
+  display: grid;
+  width: 18px;
+  height: 20px;
+  place-items: center;
+  background: #ffffff;
+  color: #ed252c;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.customerHelpSheet {
+  right: 0;
+  left: 0;
+  width: 375px;
+}
+
+.customerHelpSheet > img {
+  width: 375px;
+}
+
+.customerHelpSheet > button {
+  position: absolute;
+  right: 32px;
+  bottom: 33px;
+  left: 32px;
+  height: 57px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 100ms ease, transform 100ms ease;
+}
+
+.customerHelpSheet > button:active {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(0.99);
+}
+
 .visuallyHidden {
   position: absolute;
   width: 1px;

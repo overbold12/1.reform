@@ -22,6 +22,11 @@ import {
   EmailInputScreen,
   PhoneInputScreen as ContactPhoneInputScreen,
 } from "./contact-info-screens";
+import {
+  CustomerInfoScreen,
+  INITIAL_CUSTOMER_INFO,
+  type CustomerInfoValues,
+} from "./customer-info-screen";
 import { LpointValidationSheet } from "./lpoint-validation-sheet";
 import { LoanConditionScreen } from "./loan-condition-screen";
 import { LoanResultScreen } from "./loan-result-screen";
@@ -97,6 +102,8 @@ export function LoanAgreementPrototype() {
   const [hasNoOfficePhone, setHasNoOfficePhone] = useState(false);
   const [emailAddress, setEmailAddress] = useState("");
   const [showAddressAutofill, setShowAddressAutofill] = useState(false);
+  const [customerInfo, setCustomerInfo] =
+    useState<CustomerInfoValues>({ ...INITIAL_CUSTOMER_INFO });
   const scrollRef = useRef<HTMLDivElement>(null);
   const genderInputRef = useRef<HTMLInputElement>(null);
   const privateInputRef = useRef<HTMLInputElement>(null);
@@ -172,6 +179,9 @@ export function LoanAgreementPrototype() {
     if (nextStep === "account-number") setAutomaticTransferAgreed(false);
     if (nextStep === "micro-deposit") setMicroDepositName("");
     if (nextStep === "invoice-selection") setInvoiceDestination(null);
+    if (nextStep === "customer-info") {
+      setCustomerInfo({ ...INITIAL_CUSTOMER_INFO });
+    }
     setStep(nextStep);
 
     if (nextStep === "public-data-entry") {
@@ -316,6 +326,7 @@ export function LoanAgreementPrototype() {
     setHasNoOfficePhone(false);
     setEmailAddress("");
     setShowAddressAutofill(false);
+    setCustomerInfo({ ...INITIAL_CUSTOMER_INFO });
     requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
   }
 
@@ -581,6 +592,17 @@ export function LoanAgreementPrototype() {
             value={emailAddress}
             onValueChange={setEmailAddress}
             onBack={() => navigateToStep("office-phone")}
+            onNext={() => navigateToStep("customer-info")}
+          />
+        );
+      case "customer-info":
+        return (
+          <CustomerInfoScreen
+            values={customerInfo}
+            onChange={(key, value) => {
+              setCustomerInfo((current) => ({ ...current, [key]: value }));
+            }}
+            onBack={() => navigateToStep("email-address")}
           />
         );
       default:
@@ -717,7 +739,11 @@ export function LoanAgreementPrototype() {
             <b>26</b>
             <span>이메일주소 직접 입력</span>
           </div>
-          <p>주소정보 확인과 이메일 입력까지 체험할 수 있으며, 마지막 CTA에서는 더 진행되지 않습니다.</p>
+          <div className={styles.demoGuideAddedStep}>
+            <b>27</b>
+            <span>고객 정보 확인 및 항목별 수정</span>
+          </div>
+          <p>고객 정보 확인과 항목별 바텀시트 수정까지 체험할 수 있으며, 이후 단계로는 진행되지 않습니다.</p>
         </div>
       </div>
     </section>
