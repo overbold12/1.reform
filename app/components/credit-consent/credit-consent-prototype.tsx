@@ -15,6 +15,10 @@ import {
   FlowScreen,
   InlineNextButton,
 } from "../loan-prototype/flow-navigation";
+import {
+  CertificateSelectionSheet,
+  PublicDataEntryScreen,
+} from "../loan-prototype/public-data-screens";
 import styles from "./credit-consent.module.css";
 
 type Step =
@@ -26,7 +30,9 @@ type Step =
   | "phone-input"
   | "resident-input"
   | "verification-code"
-  | "vehicle-number";
+  | "vehicle-number"
+  | "public-data-entry"
+  | "electronic-signature";
 type AgreementType = "summary" | "full";
 type AgreementGroup = { id: string; title: string; documents: string[] };
 
@@ -40,6 +46,8 @@ const steps: Array<{ id: Step; number: string; label: string }> = [
   { id: "resident-input", number: "07", label: "주민등록번호 입력" },
   { id: "verification-code", number: "08", label: "인증번호 입력" },
   { id: "vehicle-number", number: "09", label: "자동차번호 입력" },
+  { id: "public-data-entry", number: "10", label: "공공마이데이터 진입" },
+  { id: "electronic-signature", number: "11", label: "전자서명" },
 ];
 
 const loanAgreementGroups: AgreementGroup[] = [
@@ -143,12 +151,14 @@ function VehicleNumberScreen({
   onValueChange,
   onNoVehicleChange,
   onBack,
+  onNext,
 }: {
   value: string;
   noVehicle: boolean;
   onValueChange: (value: string) => void;
   onNoVehicleChange: (selected: boolean) => void;
   onBack: () => void;
+  onNext: () => void;
 }) {
   const composingRef = useRef(false);
   const validVehicleNumber = /^\d{2,3}[가-힣]\d{4}$/.test(value);
@@ -205,7 +215,7 @@ function VehicleNumberScreen({
         <p className={styles.vehicleNotice}><span>i</span> 자동차 번호가 있으면 추가적인 금리 인하가 가능해요</p>
         {canContinue ? (
           <div className={styles.vehicleAction}>
-            <InlineNextButton label="다음" onClick={() => undefined} />
+            <InlineNextButton label="다음" onClick={onNext} />
           </div>
         ) : null}
       </div>
@@ -233,18 +243,28 @@ export function CreditConsentPrototype() {
   const genderInputRef = useRef<HTMLInputElement>(null);
   const privateInputRef = useRef<HTMLInputElement>(null);
   const carrierTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const publicDataTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const currentIndex = steps.findIndex((item) => item.id === step);
   const current = steps[currentIndex];
 
   useEffect(() => () => {
     if (carrierTimerRef.current) clearTimeout(carrierTimerRef.current);
+    if (publicDataTimerRef.current) clearTimeout(publicDataTimerRef.current);
   }, []);
 
   function navigate(next: Step) {
     if (carrierTimerRef.current) clearTimeout(carrierTimerRef.current);
+    if (publicDataTimerRef.current) clearTimeout(publicDataTimerRef.current);
     carrierTimerRef.current = null;
+    publicDataTimerRef.current = null;
     setDetailTitle(null);
     setStep(next);
+    if (next === "public-data-entry") {
+      publicDataTimerRef.current = setTimeout(() => {
+        setStep("electronic-signature");
+        publicDataTimerRef.current = null;
+      }, 2200);
+    }
     requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
   }
   function handleCarrierSelect(carrier: Carrier) {
@@ -257,7 +277,9 @@ export function CreditConsentPrototype() {
   }
   function reset() {
     if (carrierTimerRef.current) clearTimeout(carrierTimerRef.current);
+    if (publicDataTimerRef.current) clearTimeout(publicDataTimerRef.current);
     carrierTimerRef.current = null;
+    publicDataTimerRef.current = null;
     setStep("counselor"); setCounselorNumber(""); setAgreementType("summary");
     setAgreements(Object.fromEntries(allGroups.map((group) => [group.id, false])));
     setExpanded(new Set()); setDetailTitle(null); setSelectedCarrier(null);
@@ -280,8 +302,10 @@ export function CreditConsentPrototype() {
       {step === "phone-input" ? <PhoneInputScreen phoneNumber={phoneNumber} onPhoneNumberChange={setPhoneNumber} onBack={() => navigate("name-input")} onNext={() => navigate("resident-input")} /> : null}
       {step === "resident-input" ? <ResidentInputScreen birthDate={birthDate} genderDigit={genderDigit} privateDigits={privateDigits} genderInputRef={genderInputRef} privateInputRef={privateInputRef} onBirthDateChange={setBirthDate} onGenderDigitChange={setGenderDigit} onPrivateDigitsChange={setPrivateDigits} onBack={() => navigate("phone-input")} onRequestVerification={() => navigate("verification-code")} /> : null}
       {step === "verification-code" ? <VerificationCodeScreen code={verificationCode} onCodeChange={setVerificationCode} onBack={() => navigate("resident-input")} onNext={() => navigate("vehicle-number")} /> : null}
-      {step === "vehicle-number" ? <VehicleNumberScreen value={vehicleNumber} noVehicle={noVehicle} onValueChange={(value) => { setVehicleNumber(value); setNoVehicle(false); }} onNoVehicleChange={(selected) => { setNoVehicle(selected); setVehicleNumber(selected ? "자동차 없음" : ""); }} onBack={() => navigate("verification-code")} /> : null}
+      {step === "vehicle-number" ? <VehicleNumberScreen value={vehicleNumber} noVehicle={noVehicle} onValueChange={(value) => { setVehicleNumber(value); setNoVehicle(false); }} onNoVehicleChange={(selected) => { setNoVehicle(selected); setVehicleNumber(selected ? "자동차 없음" : ""); }} onBack={() => navigate("verification-code")} onNext={() => navigate("public-data-entry")} /> : null}
+      {step === "public-data-entry" ? <PublicDataEntryScreen onBack={() => navigate("vehicle-number")} /> : null}
+      {step === "electronic-signature" ? <><PublicDataEntryScreen onBack={() => navigate("vehicle-number")} /><CertificateSelectionSheet onClose={() => navigate("public-data-entry")} onSelect={() => undefined} /></> : null}
       {detailTitle ? <AgreementDetail title={detailTitle} onClose={() => setDetailTitle(null)} /> : null}
-    </div><aside className={styles.demoGuide}><span>DEMO GUIDE</span><h3>신용정보 조회 동의를 직접 진행해보세요</h3><ol><li><b>01</b><span><strong>10</strong>으로 시작하는 상담사번호 입력</span></li><li><b>02</b><span>요약 또는 전체동의서 선택</span></li><li><b>03</b><span>필수동의 체크 및 하위 서식 확인</span></li><li><b>04</b><span>통신사 선택</span></li><li><b>05–07</b><span>이름·휴대폰·주민번호 입력</span></li><li><b>08</b><span>인증번호 입력 및 재전송</span></li><li><b>09</b><span>자동차번호 입력 또는 자동차 없음 선택</span></li></ol><p>자동차번호 입력까지 구현된 프로토타입입니다. 마지막 다음 버튼은 시연 범위에 따라 화면 이동 없이 UI로만 제공됩니다.</p></aside></div>
+    </div><aside className={styles.demoGuide}><span>DEMO GUIDE</span><h3>신용정보 조회 동의를 직접 진행해보세요</h3><ol><li><b>01</b><span><strong>10</strong>으로 시작하는 상담사번호 입력</span></li><li><b>02–03</b><span>동의서 선택 및 필수동의</span></li><li><b>04–07</b><span>통신사·본인정보 입력</span></li><li><b>08</b><span>인증번호 입력 및 재전송</span></li><li><b>09</b><span>자동차번호 입력 또는 자동차 없음 선택</span></li><li><b>10</b><span>전자서명 진입 안내</span></li><li><b>11</b><span>인증서 선택 바텀시트</span></li></ol><p>전자서명 인증서 선택까지 구현된 프로토타입입니다. 인증서 항목은 시연 범위에 따라 후속 화면으로 이동하지 않습니다.</p></aside></div>
   </section>;
 }
