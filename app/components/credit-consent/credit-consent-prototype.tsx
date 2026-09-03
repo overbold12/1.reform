@@ -19,6 +19,7 @@ import {
   CertificateSelectionSheet,
   PublicDataEntryScreen,
 } from "../loan-prototype/public-data-screens";
+import { LoadingSpinner } from "../loan-prototype/loading-spinner";
 import styles from "./credit-consent.module.css";
 
 type Step =
@@ -93,18 +94,46 @@ function NextArrow() {
 }
 
 function CounselorScreen({ value, onChange, onNext }: { value: string; onChange: (value: string) => void; onNext: () => void }) {
-  const valid = /^10\d*$/.test(value);
-  const invalid = value.length > 0 && !valid;
+  const [status, setStatus] = useState<"idle" | "checking" | "success" | "error">("idle");
+  const verificationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => {
+    if (verificationTimerRef.current) clearTimeout(verificationTimerRef.current);
+  }, []);
+
+  function handleChange(nextValue: string) {
+    if (verificationTimerRef.current) clearTimeout(verificationTimerRef.current);
+    verificationTimerRef.current = null;
+    setStatus("idle");
+    onChange(nextValue);
+  }
+
+  function handleBlur() {
+    if (!value || status === "success" || status === "checking") return;
+    setStatus("checking");
+    verificationTimerRef.current = setTimeout(() => {
+      setStatus(/^10\d*$/.test(value) ? "success" : "error");
+      verificationTimerRef.current = null;
+    }, 650);
+  }
+
+  const heading = status === "success"
+    ? "김롯데 상담사 입니다"
+    : status === "error"
+      ? "상담사 번호를 다시 확인후 입력해주세요"
+      : "상담사 번호를 입력해주세요";
+
   return <div className={styles.appScreen}>
     <StatusBar />
     <div className={styles.appNav}><BackButton label="이전 화면으로 돌아가기" onClick={() => undefined} /></div>
     <main className={styles.counselorContent}>
-      <h2>상담사 번호를 입력해주세요</h2>
+      <h2 className={status === "error" ? styles.counselorErrorTitle : undefined}>{heading}</h2>
+      {status === "success" ? <p className={styles.counselorSubtext}>현재 상담 진행중인 상담사가 맞으신가요?</p> : null}
       <p className={styles.inputNotice}><span>i</span> 특수문자(“-”) 없이 숫자만 입력해주세요</p>
-      <label className={styles.inputWrap}><span className={styles.srOnly}>상담사 번호</span><input type="text" inputMode="numeric" autoComplete="off" value={value} placeholder="10" aria-invalid={invalid} onChange={(event) => onChange(event.target.value.replace(/\D/g, "").slice(0, 12))} /></label>
-      {invalid ? <p className={styles.inputError}>상담사 번호는 10으로 시작해야 해요</p> : null}
-      <button type="button" className={styles.nextButton} onClick={onNext} disabled={!valid}><span>다음</span><NextArrow /></button>
+      <label className={styles.inputWrap}><span className={styles.srOnly}>상담사 번호</span><input type="text" inputMode="numeric" autoComplete="off" value={value} placeholder="10" disabled={status === "checking"} aria-invalid={status === "error"} onChange={(event) => handleChange(event.target.value.replace(/\D/g, "").slice(0, 12))} onBlur={handleBlur} /></label>
+      {status === "success" ? <button type="button" className={styles.nextButton} onClick={onNext}><span>다음</span><NextArrow /></button> : null}
     </main>
+    {status === "checking" ? <div className={styles.counselorLoading}><LoadingSpinner label="상담사 정보 확인 중" /><p>상담사 정보를 확인하고 있어요</p></div> : null}
     <span className={styles.homeIndicator} aria-hidden="true" />
   </div>;
 }
@@ -226,6 +255,7 @@ function VehicleNumberScreen({
 export function CreditConsentPrototype() {
   const [step, setStep] = useState<Step>("counselor");
   const [counselorNumber, setCounselorNumber] = useState("");
+  const [counselorSession, setCounselorSession] = useState(0);
   const [agreementType, setAgreementType] = useState<AgreementType>("summary");
   const [agreements, setAgreements] = useState<Record<string, boolean>>(() => Object.fromEntries(allGroups.map((group) => [group.id, false])));
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
@@ -281,6 +311,7 @@ export function CreditConsentPrototype() {
     carrierTimerRef.current = null;
     publicDataTimerRef.current = null;
     setStep("counselor"); setCounselorNumber(""); setAgreementType("summary");
+    setCounselorSession((session) => session + 1);
     setAgreements(Object.fromEntries(allGroups.map((group) => [group.id, false])));
     setExpanded(new Set()); setDetailTitle(null); setSelectedCarrier(null);
     setCustomerName("김롯데"); setPhoneNumber(""); setBirthDate("");
@@ -295,7 +326,7 @@ export function CreditConsentPrototype() {
     <div className="workspace-card-header"><div><span className="workspace-kicker">INTERACTIVE MOBILE PROTOTYPE</span><h2>신용정보조회동의</h2></div><div className={styles.workspaceActions}><span className={styles.stepBadge}>{current.number} {current.label}</span><button type="button" className={styles.resetButton} onClick={reset}>다시 시작</button></div></div>
     <nav className={styles.flowGraph} aria-label="신용정보조회동의 단계 바로가기"><div className={styles.flowHeader}><span>CREDIT CONSENT FLOW</span><p>단계를 선택하면 해당 화면으로 이동합니다.</p></div><div className={styles.flowScroll}><ol className={styles.flowList} style={{ "--step-count": steps.length } as CSSProperties}>{steps.map((item, index) => <li key={item.id}><button type="button" className={`${styles.flowNode} ${index < currentIndex ? styles.flowVisited : ""} ${item.id === step ? styles.flowActive : ""}`} aria-current={item.id === step ? "step" : undefined} onClick={() => navigate(item.id)}><span>{item.number}</span><strong>{item.label}</strong></button></li>)}</ol></div></nav>
     <div className={styles.prototypeStage}><div className={styles.phoneFrame}>
-      {step === "counselor" ? <CounselorScreen value={counselorNumber} onChange={setCounselorNumber} onNext={() => navigate("agreement-type")} /> : null}
+      {step === "counselor" ? <CounselorScreen key={counselorSession} value={counselorNumber} onChange={setCounselorNumber} onNext={() => navigate("agreement-type")} /> : null}
       {step === "agreement-type" || step === "required-agreement" ? <RequiredAgreementScreen agreements={agreements} expanded={expanded} scrollRef={scrollRef} onBack={() => navigate(step === "agreement-type" ? "counselor" : "agreement-type")} onContinue={() => navigate("carrier-selection")} onToggle={toggleAgreement} onToggleLoanAll={toggleLoanAll} onExpand={toggleExpanded} onOpen={setDetailTitle} showSheet={step === "agreement-type"} agreementType={agreementType} onAgreementTypeChange={setAgreementType} onConfirmType={() => navigate("required-agreement")} /> : null}
       {step === "carrier-selection" ? <CarrierSelectionScreen selectedCarrier={selectedCarrier} onBack={() => navigate("required-agreement")} onSelect={handleCarrierSelect} /> : null}
       {step === "name-input" ? <NameInputScreen name={customerName} onNameChange={setCustomerName} onBack={() => navigate("carrier-selection")} onNext={() => navigate("phone-input")} /> : null}

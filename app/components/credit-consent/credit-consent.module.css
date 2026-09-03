@@ -37,16 +37,19 @@
 .backButton svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }
 .counselorContent { padding: 13px 35px 0; }
 .counselorContent h2 { margin: 0; color: #4b4b4b; font-size: 21px; font-weight: 760; letter-spacing: -.045em; }
-.inputNotice { display: flex; align-items: center; gap: 11px; margin: 24px 0 0; color: #5d8dc3; font-size: 12px; font-weight: 650; }
+.counselorContent h2.counselorErrorTitle { color: #ed252b; }
+.counselorSubtext { margin: 7px 0 0; color: #85888e; font-size: 13px; font-weight: 450; letter-spacing: -.025em; }
+.inputNotice { display: flex; align-items: center; gap: 11px; margin: 18px 0 0; color: #5d8dc3; font-size: 12px; font-weight: 650; }
 .inputNotice span { display: grid; width: 14px; height: 14px; place-items: center; border-radius: 50%; background: #8db8e7; color: #fff; font-family: Arial,sans-serif; font-size: 9px; font-weight: 800; }
-.inputWrap { display: block; margin-top: 56px; border-bottom: 1px solid #333; }
+.inputWrap { display: block; margin-top: 9px; border-bottom: 1px solid #333; }
 .inputWrap input { width: 100%; height: 48px; border: 0; outline: 0; background: transparent; padding: 0 1px; color: #303030; font-size: 29px; font-weight: 650; }
 .inputWrap input::placeholder { color: #676767; opacity: .52; }
 .inputWrap:focus-within { border-color: #e5272e; border-bottom-width: 2px; }
-.inputError { margin: 8px 0 0; color: #e5272e; font-size: 11px; }
 .nextButton { display: flex; margin: 44px 0 0 auto; align-items: center; gap: 10px; border: 0; background: transparent; padding: 0; color: #111; cursor: pointer; font-size: 15px; font-weight: 720; transition: opacity 150ms ease,transform 100ms ease; }
 .nextButton:active { transform: scale(.96); }
 .nextButton:disabled { cursor: default; opacity: .32; }
+.counselorLoading { position: absolute; inset: 100px 0 0; z-index: 12; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 14px; background: rgba(255,255,255,.9); animation: dimIn 170ms ease-out; }
+.counselorLoading p { margin: 0; color: #777b82; font-size: 12px; }
 .nextCircle { display: grid; width: 40px; height: 40px; place-items: center; border-radius: 50%; background: #ed252b; color: #fff; }
 .nextCircle svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.2; }
 .agreementScroll { min-height: 0; flex: 1; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
