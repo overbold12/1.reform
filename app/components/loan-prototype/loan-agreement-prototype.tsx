@@ -79,6 +79,7 @@ export function LoanAgreementPrototype() {
   const [optionalAgreements, setOptionalAgreements] =
     useState<Record<string, boolean>>(initialOptionalAgreements);
   const [showLpointValidation, setShowLpointValidation] = useState(false);
+  const [showCertificateSheet, setShowCertificateSheet] = useState(false);
   const [detailTitle, setDetailTitle] = useState<string | null>(null);
   const [selectedCarrier, setSelectedCarrier] = useState<Carrier | null>(null);
   const [customerName, setCustomerName] = useState("김롯데");
@@ -181,6 +182,7 @@ export function LoanAgreementPrototype() {
     publicDataTimerRef.current = null;
     setDetailTitle(null);
     setShowLpointValidation(false);
+    setShowCertificateSheet(false);
     setShowAddressAutofill(nextStep === "home-address");
     if (nextStep === "bank-selection") setSelectedBank(null);
     if (nextStep === "account-number") setAutomaticTransferAgreed(false);
@@ -193,7 +195,7 @@ export function LoanAgreementPrototype() {
 
     if (nextStep === "public-data-entry") {
       publicDataTimerRef.current = setTimeout(() => {
-        setStep("electronic-signature");
+        setShowCertificateSheet(true);
         publicDataTimerRef.current = null;
       }, 2200);
     }
@@ -307,6 +309,7 @@ export function LoanAgreementPrototype() {
     setOptionalAgreements({ ...initialOptionalAgreements });
     setExpandedGroups(new Set());
     setShowLpointValidation(false);
+    setShowCertificateSheet(false);
     setDetailTitle(null);
     setSelectedCarrier(null);
     setCustomerName("김롯데");
@@ -420,20 +423,16 @@ export function LoanAgreementPrototype() {
         );
       case "public-data-entry":
         return (
-          <PublicDataEntryScreen
-            onBack={() => navigateToStep("verification-code")}
-          />
-        );
-      case "electronic-signature":
-        return (
           <>
             <PublicDataEntryScreen
               onBack={() => navigateToStep("verification-code")}
             />
-            <CertificateSelectionSheet
-              onClose={() => navigateToStep("public-data-entry")}
-              onSelect={() => navigateToStep("public-data-receive")}
-            />
+            {showCertificateSheet ? (
+              <CertificateSelectionSheet
+                onClose={() => setShowCertificateSheet(false)}
+                onSelect={() => navigateToStep("public-data-receive")}
+              />
+            ) : null}
           </>
         );
       case "public-data-receive":
@@ -730,63 +729,63 @@ export function LoanAgreementPrototype() {
             </li>
             <li>
               <b>08</b>
-              <span>인증번호 입력 및 전자서명</span>
+              <span>인증번호 입력</span>
+            </li>
+            <li>
+              <b>09–10</b>
+              <span>공공마이데이터 진입 및 서류 수신</span>
             </li>
             <li>
               <b>11</b>
-              <span>공공마이데이터 서류 수신</span>
-            </li>
-            <li>
-              <b>12</b>
               <span>최대한도와 금리 심사</span>
             </li>
             <li>
-              <b>13</b>
+              <b>12</b>
               <span>심사결과 및 조건 조정</span>
             </li>
           </ol>
           <div className={styles.demoGuideAddedStep}>
-            <b>14</b>
+            <b>13</b>
             <span>대출조건 설정 및 상환방식 선택</span>
           </div>
           <div className={styles.demoGuideAddedStep}>
-            <b>15</b>
+            <b>14</b>
             <span>선납혜택 선택</span>
           </div>
           <div className={styles.demoGuideAddedStep}>
-            <b>16</b>
+            <b>15</b>
             <span>자동이체은행 선택</span>
           </div>
           <div className={styles.demoGuideAddedStep}>
-            <b>17</b>
+            <b>16</b>
             <span>계좌번호 입력 및 약관 동의</span>
           </div>
           <div className={styles.demoGuideAddedStep}>
-            <b>18</b>
+            <b>17</b>
             <span>1원인증 적요 입력</span>
           </div>
           <div className={styles.demoGuideAddedStep}>
-            <b>19</b>
+            <b>18</b>
             <span>청구서 수령지 선택</span>
           </div>
           <div className={styles.demoGuideAddedStep}>
-            <b>20–25</b>
+            <b>19–24</b>
             <span>주소정보 불러오기 및 연락처 확인</span>
           </div>
           <div className={styles.demoGuideAddedStep}>
-            <b>26</b>
+            <b>25</b>
             <span>이메일주소 직접 입력</span>
           </div>
           <div className={styles.demoGuideAddedStep}>
-            <b>27</b>
+            <b>26</b>
             <span>고객 정보 확인 및 항목별 수정</span>
           </div>
           <div className={styles.demoGuideAddedStep}>
-            <b>28</b>
+            <b>27</b>
             <span>대출 주요 내용 확인</span>
           </div>
           <div className={styles.demoGuideAddedStep}>
-            <b>29</b>
+            <b>28</b>
             <span>신청정보 확인</span>
           </div>
           <p>입력한 대출 신청정보를 최종 확인하는 단계까지 체험할 수 있으며, 마지막 CTA에서는 더 진행되지 않습니다.</p>

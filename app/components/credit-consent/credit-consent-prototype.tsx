@@ -1,6 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties, type RefObject } from "react";
+import completeImage from "../../../references/to-be(center)/complete.png";
 import {
   CarrierSelectionScreen,
   type Carrier,
@@ -18,6 +20,7 @@ import {
 import {
   CertificateSelectionSheet,
   PublicDataEntryScreen,
+  PublicDataReceiveScreen,
 } from "../loan-prototype/public-data-screens";
 import { LoadingSpinner } from "../loan-prototype/loading-spinner";
 import styles from "./credit-consent.module.css";
@@ -33,8 +36,9 @@ type Step =
   | "verification-code"
   | "vehicle-number"
   | "lpoint-choice"
-  | "public-data-entry"
-  | "electronic-signature";
+  | "electronic-signature"
+  | "public-data-receive"
+  | "application-complete";
 type AgreementType = "summary" | "full";
 type AgreementGroup = { id: string; title: string; documents: string[] };
 
@@ -49,8 +53,9 @@ const steps: Array<{ id: Step; number: string; label: string }> = [
   { id: "verification-code", number: "08", label: "인증번호 입력" },
   { id: "vehicle-number", number: "09", label: "자동차번호 입력" },
   { id: "lpoint-choice", number: "10", label: "엘포인트 여부" },
-  { id: "electronic-signature", number: "11", label: "전자서명" },
-  { id: "public-data-entry", number: "12", label: "공공마이데이터 진입" },
+  { id: "electronic-signature", number: "11", label: "공공마이데이터 진입" },
+  { id: "public-data-receive", number: "12", label: "공공마이데이터 수신" },
+  { id: "application-complete", number: "13", label: "신청완료" },
 ];
 
 const loanAgreementGroups: AgreementGroup[] = [
@@ -309,6 +314,27 @@ function LpointChoiceScreen({
   );
 }
 
+function ApplicationCompleteScreen() {
+  return (
+    <div className={styles.appScreen}>
+      <StatusBar />
+      <main className={styles.completeContent}>
+        <h2>
+          고객님의 신용정보조회
+          <br />동의가 접수되었습니다.
+        </h2>
+        <Image
+          className={styles.completeIllustration}
+          src={completeImage}
+          alt="신용정보조회 동의 접수 완료"
+          priority
+        />
+      </main>
+      <span className={styles.homeIndicator} aria-hidden="true" />
+    </div>
+  );
+}
+
 export function CreditConsentPrototype() {
   const [step, setStep] = useState<Step>("counselor");
   const [counselorNumber, setCounselorNumber] = useState("");
@@ -327,22 +353,34 @@ export function CreditConsentPrototype() {
   const [vehicleNumber, setVehicleNumber] = useState("");
   const [noVehicle, setNoVehicle] = useState(false);
   const [lpointChoice, setLpointChoice] = useState<LpointChoice | null>(null);
+  const [showCertificateSheet, setShowCertificateSheet] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const genderInputRef = useRef<HTMLInputElement>(null);
   const privateInputRef = useRef<HTMLInputElement>(null);
   const carrierTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const certificateTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const currentIndex = steps.findIndex((item) => item.id === step);
   const current = steps[currentIndex];
 
   useEffect(() => () => {
     if (carrierTimerRef.current) clearTimeout(carrierTimerRef.current);
+    if (certificateTimerRef.current) clearTimeout(certificateTimerRef.current);
   }, []);
 
   function navigate(next: Step) {
     if (carrierTimerRef.current) clearTimeout(carrierTimerRef.current);
+    if (certificateTimerRef.current) clearTimeout(certificateTimerRef.current);
     carrierTimerRef.current = null;
+    certificateTimerRef.current = null;
+    setShowCertificateSheet(false);
     setDetailTitle(null);
     setStep(next);
+    if (next === "electronic-signature") {
+      certificateTimerRef.current = setTimeout(() => {
+        setShowCertificateSheet(true);
+        certificateTimerRef.current = null;
+      }, 2200);
+    }
     requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
   }
   function handleCarrierSelect(carrier: Carrier) {
@@ -355,7 +393,10 @@ export function CreditConsentPrototype() {
   }
   function reset() {
     if (carrierTimerRef.current) clearTimeout(carrierTimerRef.current);
+    if (certificateTimerRef.current) clearTimeout(certificateTimerRef.current);
     carrierTimerRef.current = null;
+    certificateTimerRef.current = null;
+    setShowCertificateSheet(false);
     setStep("counselor"); setCounselorNumber(""); setAgreementType("summary");
     setCounselorSession((session) => session + 1);
     setAgreements(Object.fromEntries(allGroups.map((group) => [group.id, false])));
@@ -381,9 +422,10 @@ export function CreditConsentPrototype() {
       {step === "verification-code" ? <VerificationCodeScreen code={verificationCode} onCodeChange={setVerificationCode} onBack={() => navigate("resident-input")} onNext={() => navigate("vehicle-number")} /> : null}
       {step === "vehicle-number" ? <VehicleNumberScreen value={vehicleNumber} noVehicle={noVehicle} onValueChange={(value) => { setVehicleNumber(value); setNoVehicle(false); }} onNoVehicleChange={(selected) => { setNoVehicle(selected); setVehicleNumber(selected ? "자동차 없음" : ""); }} onBack={() => navigate("verification-code")} onNext={() => navigate("lpoint-choice")} /> : null}
       {step === "lpoint-choice" ? <LpointChoiceScreen value={lpointChoice} onChange={setLpointChoice} onBack={() => navigate("vehicle-number")} onNext={() => navigate("electronic-signature")} /> : null}
-      {step === "public-data-entry" ? <PublicDataEntryScreen onBack={() => navigate("lpoint-choice")} /> : null}
-      {step === "electronic-signature" ? <><PublicDataEntryScreen onBack={() => navigate("lpoint-choice")} /><CertificateSelectionSheet onClose={() => navigate("public-data-entry")} onSelect={() => undefined} /></> : null}
+      {step === "electronic-signature" ? <><PublicDataEntryScreen onBack={() => navigate("lpoint-choice")} />{showCertificateSheet ? <CertificateSelectionSheet includeJointCertificate={false} onClose={() => setShowCertificateSheet(false)} onSelect={() => navigate("public-data-receive")} /> : null}</> : null}
+      {step === "public-data-receive" ? <PublicDataReceiveScreen onComplete={() => navigate("application-complete")} /> : null}
+      {step === "application-complete" ? <ApplicationCompleteScreen /> : null}
       {detailTitle ? <AgreementDetail title={detailTitle} onClose={() => setDetailTitle(null)} /> : null}
-    </div><aside className={styles.demoGuide}><span>DEMO GUIDE</span><h3>신용정보 조회 동의를 직접 진행해보세요</h3><ol><li><b>01</b><span><strong>10</strong>으로 시작하는 상담사번호 입력</span></li><li><b>02–03</b><span>동의서 선택 및 필수동의</span></li><li><b>04–07</b><span>통신사·본인정보 입력</span></li><li><b>08–09</b><span>인증번호 및 자동차번호 입력</span></li><li><b>10</b><span>L.POINT 회원 확인 동의 여부 선택</span></li><li><b>11</b><span>인증서 선택 바텀시트</span></li><li><b>12</b><span>공공마이데이터 진입 안내</span></li></ol><p>L.POINT 선택 후 전자서명으로 이어집니다. 인증서 항목은 시연 범위에 따라 후속 화면으로 이동하지 않습니다.</p></aside></div>
+    </div><aside className={styles.demoGuide}><span>DEMO GUIDE</span><h3>신용정보 조회 동의를 직접 진행해보세요</h3><ol><li><b>01</b><span><strong>10</strong>으로 시작하는 상담사번호 입력</span></li><li><b>02–03</b><span>동의서 선택 및 필수동의</span></li><li><b>04–07</b><span>통신사·본인정보 입력</span></li><li><b>08–09</b><span>인증번호 및 자동차번호 입력</span></li><li><b>10</b><span>L.POINT 회원 확인 동의 여부 선택</span></li><li><b>11</b><span>공공마이데이터 진입 및 인증서 선택</span></li><li><b>12–13</b><span>서류 수신 후 신청완료</span></li></ol><p>공공마이데이터 진입 화면에서 인증서 선택창이 잠시 뒤 열립니다. 카카오 또는 토스 인증서를 선택하면 바로 서류 수신을 거쳐 접수가 완료됩니다.</p></aside></div>
   </section>;
 }

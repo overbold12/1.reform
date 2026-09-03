@@ -1477,6 +1477,10 @@
   padding: 27px 28px 31px;
 }
 
+.certificateSheetCompact {
+  height: 279px;
+}
+
 .certificateHeader {
   display: flex;
   align-items: flex-start;

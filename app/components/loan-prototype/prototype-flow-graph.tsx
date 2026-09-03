@@ -13,7 +13,6 @@ export type PrototypeStep =
   | "resident-input"
   | "verification-code"
   | "public-data-entry"
-  | "electronic-signature"
   | "public-data-receive"
   | "screening"
   | "loan-result"
@@ -47,27 +46,26 @@ export const prototypeStages: Array<{
   { id: "phone-input", number: "06", label: "휴대폰번호" },
   { id: "resident-input", number: "07", label: "주민번호" },
   { id: "verification-code", number: "08", label: "인증번호" },
-  { id: "public-data-entry", number: "09", label: "공공마이데이터" },
-  { id: "electronic-signature", number: "10", label: "전자서명" },
-  { id: "public-data-receive", number: "11", label: "서류수신" },
-  { id: "screening", number: "12", label: "심사중" },
-  { id: "loan-result", number: "13", label: "심사결과" },
-  { id: "loan-condition", number: "14", label: "대출조건 설정" },
-  { id: "prepayment-benefit", number: "15", label: "선납혜택" },
-  { id: "bank-selection", number: "16", label: "자동이체은행" },
-  { id: "account-number", number: "17", label: "계좌번호" },
-  { id: "micro-deposit", number: "18", label: "1원인증" },
-  { id: "invoice-selection", number: "19", label: "청구서 선택" },
-  { id: "home-address", number: "20", label: "자택주소(1)" },
-  { id: "home-address-detail", number: "21", label: "자택주소(2)" },
-  { id: "home-phone", number: "22", label: "자택 전화번호" },
-  { id: "office-address", number: "23", label: "직장주소(1)" },
-  { id: "office-address-detail", number: "24", label: "직장주소(2)" },
-  { id: "office-phone", number: "25", label: "직장 전화번호" },
-  { id: "email-address", number: "26", label: "이메일주소" },
-  { id: "customer-info", number: "27", label: "고객 정보 확인" },
-  { id: "loan-key-terms", number: "28", label: "대출주요내용확인" },
-  { id: "application-review", number: "29", label: "신청정보확인" },
+  { id: "public-data-entry", number: "09", label: "공공마이데이터 진입" },
+  { id: "public-data-receive", number: "10", label: "공공마이데이터 수신" },
+  { id: "screening", number: "11", label: "심사중" },
+  { id: "loan-result", number: "12", label: "심사결과" },
+  { id: "loan-condition", number: "13", label: "대출조건 설정" },
+  { id: "prepayment-benefit", number: "14", label: "선납혜택" },
+  { id: "bank-selection", number: "15", label: "자동이체은행" },
+  { id: "account-number", number: "16", label: "계좌번호" },
+  { id: "micro-deposit", number: "17", label: "1원인증" },
+  { id: "invoice-selection", number: "18", label: "청구서 선택" },
+  { id: "home-address", number: "19", label: "자택주소(1)" },
+  { id: "home-address-detail", number: "20", label: "자택주소(2)" },
+  { id: "home-phone", number: "21", label: "자택 전화번호" },
+  { id: "office-address", number: "22", label: "직장주소(1)" },
+  { id: "office-address-detail", number: "23", label: "직장주소(2)" },
+  { id: "office-phone", number: "24", label: "직장 전화번호" },
+  { id: "email-address", number: "25", label: "이메일주소" },
+  { id: "customer-info", number: "26", label: "고객 정보 확인" },
+  { id: "loan-key-terms", number: "27", label: "대출주요내용확인" },
+  { id: "application-review", number: "28", label: "신청정보확인" },
 ];
 
 type PrototypeFlowGraphProps = {
@@ -105,7 +103,7 @@ export function PrototypeFlowGraph({
     <nav className={styles.flowGraph} aria-label="프로토타입 단계 바로가기">
       <div className={styles.flowGraphHeader}>
         <span>CONSENT &amp; IDENTITY FLOW</span>
-        <p>단계를 선택하면 해당 화면으로 바로 이동합니다. 29단계까지 직접 확인할 수 있습니다.</p>
+        <p>단계를 선택하면 해당 화면으로 바로 이동합니다. 28단계까지 직접 확인할 수 있습니다.</p>
       </div>
       <div ref={graphScrollRef} className={styles.flowGraphScroll}>
         <ol

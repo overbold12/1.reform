@@ -130,6 +130,9 @@
 .lpointOption > span.lpointMarkSelected { border-color: #ef2b30; background: #ef2b30; color: #fff; transform: scale(1.03); }
 .lpointOption strong { font-size: 15px; font-weight: 480; letter-spacing: -.025em; }
 .lpointAction { display: flex; justify-content: flex-end; margin-top: 47px; animation: pageIn 180ms ease-out; }
+.completeContent { display: flex; min-height: 0; flex: 1; align-items: center; flex-direction: column; padding: 76px 20px 27px; }
+.completeContent h2 { margin: 0; color: #111; font-size: 20px; font-weight: 730; letter-spacing: -.045em; line-height: 1.48; text-align: center; }
+.completeIllustration { display: block; width: 335px; max-width: 100%; height: auto; margin-top: auto; object-fit: contain; }
 .homeIndicator { position: absolute; bottom: 7px; left: 50%; z-index: 30; width: 134px; height: 5px; border-radius: 999px; background: #090909; transform: translateX(-50%); }
 .demoGuide { width: min(310px,32%); color: #303849; }
 .demoGuide > span { color: #e5272e; font-size: 9px; font-weight: 800; letter-spacing: .16em; }

@@ -36,6 +36,7 @@ export function PublicDataEntryScreen({ onBack }: PublicDataEntryScreenProps) {
 type CertificateSelectionSheetProps = {
   onClose: () => void;
   onSelect: () => void;
+  includeJointCertificate?: boolean;
 };
 
 const certificates = [
@@ -77,17 +78,22 @@ function CertificateIcon({ type }: { type: (typeof certificates)[number]["id"] }
 export function CertificateSelectionSheet({
   onClose,
   onSelect,
+  includeJointCertificate = true,
 }: CertificateSelectionSheetProps) {
+  const visibleCertificates = includeJointCertificate
+    ? certificates
+    : certificates.filter((certificate) => certificate.id !== "joint");
+
   return (
     <div className={styles.sheetLayer} role="dialog" aria-modal="true" aria-labelledby="certificate-title">
       <div className={styles.dimLayer} aria-hidden="true" />
-      <section className={`${styles.bottomSheet} ${styles.certificateSheet}`}>
+      <section className={`${styles.bottomSheet} ${styles.certificateSheet} ${!includeJointCertificate ? styles.certificateSheetCompact : ""}`}>
         <div className={styles.certificateHeader}>
           <h2 id="certificate-title">사용하실 인증서 종류를 선택해주세요.</h2>
           <button type="button" onClick={onClose} aria-label="인증서 선택 닫기">×</button>
         </div>
         <div className={styles.certificateList}>
-          {certificates.map((certificate) => (
+          {visibleCertificates.map((certificate) => (
             <button
               type="button"
               className={styles.certificateOption}
