@@ -1,9 +1,27 @@
 "use client";
 
-import { useRef, useState, type CSSProperties, type RefObject } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type RefObject } from "react";
+import {
+  CarrierSelectionScreen,
+  type Carrier,
+} from "../loan-prototype/carrier-selection-screen";
+import {
+  NameInputScreen,
+  PhoneInputScreen,
+  ResidentInputScreen,
+} from "../loan-prototype/identity-input-screens";
+import { VerificationCodeScreen } from "../loan-prototype/verification-code-screen";
 import styles from "./credit-consent.module.css";
 
-type Step = "counselor" | "agreement-type" | "required-agreement";
+type Step =
+  | "counselor"
+  | "agreement-type"
+  | "required-agreement"
+  | "carrier-selection"
+  | "name-input"
+  | "phone-input"
+  | "resident-input"
+  | "verification-code";
 type AgreementType = "summary" | "full";
 type AgreementGroup = { id: string; title: string; documents: string[] };
 
@@ -11,6 +29,11 @@ const steps: Array<{ id: Step; number: string; label: string }> = [
   { id: "counselor", number: "01", label: "상담사 입력" },
   { id: "agreement-type", number: "02", label: "동의서 선택" },
   { id: "required-agreement", number: "03", label: "필수동의" },
+  { id: "carrier-selection", number: "04", label: "통신사 선택" },
+  { id: "name-input", number: "05", label: "이름 입력" },
+  { id: "phone-input", number: "06", label: "휴대폰번호 입력" },
+  { id: "resident-input", number: "07", label: "주민등록번호 입력" },
+  { id: "verification-code", number: "08", label: "인증번호 입력" },
 ];
 
 const loanAgreementGroups: AgreementGroup[] = [
@@ -85,10 +108,10 @@ function AgreementTypeSheet({ selected, onSelect, onConfirm }: { selected: Agree
 }
 
 type AgreementScreenProps = {
-  agreements: Record<string, boolean>; expanded: Set<string>; scrollRef: RefObject<HTMLDivElement | null>; onBack: () => void; onToggle: (id: string) => void; onToggleLoanAll: () => void; onExpand: (id: string) => void; onOpen: (title: string) => void; showSheet?: boolean; agreementType: AgreementType; onAgreementTypeChange: (type: AgreementType) => void; onConfirmType: () => void;
+  agreements: Record<string, boolean>; expanded: Set<string>; scrollRef: RefObject<HTMLDivElement | null>; onBack: () => void; onContinue: () => void; onToggle: (id: string) => void; onToggleLoanAll: () => void; onExpand: (id: string) => void; onOpen: (title: string) => void; showSheet?: boolean; agreementType: AgreementType; onAgreementTypeChange: (type: AgreementType) => void; onConfirmType: () => void;
 };
 
-function RequiredAgreementScreen({ agreements, expanded, scrollRef, onBack, onToggle, onToggleLoanAll, onExpand, onOpen, showSheet = false, agreementType, onAgreementTypeChange, onConfirmType }: AgreementScreenProps) {
+function RequiredAgreementScreen({ agreements, expanded, scrollRef, onBack, onContinue, onToggle, onToggleLoanAll, onExpand, onOpen, showSheet = false, agreementType, onAgreementTypeChange, onConfirmType }: AgreementScreenProps) {
   const allLoanChecked = loanAgreementGroups.every((group) => agreements[group.id]);
   const allChecked = allGroups.every((group) => agreements[group.id]);
   return <div className={styles.appScreen}>
@@ -98,7 +121,7 @@ function RequiredAgreementScreen({ agreements, expanded, scrollRef, onBack, onTo
       <section className={styles.agreementBlock}><div className={styles.masterRow}><Check checked={allLoanChecked} label="대출조회 필수 동의 전체 선택" onClick={onToggleLoanAll} large /><strong>대출조회 필수 동의</strong></div>{loanAgreementGroups.map((group) => <AgreementSection key={group.id} group={group} checked={Boolean(agreements[group.id])} expanded={expanded.has(group.id)} onCheck={() => onToggle(group.id)} onExpand={() => onExpand(group.id)} onOpen={onOpen} />)}</section>
       <section className={`${styles.agreementBlock} ${styles.publicBlock}`}><h3>공공마이데이터 활용 필수 동의</h3><p>안전한 서류 확인을 위해 항목별 동의가 필요합니다</p>{publicDataAgreementGroups.map((group) => <AgreementSection key={group.id} group={group} checked={Boolean(agreements[group.id])} expanded={expanded.has(group.id)} onCheck={() => onToggle(group.id)} onExpand={() => onExpand(group.id)} onOpen={onOpen} />)}</section><div className={styles.scrollSpacer} />
     </div>
-    {allChecked && !showSheet ? <div className={styles.floatingNext}><button type="button" aria-label="다음 단계 (프로토타입 범위 종료)"><span>다음</span><NextArrow /></button></div> : null}
+    {allChecked && !showSheet ? <div className={styles.floatingNext}><button type="button" onClick={onContinue}><span>다음</span><NextArrow /></button></div> : null}
     <span className={styles.homeIndicator} aria-hidden="true" />
     {showSheet ? <AgreementTypeSheet selected={agreementType} onSelect={onAgreementTypeChange} onConfirm={onConfirmType} /> : null}
   </div>;
@@ -115,22 +138,64 @@ export function CreditConsentPrototype() {
   const [agreements, setAgreements] = useState<Record<string, boolean>>(() => Object.fromEntries(allGroups.map((group) => [group.id, false])));
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [detailTitle, setDetailTitle] = useState<string | null>(null);
+  const [selectedCarrier, setSelectedCarrier] = useState<Carrier | null>(null);
+  const [customerName, setCustomerName] = useState("김롯데");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [genderDigit, setGenderDigit] = useState("");
+  const [privateDigits, setPrivateDigits] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
+  const genderInputRef = useRef<HTMLInputElement>(null);
+  const privateInputRef = useRef<HTMLInputElement>(null);
+  const carrierTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const currentIndex = steps.findIndex((item) => item.id === step);
   const current = steps[currentIndex];
 
-  function navigate(next: Step) { setDetailTitle(null); setStep(next); requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 })); }
-  function reset() { setStep("counselor"); setCounselorNumber(""); setAgreementType("summary"); setAgreements(Object.fromEntries(allGroups.map((group) => [group.id, false]))); setExpanded(new Set()); setDetailTitle(null); }
+  useEffect(() => () => {
+    if (carrierTimerRef.current) clearTimeout(carrierTimerRef.current);
+  }, []);
+
+  function navigate(next: Step) {
+    if (carrierTimerRef.current) clearTimeout(carrierTimerRef.current);
+    carrierTimerRef.current = null;
+    setDetailTitle(null);
+    setStep(next);
+    requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
+  }
+  function handleCarrierSelect(carrier: Carrier) {
+    if (carrierTimerRef.current) clearTimeout(carrierTimerRef.current);
+    setSelectedCarrier(carrier);
+    carrierTimerRef.current = setTimeout(() => {
+      setStep("name-input");
+      carrierTimerRef.current = null;
+    }, 700);
+  }
+  function reset() {
+    if (carrierTimerRef.current) clearTimeout(carrierTimerRef.current);
+    carrierTimerRef.current = null;
+    setStep("counselor"); setCounselorNumber(""); setAgreementType("summary");
+    setAgreements(Object.fromEntries(allGroups.map((group) => [group.id, false])));
+    setExpanded(new Set()); setDetailTitle(null); setSelectedCarrier(null);
+    setCustomerName("김롯데"); setPhoneNumber(""); setBirthDate("");
+    setGenderDigit(""); setPrivateDigits(""); setVerificationCode("");
+  }
   function toggleAgreement(id: string) { setAgreements((currentAgreements) => ({ ...currentAgreements, [id]: !currentAgreements[id] })); }
   function toggleLoanAll() { const checked = loanAgreementGroups.every((group) => agreements[group.id]); setAgreements((currentAgreements) => { const next = { ...currentAgreements }; loanAgreementGroups.forEach((group) => { next[group.id] = !checked; }); return next; }); }
   function toggleExpanded(id: string) { setExpanded((currentExpanded) => { const next = new Set(currentExpanded); if (next.has(id)) next.delete(id); else next.add(id); return next; }); }
 
   return <section className={`workspace-card ${styles.workspace}`}>
     <div className="workspace-card-header"><div><span className="workspace-kicker">INTERACTIVE MOBILE PROTOTYPE</span><h2>신용정보조회동의</h2></div><div className={styles.workspaceActions}><span className={styles.stepBadge}>{current.number} {current.label}</span><button type="button" className={styles.resetButton} onClick={reset}>다시 시작</button></div></div>
-    <nav className={styles.flowGraph} aria-label="신용정보조회동의 단계 바로가기"><div className={styles.flowHeader}><span>CREDIT CONSENT FLOW</span><p>단계를 선택하면 해당 화면으로 이동합니다.</p></div><ol className={styles.flowList} style={{ "--step-count": steps.length } as CSSProperties}>{steps.map((item, index) => <li key={item.id}><button type="button" className={`${styles.flowNode} ${index < currentIndex ? styles.flowVisited : ""} ${item.id === step ? styles.flowActive : ""}`} aria-current={item.id === step ? "step" : undefined} onClick={() => navigate(item.id)}><span>{item.number}</span><strong>{item.label}</strong></button></li>)}</ol></nav>
+    <nav className={styles.flowGraph} aria-label="신용정보조회동의 단계 바로가기"><div className={styles.flowHeader}><span>CREDIT CONSENT FLOW</span><p>단계를 선택하면 해당 화면으로 이동합니다.</p></div><div className={styles.flowScroll}><ol className={styles.flowList} style={{ "--step-count": steps.length } as CSSProperties}>{steps.map((item, index) => <li key={item.id}><button type="button" className={`${styles.flowNode} ${index < currentIndex ? styles.flowVisited : ""} ${item.id === step ? styles.flowActive : ""}`} aria-current={item.id === step ? "step" : undefined} onClick={() => navigate(item.id)}><span>{item.number}</span><strong>{item.label}</strong></button></li>)}</ol></div></nav>
     <div className={styles.prototypeStage}><div className={styles.phoneFrame}>
-      {step === "counselor" ? <CounselorScreen value={counselorNumber} onChange={setCounselorNumber} onNext={() => navigate("agreement-type")} /> : <RequiredAgreementScreen agreements={agreements} expanded={expanded} scrollRef={scrollRef} onBack={() => navigate(step === "agreement-type" ? "counselor" : "agreement-type")} onToggle={toggleAgreement} onToggleLoanAll={toggleLoanAll} onExpand={toggleExpanded} onOpen={setDetailTitle} showSheet={step === "agreement-type"} agreementType={agreementType} onAgreementTypeChange={setAgreementType} onConfirmType={() => navigate("required-agreement")} />}
+      {step === "counselor" ? <CounselorScreen value={counselorNumber} onChange={setCounselorNumber} onNext={() => navigate("agreement-type")} /> : null}
+      {step === "agreement-type" || step === "required-agreement" ? <RequiredAgreementScreen agreements={agreements} expanded={expanded} scrollRef={scrollRef} onBack={() => navigate(step === "agreement-type" ? "counselor" : "agreement-type")} onContinue={() => navigate("carrier-selection")} onToggle={toggleAgreement} onToggleLoanAll={toggleLoanAll} onExpand={toggleExpanded} onOpen={setDetailTitle} showSheet={step === "agreement-type"} agreementType={agreementType} onAgreementTypeChange={setAgreementType} onConfirmType={() => navigate("required-agreement")} /> : null}
+      {step === "carrier-selection" ? <CarrierSelectionScreen selectedCarrier={selectedCarrier} onBack={() => navigate("required-agreement")} onSelect={handleCarrierSelect} /> : null}
+      {step === "name-input" ? <NameInputScreen name={customerName} onNameChange={setCustomerName} onBack={() => navigate("carrier-selection")} onNext={() => navigate("phone-input")} /> : null}
+      {step === "phone-input" ? <PhoneInputScreen phoneNumber={phoneNumber} onPhoneNumberChange={setPhoneNumber} onBack={() => navigate("name-input")} onNext={() => navigate("resident-input")} /> : null}
+      {step === "resident-input" ? <ResidentInputScreen birthDate={birthDate} genderDigit={genderDigit} privateDigits={privateDigits} genderInputRef={genderInputRef} privateInputRef={privateInputRef} onBirthDateChange={setBirthDate} onGenderDigitChange={setGenderDigit} onPrivateDigitsChange={setPrivateDigits} onBack={() => navigate("phone-input")} onRequestVerification={() => navigate("verification-code")} /> : null}
+      {step === "verification-code" ? <VerificationCodeScreen code={verificationCode} onCodeChange={setVerificationCode} onBack={() => navigate("resident-input")} onNext={() => undefined} /> : null}
       {detailTitle ? <AgreementDetail title={detailTitle} onClose={() => setDetailTitle(null)} /> : null}
-    </div><aside className={styles.demoGuide}><span>DEMO GUIDE</span><h3>신용정보 조회 동의를 직접 진행해보세요</h3><ol><li><b>01</b><span><strong>10</strong>으로 시작하는 상담사번호 입력</span></li><li><b>02</b><span>요약 또는 전체동의서 선택</span></li><li><b>03</b><span>필수동의 체크 및 하위 서식 확인</span></li></ol><p>필수동의까지 구현된 프로토타입입니다. 마지막 다음 버튼은 시연 범위에 따라 화면 이동 없이 UI로만 제공됩니다.</p></aside></div>
+    </div><aside className={styles.demoGuide}><span>DEMO GUIDE</span><h3>신용정보 조회 동의를 직접 진행해보세요</h3><ol><li><b>01</b><span><strong>10</strong>으로 시작하는 상담사번호 입력</span></li><li><b>02</b><span>요약 또는 전체동의서 선택</span></li><li><b>03</b><span>필수동의 체크 및 하위 서식 확인</span></li><li><b>04</b><span>통신사 선택</span></li><li><b>05–07</b><span>이름·휴대폰·주민번호 입력</span></li><li><b>08</b><span>인증번호 입력 및 재전송</span></li></ol><p>인증번호 입력까지 구현된 프로토타입입니다. 마지막 다음 버튼은 시연 범위에 따라 화면 이동 없이 UI로만 제공됩니다.</p></aside></div>
   </section>;
 }
