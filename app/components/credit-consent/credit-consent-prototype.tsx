@@ -261,8 +261,8 @@ export function CreditConsentPrototype() {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [detailTitle, setDetailTitle] = useState<string | null>(null);
   const [selectedCarrier, setSelectedCarrier] = useState<Carrier | null>(null);
-  const [customerName, setCustomerName] = useState("김롯데");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("01012345678");
   const [birthDate, setBirthDate] = useState("");
   const [genderDigit, setGenderDigit] = useState("");
   const [privateDigits, setPrivateDigits] = useState("");
@@ -314,7 +314,7 @@ export function CreditConsentPrototype() {
     setCounselorSession((session) => session + 1);
     setAgreements(Object.fromEntries(allGroups.map((group) => [group.id, false])));
     setExpanded(new Set()); setDetailTitle(null); setSelectedCarrier(null);
-    setCustomerName("김롯데"); setPhoneNumber(""); setBirthDate("");
+    setCustomerName(""); setPhoneNumber("01012345678"); setBirthDate("");
     setGenderDigit(""); setPrivateDigits(""); setVerificationCode("");
     setVehicleNumber(""); setNoVehicle(false);
   }
