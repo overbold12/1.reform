@@ -120,6 +120,16 @@
 .vehicleNotice { display: flex; align-items: center; gap: 4px; margin: 0 0 0 2px; color: #7198c5; font-size: 11px; letter-spacing: -.025em; }
 .vehicleNotice span { display: grid; width: 14px; height: 14px; place-items: center; border-radius: 50%; background: #9bbce0; color: #fff; font-family: Arial,sans-serif; font-size: 9px; font-weight: 800; }
 .vehicleAction { display: flex; justify-content: flex-end; margin-top: 47px; animation: pageIn 180ms ease-out; }
+.lpointContent { padding: 27px 48px 60px; }
+.lpointContent h2 { margin: 0; color: #191919; font-size: 16px; font-weight: 720; letter-spacing: -.035em; line-height: 1.7; }
+.lpointOptions { display: flex; margin-top: 42px; flex-direction: column; gap: 1px; }
+.lpointOption { display: flex; min-height: 44px; align-items: center; gap: 9px; border: 0; background: transparent; padding: 0; color: #202020; cursor: pointer; text-align: left; transition: transform 100ms ease,opacity 120ms ease; }
+.lpointOption:active { opacity: .72; transform: scale(.985); }
+.lpointOption > span { display: grid; width: 24px; height: 24px; flex: 0 0 24px; place-items: center; border: 1px solid #cdd1d6; border-radius: 50%; background: #fff; color: #c9cdd2; transition: border-color 150ms ease,background-color 150ms ease,color 150ms ease,transform 120ms ease; }
+.lpointOption > span svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.7; }
+.lpointOption > span.lpointMarkSelected { border-color: #ef2b30; background: #ef2b30; color: #fff; transform: scale(1.03); }
+.lpointOption strong { font-size: 15px; font-weight: 480; letter-spacing: -.025em; }
+.lpointAction { display: flex; justify-content: flex-end; margin-top: 47px; animation: pageIn 180ms ease-out; }
 .homeIndicator { position: absolute; bottom: 7px; left: 50%; z-index: 30; width: 134px; height: 5px; border-radius: 999px; background: #090909; transform: translateX(-50%); }
 .demoGuide { width: min(310px,32%); color: #303849; }
 .demoGuide > span { color: #e5272e; font-size: 9px; font-weight: 800; letter-spacing: .16em; }
