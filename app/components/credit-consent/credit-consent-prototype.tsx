@@ -11,6 +11,10 @@ import {
   ResidentInputScreen,
 } from "../loan-prototype/identity-input-screens";
 import { VerificationCodeScreen } from "../loan-prototype/verification-code-screen";
+import {
+  FlowScreen,
+  InlineNextButton,
+} from "../loan-prototype/flow-navigation";
 import styles from "./credit-consent.module.css";
 
 type Step =
@@ -21,7 +25,8 @@ type Step =
   | "name-input"
   | "phone-input"
   | "resident-input"
-  | "verification-code";
+  | "verification-code"
+  | "vehicle-number";
 type AgreementType = "summary" | "full";
 type AgreementGroup = { id: string; title: string; documents: string[] };
 
@@ -34,6 +39,7 @@ const steps: Array<{ id: Step; number: string; label: string }> = [
   { id: "phone-input", number: "06", label: "휴대폰번호 입력" },
   { id: "resident-input", number: "07", label: "주민등록번호 입력" },
   { id: "verification-code", number: "08", label: "인증번호 입력" },
+  { id: "vehicle-number", number: "09", label: "자동차번호 입력" },
 ];
 
 const loanAgreementGroups: AgreementGroup[] = [
@@ -131,6 +137,82 @@ function AgreementDetail({ title, onClose }: { title: string; onClose: () => voi
   return <section className={styles.detailLayer} aria-label={`${title} 상세`}><StatusBar /><div className={styles.detailNav}><BackButton label="필수동의로 돌아가기" onClick={onClose} /><strong>동의서 상세</strong></div><div className={styles.detailContent}><h2>{title}</h2><p>본 동의서는 신용정보 조회 및 대출 상담 진행에 필요한 필수 사항을 안내합니다.</p><h3>수집·이용 목적</h3><p>대출 상담, 신용도 판단, 본인 확인 및 관련 법령에 따른 업무 처리를 위해 이용합니다.</p><h3>보유 및 이용 기간</h3><p>거래 종료일로부터 관련 법령이 정한 기간까지 안전하게 보관하며, 목적 달성 후 파기합니다.</p></div><button type="button" className={styles.detailConfirm} onClick={onClose}>확인</button><span className={styles.homeIndicator} aria-hidden="true" /></section>;
 }
 
+function VehicleNumberScreen({
+  value,
+  noVehicle,
+  onValueChange,
+  onNoVehicleChange,
+  onBack,
+}: {
+  value: string;
+  noVehicle: boolean;
+  onValueChange: (value: string) => void;
+  onNoVehicleChange: (selected: boolean) => void;
+  onBack: () => void;
+}) {
+  const composingRef = useRef(false);
+  const validVehicleNumber = /^\d{2,3}[가-힣]\d{4}$/.test(value);
+  const canContinue = noVehicle || validVehicleNumber;
+
+  function normalizeVehicleNumber(input: string) {
+    return input.replace(/[^0-9ㄱ-ㅎㅏ-ㅣ가-힣]/g, "").slice(0, 8);
+  }
+
+  function toggleNoVehicle() {
+    onNoVehicleChange(!noVehicle);
+  }
+
+  return (
+    <FlowScreen onBack={onBack} backLabel="인증번호 입력으로 돌아가기">
+      <div className={styles.vehicleContent}>
+        <label className={styles.vehicleLabel} htmlFor="vehicle-number">
+          자동차 번호를 입력해주세요
+        </label>
+        <input
+          id="vehicle-number"
+          className={styles.vehicleInput}
+          value={value}
+          readOnly={noVehicle}
+          autoComplete="off"
+          autoCapitalize="none"
+          spellCheck={false}
+          lang="ko"
+          placeholder="12가1234"
+          maxLength={8}
+          onChange={(event) => {
+            const next = composingRef.current
+              ? event.target.value.slice(0, 8)
+              : normalizeVehicleNumber(event.target.value);
+            onValueChange(next);
+          }}
+          onCompositionStart={() => {
+            composingRef.current = true;
+          }}
+          onCompositionEnd={(event) => {
+            composingRef.current = false;
+            onValueChange(normalizeVehicleNumber(event.currentTarget.value));
+          }}
+        />
+        <div className={styles.noVehicleRow}>
+          <Check
+            checked={noVehicle}
+            label={noVehicle ? "자동차 없음 선택 해제" : "자동차 없음 선택"}
+            onClick={toggleNoVehicle}
+            large
+          />
+          <button type="button" onClick={toggleNoVehicle}>자동차 없음</button>
+        </div>
+        <p className={styles.vehicleNotice}><span>i</span> 자동차 번호가 있으면 추가적인 금리 인하가 가능해요</p>
+        {canContinue ? (
+          <div className={styles.vehicleAction}>
+            <InlineNextButton label="다음" onClick={() => undefined} />
+          </div>
+        ) : null}
+      </div>
+    </FlowScreen>
+  );
+}
+
 export function CreditConsentPrototype() {
   const [step, setStep] = useState<Step>("counselor");
   const [counselorNumber, setCounselorNumber] = useState("");
@@ -145,6 +227,8 @@ export function CreditConsentPrototype() {
   const [genderDigit, setGenderDigit] = useState("");
   const [privateDigits, setPrivateDigits] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
+  const [vehicleNumber, setVehicleNumber] = useState("");
+  const [noVehicle, setNoVehicle] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const genderInputRef = useRef<HTMLInputElement>(null);
   const privateInputRef = useRef<HTMLInputElement>(null);
@@ -179,6 +263,7 @@ export function CreditConsentPrototype() {
     setExpanded(new Set()); setDetailTitle(null); setSelectedCarrier(null);
     setCustomerName("김롯데"); setPhoneNumber(""); setBirthDate("");
     setGenderDigit(""); setPrivateDigits(""); setVerificationCode("");
+    setVehicleNumber(""); setNoVehicle(false);
   }
   function toggleAgreement(id: string) { setAgreements((currentAgreements) => ({ ...currentAgreements, [id]: !currentAgreements[id] })); }
   function toggleLoanAll() { const checked = loanAgreementGroups.every((group) => agreements[group.id]); setAgreements((currentAgreements) => { const next = { ...currentAgreements }; loanAgreementGroups.forEach((group) => { next[group.id] = !checked; }); return next; }); }
@@ -194,8 +279,9 @@ export function CreditConsentPrototype() {
       {step === "name-input" ? <NameInputScreen name={customerName} onNameChange={setCustomerName} onBack={() => navigate("carrier-selection")} onNext={() => navigate("phone-input")} /> : null}
       {step === "phone-input" ? <PhoneInputScreen phoneNumber={phoneNumber} onPhoneNumberChange={setPhoneNumber} onBack={() => navigate("name-input")} onNext={() => navigate("resident-input")} /> : null}
       {step === "resident-input" ? <ResidentInputScreen birthDate={birthDate} genderDigit={genderDigit} privateDigits={privateDigits} genderInputRef={genderInputRef} privateInputRef={privateInputRef} onBirthDateChange={setBirthDate} onGenderDigitChange={setGenderDigit} onPrivateDigitsChange={setPrivateDigits} onBack={() => navigate("phone-input")} onRequestVerification={() => navigate("verification-code")} /> : null}
-      {step === "verification-code" ? <VerificationCodeScreen code={verificationCode} onCodeChange={setVerificationCode} onBack={() => navigate("resident-input")} onNext={() => undefined} /> : null}
+      {step === "verification-code" ? <VerificationCodeScreen code={verificationCode} onCodeChange={setVerificationCode} onBack={() => navigate("resident-input")} onNext={() => navigate("vehicle-number")} /> : null}
+      {step === "vehicle-number" ? <VehicleNumberScreen value={vehicleNumber} noVehicle={noVehicle} onValueChange={(value) => { setVehicleNumber(value); setNoVehicle(false); }} onNoVehicleChange={(selected) => { setNoVehicle(selected); setVehicleNumber(selected ? "자동차 없음" : ""); }} onBack={() => navigate("verification-code")} /> : null}
       {detailTitle ? <AgreementDetail title={detailTitle} onClose={() => setDetailTitle(null)} /> : null}
-    </div><aside className={styles.demoGuide}><span>DEMO GUIDE</span><h3>신용정보 조회 동의를 직접 진행해보세요</h3><ol><li><b>01</b><span><strong>10</strong>으로 시작하는 상담사번호 입력</span></li><li><b>02</b><span>요약 또는 전체동의서 선택</span></li><li><b>03</b><span>필수동의 체크 및 하위 서식 확인</span></li><li><b>04</b><span>통신사 선택</span></li><li><b>05–07</b><span>이름·휴대폰·주민번호 입력</span></li><li><b>08</b><span>인증번호 입력 및 재전송</span></li></ol><p>인증번호 입력까지 구현된 프로토타입입니다. 마지막 다음 버튼은 시연 범위에 따라 화면 이동 없이 UI로만 제공됩니다.</p></aside></div>
+    </div><aside className={styles.demoGuide}><span>DEMO GUIDE</span><h3>신용정보 조회 동의를 직접 진행해보세요</h3><ol><li><b>01</b><span><strong>10</strong>으로 시작하는 상담사번호 입력</span></li><li><b>02</b><span>요약 또는 전체동의서 선택</span></li><li><b>03</b><span>필수동의 체크 및 하위 서식 확인</span></li><li><b>04</b><span>통신사 선택</span></li><li><b>05–07</b><span>이름·휴대폰·주민번호 입력</span></li><li><b>08</b><span>인증번호 입력 및 재전송</span></li><li><b>09</b><span>자동차번호 입력 또는 자동차 없음 선택</span></li></ol><p>자동차번호 입력까지 구현된 프로토타입입니다. 마지막 다음 버튼은 시연 범위에 따라 화면 이동 없이 UI로만 제공됩니다.</p></aside></div>
   </section>;
 }
