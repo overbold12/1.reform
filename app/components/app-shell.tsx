@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ComparisonPanel } from "./comparison-panel";
 import { ContentHeader } from "./content-header";
-import { EmptyWorkspace } from "./empty-workspace";
+import { CreditConsentPrototype } from "./credit-consent/credit-consent-prototype";
 import { Sidebar } from "./sidebar";
 import { ToBePanel } from "./to-be-panel";
 
@@ -50,10 +50,7 @@ export function AppShell() {
             {activeMenu === "affiliate-credit" ? (
               <ToBePanel />
             ) : activeMenu === "credit-consent" ? (
-              <EmptyWorkspace
-                label="To-be(신용정보조회동의)"
-                description="아직 구현된 화면이 없습니다."
-              />
+              <CreditConsentPrototype />
             ) : (
               <ComparisonPanel />
             )}
