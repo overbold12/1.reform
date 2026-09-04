@@ -8,6 +8,7 @@ import type {
   ServiceId,
 } from "./comparison-data";
 import { PartnerLoanConsentComparison } from "./partner-loan-consent-comparison";
+import { PartnerLoanInformationComparison } from "./partner-loan-information-comparison";
 import styles from "./comparison.module.css";
 
 type ComparisonSectionProps = {
@@ -225,6 +226,8 @@ export function InteractiveComparison({
       <div className={styles.interactionViewport} key={activeProcedure}>
         {serviceId === "partnerLoan" && activeProcedure === "required-consent" ? (
           <PartnerLoanConsentComparison />
+        ) : serviceId === "partnerLoan" && activeProcedure === "information-review" ? (
+          <PartnerLoanInformationComparison />
         ) : (
           <div className={styles.itemList}>
             {procedureItems.length > 0 ? (

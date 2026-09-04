@@ -1,0 +1,339 @@
+.appScreen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fff;
+  color: #111;
+}
+
+.darkScreen {
+  background: #192038;
+}
+
+.legacyNav {
+  position: relative;
+  display: flex;
+  height: 74px;
+  flex: 0 0 74px;
+  align-items: center;
+  padding: 0 31px;
+  color: #fff;
+}
+
+.legacyNav > button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  cursor: pointer;
+  font-size: 39px;
+  font-weight: 230;
+  line-height: 1;
+}
+
+.legacyNav > div {
+  position: absolute;
+  right: 31px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #71809c;
+}
+
+.legacyNav i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #9bb3d6;
+}
+
+.legacyNav b,
+.legacyNav span {
+  display: grid;
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.legacyNav b {
+  width: 23px;
+  height: 23px;
+  border-color: #b6cce8;
+  background: #b6cce8;
+  color: #1a2238;
+  font-size: 12px;
+}
+
+.legacyNav strong {
+  margin-right: 3px;
+  color: #bed1eb;
+  font-size: 17px;
+  font-weight: 680;
+  letter-spacing: -0.04em;
+}
+
+.legacyPanel {
+  position: relative;
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+  border-radius: 16px 16px 0 0;
+  background: #fff;
+  padding: 43px 32px 48px;
+  scrollbar-width: none;
+}
+
+.legacyPanel::-webkit-scrollbar,
+.suitabilityScroll::-webkit-scrollbar {
+  display: none;
+}
+
+.sheetHandle {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  width: 134px;
+  height: 5px;
+  border-radius: 999px;
+  background: #929292;
+  transform: translateX(-50%);
+}
+
+.buildUp {
+  display: flex;
+  min-height: 294px;
+  align-items: flex-start;
+  flex-direction: column;
+  color: #74777d;
+  font-size: 16px;
+  letter-spacing: -0.035em;
+  line-height: 1.4;
+}
+
+.buildUp span {
+  width: max-content;
+  max-width: 100%;
+  border-bottom: 1px solid #c9cbd0;
+}
+
+.paydaySection > label,
+.choiceSection h3 {
+  display: block;
+  margin: 0 0 12px;
+  color: #65686d;
+  font-size: 16px;
+  font-weight: 690;
+  letter-spacing: -0.04em;
+}
+
+.paydayField {
+  display: flex;
+  height: 55px;
+  align-items: center;
+  border-bottom: 1px solid #4d525a;
+}
+
+.paydayField input {
+  width: 30px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  padding: 0;
+  color: #111;
+  font: inherit;
+  font-size: 30px;
+  font-weight: 720;
+  letter-spacing: -0.04em;
+  caret-color: #ed252b;
+}
+
+.paydayField strong {
+  font-size: 30px;
+  font-weight: 720;
+}
+
+.choiceSection {
+  margin-top: 0;
+}
+
+.choiceSection > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.choiceSection button {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 9px;
+  border: 0;
+  background: transparent;
+  padding: 4px 0;
+  color: #111;
+  cursor: pointer;
+  font: inherit;
+  font-size: 18px;
+  text-align: left;
+}
+
+.choiceSection button i {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  place-items: center;
+  border: 1px solid #cfd2d7;
+  border-radius: 50%;
+  color: #cfd2d7;
+}
+
+.choiceSection button svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.choiceSection button.choiceSelected i {
+  border-color: #ed252b;
+  background: #ed252b;
+  color: #fff;
+}
+
+.choiceSectionLarge h3 {
+  margin-bottom: 7px;
+  color: #111;
+  font-size: 22px;
+  font-weight: 750;
+}
+
+.choiceSectionLarge button {
+  min-height: 43px;
+  font-size: 18px;
+}
+
+.ownerPanel h2,
+.suitabilityPanel h2 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 760;
+  letter-spacing: -0.045em;
+  line-height: 1.45;
+}
+
+.ownerPanel > p,
+.suitabilityScroll > p {
+  margin: 29px 0 0;
+  color: #74777d;
+  font-size: 15px;
+  letter-spacing: -0.035em;
+  line-height: 1.72;
+}
+
+.ownerPanel > p + p,
+.suitabilityScroll > p + p {
+  margin-top: 23px;
+}
+
+.ownerPanel small {
+  display: block;
+  margin-top: 30px;
+  color: #6c96ca;
+  font-size: 12px;
+}
+
+.ownerPanel .choiceSection {
+  margin-top: 14px;
+}
+
+.suitabilityPanel {
+  overflow: hidden;
+  padding: 43px 0 0;
+}
+
+.suitabilityPanel > .sheetHandle {
+  z-index: 2;
+}
+
+.suitabilityScroll {
+  height: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
+  padding: 0 32px 55px;
+  scrollbar-width: none;
+}
+
+.suitabilityScroll > p {
+  margin-top: 27px;
+}
+
+.suitabilityGroups {
+  display: flex;
+  margin-top: 25px;
+  flex-direction: column;
+  gap: 27px;
+}
+
+.nextButtonWrap {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 30px;
+}
+
+.nextButtonWrap button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #111;
+  cursor: pointer;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 720;
+}
+
+.nextButtonWrap i {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 50%;
+  background: #ed252b;
+  color: #fff;
+}
+
+.nextButtonWrap svg {
+  width: 23px;
+  height: 23px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.2;
+}
+
+.homeIndicator {
+  position: absolute;
+  right: 0;
+  bottom: 7px;
+  left: 0;
+  z-index: 20;
+  width: 134px;
+  height: 5px;
+  margin: auto;
+  border-radius: 999px;
+  background: #050505;
+  pointer-events: none;
+}
