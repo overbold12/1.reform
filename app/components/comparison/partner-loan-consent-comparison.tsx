@@ -97,7 +97,6 @@ export function PartnerLoanConsentComparison() {
 
 function AsIsConsentPrototype() {
   const [step, setStep] = useState<AsIsStep>("required");
-  const [completed, setCompleted] = useState(false);
   const [detailTitle, setDetailTitle] = useState<string | null>(null);
   const [requiredChecks, setRequiredChecks] = useState<Record<string, boolean>>(
     emptySelection(requiredConsentItems.map((item) => item.id)),
@@ -117,7 +116,6 @@ function AsIsConsentPrototype() {
 
   function reset() {
     setStep("required");
-    setCompleted(false);
     setDetailTitle(null);
     setRequiredChecks(emptySelection(requiredConsentItems.map((item) => item.id)));
     setPhoneNumber("");
@@ -133,9 +131,7 @@ function AsIsConsentPrototype() {
   function moveNext() {
     if (stepIndex < asIsSteps.length - 1) {
       setStep(asIsSteps[stepIndex + 1].id);
-      return;
     }
-    setCompleted(true);
   }
 
   return (
@@ -190,9 +186,7 @@ function AsIsConsentPrototype() {
         {detailTitle ? (
           <AgreementDetail title={detailTitle} onClose={() => setDetailTitle(null)} />
         ) : null}
-        {completed ? <CompletionToast text="AS-IS 필수 동의 절차를 완료했습니다." /> : null}
       </div>
-      <StepNavigation currentStep={step} onChange={setStep} />
     </PrototypeColumn>
   );
 }
@@ -358,12 +352,14 @@ function TermsConsentAsIsScreen({
               checked={Boolean(checks[item])}
               title={item}
               key={item}
+              sub={step === "3"}
+              prominent={step === "4"}
               onCheck={() => onChange({ ...checks, [item]: !checks[item] })}
               onDetail={() => onDetail(item)}
             />
           ))}
         </div>
-        {allChecked ? <FloatingNext label={step === "4" ? "완료" : "다음"} onClick={onNext} /> : null}
+        {allChecked ? <FloatingNext onClick={onNext} /> : null}
       </div>
     </AsIsScreen>
   );
@@ -495,19 +491,59 @@ function DocumentButton({ title, onClick }: { title: string; onClick: () => void
 function ConsentDocumentRow({
   title,
   checked,
+  sub = false,
+  prominent = false,
   onCheck,
   onDetail,
 }: {
   title: string;
   checked: boolean;
+  sub?: boolean;
+  prominent?: boolean;
   onCheck: () => void;
   onDetail: () => void;
 }) {
   return (
-    <div className={styles.consentDocumentRow}>
-      <AgreementCheck checked={checked} label={`${title} 동의`} onChange={onCheck} />
+    <div
+      className={`${styles.consentDocumentRow} ${sub ? styles.subConsentRow : ""} ${
+        prominent ? styles.prominentConsentRow : ""
+      }`}
+    >
+      {sub ? (
+        <SubAgreementCheck checked={checked} label={`${title} 동의`} onChange={onCheck} />
+      ) : (
+        <AgreementCheck
+          checked={checked}
+          label={`${title} 동의`}
+          onChange={onCheck}
+          prominent={prominent}
+        />
+      )}
       <button type="button" onClick={onDetail}><span>{title}</span><b>›</b></button>
     </div>
+  );
+}
+
+function SubAgreementCheck({
+  checked,
+  label,
+  onChange,
+}: {
+  checked: boolean;
+  label: string;
+  onChange: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      role="checkbox"
+      aria-checked={checked}
+      aria-label={label}
+      className={`${styles.subCheck} ${checked ? styles.subCheckSelected : ""}`}
+      onClick={onChange}
+    >
+      <svg viewBox="0 0 18 18" aria-hidden="true"><path d="m4.5 9.2 2.8 2.8 6.1-6.4" /></svg>
+    </button>
   );
 }
 
@@ -518,30 +554,6 @@ function FloatingNext({ label = "다음", onClick }: { label?: string; onClick: 
         <span>{label}</span>
         <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" /></svg></i>
       </button>
-    </div>
-  );
-}
-
-function StepNavigation({
-  currentStep,
-  onChange,
-}: {
-  currentStep: AsIsStep;
-  onChange: (step: AsIsStep) => void;
-}) {
-  return (
-    <div className={styles.stepNavigation} aria-label="AS-IS 화면 바로가기">
-      {asIsSteps.map((item, index) => (
-        <button
-          type="button"
-          className={currentStep === item.id ? styles.stepActive : ""}
-          aria-current={currentStep === item.id ? "step" : undefined}
-          key={item.id}
-          onClick={() => onChange(item.id)}
-        >
-          <span>{index + 1}</span>{item.label}
-        </button>
-      ))}
     </div>
   );
 }
