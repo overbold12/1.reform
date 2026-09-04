@@ -322,12 +322,13 @@ function IdentityConsentAsIsScreen({
           />
           <strong>필수약관 전체 동의</strong>
         </div>
-        {identityConsentItems.map((item) => (
+        {identityConsentItems.map((item, index) => (
           <ConsentDocumentRow
             checked={Boolean(checks[item])}
             title={item}
             key={item}
             sub
+            pullUp={index === 1}
             onCheck={() => onChange({ ...checks, [item]: !checks[item] })}
             onDetail={() => onDetail(item)}
           />
@@ -547,6 +548,7 @@ function ConsentDocumentRow({
   checked,
   sub = false,
   prominent = false,
+  pullUp = false,
   onCheck,
   onDetail,
 }: {
@@ -554,6 +556,7 @@ function ConsentDocumentRow({
   checked: boolean;
   sub?: boolean;
   prominent?: boolean;
+  pullUp?: boolean;
   onCheck: () => void;
   onDetail: () => void;
 }) {
@@ -561,7 +564,7 @@ function ConsentDocumentRow({
     <div
       className={`${styles.consentDocumentRow} ${sub ? styles.subConsentRow : ""} ${
         prominent ? styles.prominentConsentRow : ""
-      }`}
+      } ${pullUp ? styles.pullUpConsentRow : ""}`}
     >
       {sub ? (
         <SubAgreementCheck checked={checked} label={`${title} 동의`} onChange={onCheck} />
