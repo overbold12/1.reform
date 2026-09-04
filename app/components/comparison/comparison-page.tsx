@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { comparisonServices, type ServiceId } from "./comparison-data";
 import {
-  ComparisonItems,
   ComparisonSection,
   ComparisonSummary,
   FlowComparison,
@@ -64,18 +63,10 @@ export function ComparisonPage() {
 
         <ComparisonSection
           number="03"
-          title="주요 변경사항"
-          description="화면 단위 비교와 프로세스 통합 비교 항목을 추가할 수 있습니다."
-        >
-          <ComparisonItems items={activeService.comparisonItems} />
-        </ComparisonSection>
-
-        <ComparisonSection
-          number="04"
           title="인터랙션 비교"
-          description="추후 기존 프로토타입 컴포넌트를 좌우 영역에 연결할 수 있습니다."
+          description="여러 AS-IS 화면이 하나의 TO-BE 화면으로 통합되는 과정을 비교합니다."
         >
-          <InteractiveComparison />
+          <InteractiveComparison items={activeService.comparisonItems} />
         </ComparisonSection>
       </div>
     </section>

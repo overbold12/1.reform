@@ -29,25 +29,14 @@ type ComparisonDetail = {
   effect: string | null;
 };
 
-type BaseComparisonItem = {
+export type FlowConsolidationItem = {
   id: string;
   title: string;
   detail: ComparisonDetail;
-};
-
-export type ScreenComparisonItem = BaseComparisonItem & {
-  type: "screen-comparison";
-  asIsScreen: string | null;
-  toBeScreen: string | null;
-};
-
-export type FlowConsolidationItem = BaseComparisonItem & {
   type: "flow-consolidation";
   asIsScreens: string[];
-  toBeScreens: string[];
+  toBeScreen: string | null;
 };
-
-export type ComparisonItem = ScreenComparisonItem | FlowConsolidationItem;
 
 export type ComparisonService = {
   id: ServiceId;
@@ -55,7 +44,7 @@ export type ComparisonService = {
   summary: ComparisonSummaryData | null;
   asIsFlow: FlowGroupData[];
   toBeFlow: FlowGroupData[];
-  comparisonItems: ComparisonItem[];
+  comparisonItems: FlowConsolidationItem[];
 };
 
 export const comparisonServices: Record<ServiceId, ComparisonService> = {

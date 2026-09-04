@@ -1,11 +1,9 @@
 import type { ReactNode } from "react";
 import type {
-  ComparisonItem,
   ComparisonSummaryData,
   FlowConsolidationItem,
   FlowGroupData,
   FlowStepData,
-  ScreenComparisonItem,
 } from "./comparison-data";
 import styles from "./comparison.module.css";
 
@@ -45,7 +43,6 @@ export function ComparisonSummary({ summary }: { summary: ComparisonSummaryData 
           <MetricPlaceholder />
           <MetricPlaceholder />
         </div>
-        <p className={styles.effectPlaceholder}>개선 효과 입력 예정</p>
       </div>
     );
   }
@@ -69,7 +66,7 @@ export function ComparisonSummary({ summary }: { summary: ComparisonSummaryData 
           <MetricPlaceholder />
         )}
       </div>
-      <p className={styles.summaryEffect}>{summary.effect ?? "개선 효과 입력 예정"}</p>
+      {summary.effect ? <p className={styles.summaryEffect}>{summary.effect}</p> : null}
     </div>
   );
 }
@@ -150,11 +147,10 @@ export function FlowStep({ step }: { step: FlowStepData }) {
   );
 }
 
-export function ComparisonItems({ items }: { items: ComparisonItem[] }) {
+export function InteractiveComparison({ items }: { items: FlowConsolidationItem[] }) {
   if (items.length === 0) {
     return (
       <div className={styles.itemList}>
-        <ScreenComparison />
         <FlowConsolidationComparison />
       </div>
     );
@@ -162,46 +158,22 @@ export function ComparisonItems({ items }: { items: ComparisonItem[] }) {
 
   return (
     <div className={styles.itemList}>
-      {items.map((item) =>
-        item.type === "screen-comparison" ? (
-          <ScreenComparison item={item} key={item.id} />
-        ) : (
-          <FlowConsolidationComparison item={item} key={item.id} />
-        ),
-      )}
+      {items.map((item) => (
+        <FlowConsolidationComparison item={item} key={item.id} />
+      ))}
     </div>
-  );
-}
-
-export function ScreenComparison({ item }: { item?: ScreenComparisonItem }) {
-  return (
-    <article className={styles.comparisonItem}>
-      <ComparisonItemHeader type="TYPE A · SCREEN COMPARISON" title={item?.title} />
-      <div className={styles.screenPair}>
-        <ScreenColumn label="AS-IS">
-          <MobileFramePlaceholder label={item?.asIsScreen ?? "AS-IS 화면 등록 예정"} />
-        </ScreenColumn>
-        <ComparisonArrow large />
-        <ScreenColumn label="TO-BE">
-          <MobileFramePlaceholder label={item?.toBeScreen ?? "TO-BE 화면 등록 예정"} />
-        </ScreenColumn>
-      </div>
-      <ComparisonDetailRows detail={item?.detail} />
-    </article>
   );
 }
 
 export function FlowConsolidationComparison({ item }: { item?: FlowConsolidationItem }) {
   const asIsLabels = item?.asIsScreens.length
     ? item.asIsScreens
-    : ["AS-IS 화면 등록 예정"];
-  const toBeLabels = item?.toBeScreens.length
-    ? item.toBeScreens
-    : ["TO-BE 화면 등록 예정"];
+    : ["AS-IS 화면 등록 예정", "AS-IS 화면 등록 예정"];
+  const toBeLabel = item?.toBeScreen ?? "TO-BE 화면 등록 예정";
 
   return (
     <article className={styles.comparisonItem}>
-      <ComparisonItemHeader type="TYPE B · FLOW CONSOLIDATION" title={item?.title} />
+      <ComparisonItemHeader type="FLOW CONSOLIDATION" title={item?.title} />
       <div className={styles.consolidationPair}>
         <ScreenColumn label="AS-IS" compact>
           <div className={styles.frameSequence}>
@@ -212,11 +184,7 @@ export function FlowConsolidationComparison({ item }: { item?: FlowConsolidation
         </ScreenColumn>
         <ComparisonArrow large />
         <ScreenColumn label="TO-BE">
-          <div className={styles.frameSequence}>
-            {toBeLabels.map((label, index) => (
-              <MobileFramePlaceholder label={label} key={`${label}-${index}`} />
-            ))}
-          </div>
+          <MobileFramePlaceholder label={toBeLabel} />
         </ScreenColumn>
       </div>
       <ComparisonDetailRows detail={item?.detail} />
@@ -228,7 +196,7 @@ function ComparisonItemHeader({ type, title }: { type: string; title?: string })
   return (
     <header className={styles.itemHeader}>
       <span>{type}</span>
-      <h4>{title ?? "비교 항목 입력 예정"}</h4>
+      <h4>{title ?? "항목 제목 입력 예정"}</h4>
     </header>
   );
 }
@@ -288,49 +256,6 @@ function ComparisonDetailRows({
         </div>
       ))}
     </dl>
-  );
-}
-
-export function InteractiveComparison({
-  asIsPrototype,
-  toBePrototype,
-}: {
-  asIsPrototype?: ReactNode;
-  toBePrototype?: ReactNode;
-}) {
-  return (
-    <div className={styles.prototypeGrid}>
-      <PrototypeSlot label="AS-IS" placeholder="AS-IS 프로토타입 연결 예정">
-        {asIsPrototype}
-      </PrototypeSlot>
-      <PrototypeSlot label="TO-BE" placeholder="TO-BE 프로토타입 연결 예정">
-        {toBePrototype}
-      </PrototypeSlot>
-    </div>
-  );
-}
-
-function PrototypeSlot({
-  label,
-  placeholder,
-  children,
-}: {
-  label: "AS-IS" | "TO-BE";
-  placeholder: string;
-  children?: ReactNode;
-}) {
-  return (
-    <div className={styles.prototypeSlot}>
-      <ComparisonLabel kind={label} />
-      <div className={styles.prototypeArea}>
-        {children ?? (
-          <div className={styles.prototypePlaceholder}>
-            <span aria-hidden="true" />
-            <p>{placeholder}</p>
-          </div>
-        )}
-      </div>
-    </div>
   );
 }
 

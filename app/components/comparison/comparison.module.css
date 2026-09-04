@@ -154,11 +154,9 @@
 }
 
 .summaryPlaceholder .summaryMessage,
-.effectPlaceholder,
 .placeholderText,
 .flowEmpty,
-.mobileFrame > span,
-.prototypePlaceholder p {
+.mobileFrame > span {
   color: #929aa8;
 }
 
@@ -212,7 +210,6 @@
   font-weight: 600;
 }
 
-.effectPlaceholder,
 .summaryEffect {
   margin: 18px 0 0;
   font-size: 12px;
@@ -390,7 +387,6 @@
   font-weight: 650;
 }
 
-.screenPair,
 .consolidationPair {
   display: grid;
   align-items: center;
@@ -492,51 +488,6 @@
   font-size: 11px;
 }
 
-.prototypeGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-}
-
-.prototypeSlot {
-  min-width: 0;
-}
-
-.prototypeSlot > .comparisonLabel {
-  margin-bottom: 11px;
-}
-
-.prototypeArea {
-  display: grid;
-  min-height: 420px;
-  place-items: center;
-  overflow: hidden;
-  border: 1px dashed #d1d7e0;
-  border-radius: 13px;
-  background: #fafbfc;
-}
-
-.prototypePlaceholder {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.prototypePlaceholder > span {
-  display: block;
-  width: 76px;
-  height: 145px;
-  border: 1px dashed #d4dae3;
-  border-radius: 14px;
-  background: #ffffff;
-}
-
-.prototypePlaceholder p {
-  margin: 0;
-  font-size: 11px;
-}
-
 @keyframes service-fade-in {
   from {
     opacity: 0;
@@ -547,14 +498,9 @@
 }
 
 @media (max-width: 1050px) {
-  .screenPair,
   .consolidationPair {
     padding-right: 2%;
     padding-left: 2%;
-  }
-
-  .prototypeGrid {
-    grid-template-columns: 1fr;
   }
 }
 
