@@ -1,4 +1,5 @@
 export type ServiceId = "partnerLoan" | "creditConsent";
+export type ProcedureId = "required-consent" | "information-review";
 
 export type ComparisonSummaryData = {
   message: string;
@@ -34,6 +35,7 @@ export type FlowConsolidationItem = {
   title: string;
   detail: ComparisonDetail;
   type: "flow-consolidation";
+  procedure: ProcedureId;
   asIsScreens: string[];
   toBeScreen: string | null;
 };

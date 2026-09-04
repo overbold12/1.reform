@@ -1,10 +1,13 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import type {
   ComparisonSummaryData,
   FlowConsolidationItem,
   FlowGroupData,
   FlowStepData,
+  ProcedureId,
+  ServiceId,
 } from "./comparison-data";
+import { PartnerLoanConsentComparison } from "./partner-loan-consent-comparison";
 import styles from "./comparison.module.css";
 
 type ComparisonSectionProps = {
@@ -183,20 +186,57 @@ export function FlowStep({ step }: { step: FlowStepData }) {
   );
 }
 
-export function InteractiveComparison({ items }: { items: FlowConsolidationItem[] }) {
-  if (items.length === 0) {
-    return (
-      <div className={styles.itemList}>
-        <FlowConsolidationComparison />
-      </div>
-    );
-  }
+const comparisonProcedures: Array<{ id: ProcedureId; label: string }> = [
+  { id: "required-consent", label: "필수 동의 절차" },
+  { id: "information-review", label: "정보 확인 절차" },
+];
+
+export function InteractiveComparison({
+  items,
+  serviceId,
+}: {
+  items: FlowConsolidationItem[];
+  serviceId: ServiceId;
+}) {
+  const [activeProcedure, setActiveProcedure] =
+    useState<ProcedureId>("required-consent");
+  const procedureItems = items.filter((item) => item.procedure === activeProcedure);
 
   return (
-    <div className={styles.itemList}>
-      {items.map((item) => (
-        <FlowConsolidationComparison item={item} key={item.id} />
-      ))}
+    <div>
+      <div className={styles.procedureTabs} role="tablist" aria-label="인터랙션 비교 절차 선택">
+        {comparisonProcedures.map((procedure) => {
+          const isActive = procedure.id === activeProcedure;
+          return (
+            <button
+              type="button"
+              role="tab"
+              aria-selected={isActive}
+              className={isActive ? styles.procedureTabActive : ""}
+              key={procedure.id}
+              onClick={() => setActiveProcedure(procedure.id)}
+            >
+              {procedure.label}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className={styles.interactionViewport} key={activeProcedure}>
+        {serviceId === "partnerLoan" && activeProcedure === "required-consent" ? (
+          <PartnerLoanConsentComparison />
+        ) : (
+          <div className={styles.itemList}>
+            {procedureItems.length > 0 ? (
+              procedureItems.map((item) => (
+                <FlowConsolidationComparison item={item} key={item.id} />
+              ))
+            ) : (
+              <FlowConsolidationComparison />
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

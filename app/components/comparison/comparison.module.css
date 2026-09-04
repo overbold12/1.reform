@@ -370,6 +370,65 @@
   height: 25px;
 }
 
+.procedureTabs {
+  display: inline-flex;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #dfe4eb;
+  gap: 2px;
+}
+
+.procedureTabs button {
+  position: relative;
+  border: 0;
+  background: transparent;
+  padding: 11px 18px 12px;
+  color: #7b8493;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 650;
+  transition: color 150ms ease, background-color 150ms ease, transform 100ms ease;
+}
+
+.procedureTabs button::after {
+  position: absolute;
+  right: 14px;
+  bottom: -1px;
+  left: 14px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: transparent;
+  content: "";
+}
+
+.procedureTabs button:hover {
+  background: #f8f9fb;
+  color: #4e596b;
+}
+
+.procedureTabs button:active {
+  transform: scale(0.98);
+}
+
+.procedureTabs button:focus-visible {
+  outline: 2px solid rgba(49, 87, 213, 0.42);
+  outline-offset: -2px;
+}
+
+.procedureTabs .procedureTabActive {
+  color: #2849b8;
+}
+
+.procedureTabs .procedureTabActive::after {
+  background: #3157d5;
+}
+
+.interactionViewport {
+  min-width: 0;
+  overflow-x: auto;
+  padding-bottom: 5px;
+  animation: interaction-fade-in 190ms ease-out;
+}
+
 .itemList {
   display: flex;
   flex-direction: column;
@@ -512,6 +571,15 @@
   }
 }
 
+@keyframes interaction-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @media (max-width: 1050px) {
   .consolidationPair {
     padding-right: 2%;
@@ -521,6 +589,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .servicePanel {
+    animation: none;
+  }
+
+  .interactionViewport {
     animation: none;
   }
 }

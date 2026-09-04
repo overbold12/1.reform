@@ -66,7 +66,10 @@ export function ComparisonPage() {
           title="인터랙션 비교"
           description="여러 AS-IS 화면이 하나의 TO-BE 화면으로 통합되는 과정을 비교합니다."
         >
-          <InteractiveComparison items={activeService.comparisonItems} />
+          <InteractiveComparison
+            items={activeService.comparisonItems}
+            serviceId={activeService.id}
+          />
         </ComparisonSection>
       </div>
     </section>
