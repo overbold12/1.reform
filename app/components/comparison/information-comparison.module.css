@@ -141,7 +141,7 @@
 }
 
 .paydayField input {
-  width: 30px;
+  width: 96px;
   border: 0;
   outline: 0;
   background: transparent;
@@ -149,14 +149,22 @@
   color: #111;
   font: inherit;
   font-size: 30px;
-  font-weight: 720;
-  letter-spacing: -0.04em;
+  font-weight: 620;
+  letter-spacing: -0.035em;
   caret-color: #ed252b;
 }
 
+.paydayField input::placeholder {
+  color: #b4b6ba;
+  font-weight: 520;
+}
+
 .paydayField strong {
-  font-size: 30px;
-  font-weight: 720;
+  margin-left: 4px;
+  color: #6d7178;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
 }
 
 .choiceSection {

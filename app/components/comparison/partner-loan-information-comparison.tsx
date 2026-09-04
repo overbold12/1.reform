@@ -60,11 +60,11 @@ const suitabilityGroups = [
 type SuitabilityId = (typeof suitabilityGroups)[number]["id"];
 type SuitabilityAnswers = Record<SuitabilityId, string>;
 
-const initialSuitabilityAnswers: SuitabilityAnswers = {
-  annualIncome: "2천만원 미만",
-  debt: "1천만원 미만",
-  assets: "5천만원 미만",
-  fixedExpense: "월 2백만원 미만",
+const emptySuitabilityAnswers: SuitabilityAnswers = {
+  annualIncome: "",
+  debt: "",
+  assets: "",
+  fixedExpense: "",
 };
 
 const baseBuildUp = [
@@ -102,7 +102,7 @@ function AsIsInformationPrototype() {
   const [incomeType, setIncomeType] = useState("");
   const [purpose, setPurpose] = useState("");
   const [owner, setOwner] = useState("");
-  const [answers, setAnswers] = useState<SuitabilityAnswers>({ ...initialSuitabilityAnswers });
+  const [answers, setAnswers] = useState<SuitabilityAnswers>({ ...emptySuitabilityAnswers });
   const stepIndex = informationSteps.findIndex((item) => item.id === step);
 
   function reset() {
@@ -111,7 +111,7 @@ function AsIsInformationPrototype() {
     setIncomeType("");
     setPurpose("");
     setOwner("");
-    setAnswers({ ...initialSuitabilityAnswers });
+    setAnswers({ ...emptySuitabilityAnswers });
   }
 
   function moveBack() {
@@ -136,13 +136,14 @@ function AsIsInformationPrototype() {
                   id="comparison-payday"
                   inputMode="numeric"
                   maxLength={2}
+                  placeholder="31"
                   value={payday}
                   onChange={(event) =>
                     setPayday(event.target.value.replace(/\D/g, "").slice(0, 2))
                   }
                   aria-label="급여일"
                 />
-                {payday ? <strong aria-hidden="true">일</strong> : null}
+                <strong aria-hidden="true">일</strong>
               </div>
               {payday ? <NextButton onClick={moveNext} /> : null}
             </div>
@@ -254,6 +255,8 @@ function SuitabilityScreen({
   onBack: () => void;
   onChange: (answers: SuitabilityAnswers) => void;
 }) {
+  const allAnswered = suitabilityGroups.every((group) => Boolean(answers[group.id]));
+
   return (
     <div className={`${styles.appScreen} ${styles.darkScreen}`}>
       <MobileStatusBar inverse />
@@ -273,10 +276,11 @@ function SuitabilityScreen({
                 value={answers[group.id]}
                 onChange={(value) => onChange({ ...answers, [group.id]: value })}
                 large
+                toggleable
               />
             ))}
           </div>
-          <NextButton onClick={() => undefined} />
+          {allAnswered ? <NextButton onClick={() => undefined} /> : null}
         </div>
       </main>
       <HomeIndicator />
@@ -303,12 +307,14 @@ function ChoiceSection({
   value,
   onChange,
   large = false,
+  toggleable = false,
 }: {
   title?: string;
   options: string[];
   value: string;
   onChange: (value: string) => void;
   large?: boolean;
+  toggleable?: boolean;
 }) {
   return (
     <section className={`${styles.choiceSection} ${large ? styles.choiceSectionLarge : ""}`}>
@@ -323,7 +329,7 @@ function ChoiceSection({
               aria-checked={selected}
               className={selected ? styles.choiceSelected : ""}
               key={option}
-              onClick={() => onChange(option)}
+              onClick={() => onChange(toggleable && selected ? "" : option)}
             >
               <i aria-hidden="true">
                 <svg viewBox="0 0 18 18"><path d="m4.5 9.2 2.8 2.8 6.1-6.4" /></svg>
