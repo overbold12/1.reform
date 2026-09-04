@@ -17,6 +17,12 @@ export type FlowStepData = {
   description?: string;
 };
 
+export type FlowGroupData = {
+  id: string;
+  title: string;
+  steps: FlowStepData[];
+};
+
 type ComparisonDetail = {
   change: string | null;
   intent: string | null;
@@ -47,8 +53,8 @@ export type ComparisonService = {
   id: ServiceId;
   title: string;
   summary: ComparisonSummaryData | null;
-  asIsFlow: FlowStepData[];
-  toBeFlow: FlowStepData[];
+  asIsFlow: FlowGroupData[];
+  toBeFlow: FlowGroupData[];
   comparisonItems: ComparisonItem[];
 };
 
@@ -56,9 +62,70 @@ export const comparisonServices: Record<ServiceId, ComparisonService> = {
   partnerLoan: {
     id: "partnerLoan",
     title: "제휴대출-신용",
-    summary: null,
-    asIsFlow: [],
-    toBeFlow: [],
+    summary: {
+      message:
+        "서식 항목 및 정보 확인 절차 개편을 통해 전체 페이지를 34페이지에서 28페이지로 축약했습니다.",
+      metrics: [
+        {
+          id: "total-pages",
+          label: "전체 페이지 수",
+          asIs: "34 페이지",
+          toBe: "28 페이지",
+        },
+      ],
+      effect: null,
+    },
+    asIsFlow: [
+      {
+        id: "required-consent",
+        title: "필수 동의 절차 (4단계)",
+        steps: [
+          {
+            id: "credit-public-data-consent",
+            title: "필수 동의",
+            description: "신용정보조회, 공공마이데이터",
+          },
+          { id: "identity-consent", title: "본인인증 동의" },
+          { id: "required-terms-1", title: "필수약관 동의 (1)" },
+          { id: "required-terms-2", title: "필수약관 동의 (2)" },
+        ],
+      },
+      {
+        id: "information-review",
+        title: "정보 확인 절차 (5단계)",
+        steps: [
+          { id: "suitability", title: "적합성 원칙 확인" },
+          { id: "payday", title: "급여일 확인" },
+          { id: "fund-purpose", title: "자금용도 확인" },
+          { id: "income-type", title: "소득유형 확인" },
+          { id: "beneficial-owner", title: "실소유자 여부 확인" },
+        ],
+      },
+    ],
+    toBeFlow: [
+      {
+        id: "required-consent",
+        title: "필수 동의 절차 (1단계)",
+        steps: [
+          {
+            id: "integrated-required-consent",
+            title: "필수 동의",
+            description: "서식 통합",
+          },
+        ],
+      },
+      {
+        id: "information-review",
+        title: "정보 확인 절차 (1단계)",
+        steps: [
+          {
+            id: "integrated-information-review",
+            title: "정보 확인",
+            description: "절차 통합",
+          },
+        ],
+      },
+    ],
     comparisonItems: [],
   },
   creditConsent: {

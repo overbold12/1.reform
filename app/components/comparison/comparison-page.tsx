@@ -56,8 +56,8 @@ export function ComparisonPage() {
 
         <ComparisonSection
           number="02"
-          title="전체 프로세스 비교"
-          description="서비스의 전체 흐름을 AS-IS와 TO-BE로 나누어 비교합니다."
+          title="주요 절차 비교"
+          description="서비스의 주요 절차를 AS-IS와 TO-BE로 나누어 비교합니다."
         >
           <FlowComparison asIsFlow={activeService.asIsFlow} toBeFlow={activeService.toBeFlow} />
         </ComparisonSection>

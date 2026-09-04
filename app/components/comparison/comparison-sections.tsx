@@ -3,6 +3,7 @@ import type {
   ComparisonItem,
   ComparisonSummaryData,
   FlowConsolidationItem,
+  FlowGroupData,
   FlowStepData,
   ScreenComparisonItem,
 } from "./comparison-data";
@@ -90,40 +91,51 @@ export function FlowComparison({
   asIsFlow,
   toBeFlow,
 }: {
-  asIsFlow: FlowStepData[];
-  toBeFlow: FlowStepData[];
+  asIsFlow: FlowGroupData[];
+  toBeFlow: FlowGroupData[];
 }) {
   return (
     <div className={styles.flowComparison}>
-      <FlowLane label="AS-IS" steps={asIsFlow} emptyText="AS-IS 프로세스 입력 예정" />
-      <FlowLane label="TO-BE" steps={toBeFlow} emptyText="TO-BE 프로세스 입력 예정" />
+      <FlowLane label="AS-IS" groups={asIsFlow} emptyText="AS-IS 프로세스 입력 예정" />
+      <FlowLane label="TO-BE" groups={toBeFlow} emptyText="TO-BE 프로세스 입력 예정" />
     </div>
   );
 }
 
 function FlowLane({
   label,
-  steps,
+  groups,
   emptyText,
 }: {
   label: "AS-IS" | "TO-BE";
-  steps: FlowStepData[];
+  groups: FlowGroupData[];
   emptyText: string;
 }) {
   return (
     <div className={styles.flowLane}>
       <ComparisonLabel kind={label} />
-      <div className={styles.flowSteps}>
-        {steps.length > 0 ? (
-          steps.map((step, index) => (
-            <div className={styles.flowStepGroup} key={step.id}>
-              <FlowStep step={step} />
-              {index < steps.length - 1 ? <ComparisonArrow /> : null}
-            </div>
-          ))
+      <div className={styles.flowGroups}>
+        {groups.length > 0 ? (
+          groups.map((group) => <FlowGroup group={group} key={group.id} />)
         ) : (
           <div className={styles.flowEmpty}>{emptyText}</div>
         )}
+      </div>
+    </div>
+  );
+}
+
+function FlowGroup({ group }: { group: FlowGroupData }) {
+  return (
+    <div className={styles.flowGroup}>
+      <strong className={styles.flowGroupTitle}>{group.title}</strong>
+      <div className={styles.flowSteps}>
+        {group.steps.map((step, index) => (
+          <div className={styles.flowStepGroup} key={step.id}>
+            <FlowStep step={step} />
+            {index < group.steps.length - 1 ? <ComparisonArrow /> : null}
+          </div>
+        ))}
       </div>
     </div>
   );

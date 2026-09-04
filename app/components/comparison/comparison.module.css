@@ -193,6 +193,16 @@
   font-size: 12px;
 }
 
+.summaryContent .metric:only-child {
+  grid-column: 1 / -1;
+  max-width: 500px;
+}
+
+.summaryContent .metric strong {
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+
 .isPlaceholder {
   border-left-style: dashed;
 }
@@ -254,6 +264,31 @@
   color: #3157d5;
 }
 
+.flowGroups {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.flowGroup {
+  min-width: 0;
+}
+
+.flowGroup + .flowGroup {
+  border-top: 1px dashed #e0e4ea;
+  padding-top: 19px;
+}
+
+.flowGroupTitle {
+  display: block;
+  margin-bottom: 10px;
+  color: #4b566a;
+  font-size: 12px;
+  font-weight: 680;
+  letter-spacing: -0.015em;
+}
+
 .flowSteps {
   display: flex;
   min-width: 0;
@@ -296,6 +331,7 @@
 
 .flowEmpty {
   display: flex;
+  width: 100%;
   min-height: 58px;
   flex: 1;
   align-items: center;
