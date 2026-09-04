@@ -26,7 +26,7 @@ const pageInformation: Record<
   comparison: {
     eyebrow: "COMPARISON VIEW",
     title: "비교",
-    description: "프로토타입 화면을 나란히 비교할 수 있는 영역입니다.",
+    description: "두 서비스의 AS-IS / TO-BE 비교 내용을 구성하는 영역입니다.",
   },
 };
 

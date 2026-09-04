@@ -1,0 +1,529 @@
+.comparisonWorkspace {
+  min-height: 0;
+}
+
+.pageHeader {
+  display: flex;
+  min-height: 86px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #edf0f4;
+  padding: 20px 26px;
+}
+
+.pageHeader h2 {
+  margin: 6px 0 0;
+  color: #293246;
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.skeletonBadge {
+  border: 1px solid #e1e5ec;
+  border-radius: 999px;
+  background: #fafbfc;
+  padding: 6px 10px;
+  color: #7d8695;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.serviceTabs {
+  display: inline-flex;
+  margin: 24px 26px 0;
+  border: 1px solid #dde2ea;
+  border-radius: 10px;
+  background: #f5f7f9;
+  padding: 3px;
+}
+
+.serviceTab {
+  min-width: 170px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  padding: 10px 18px;
+  color: #6d7686;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 650;
+  transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease,
+    transform 100ms ease;
+}
+
+.serviceTab:hover {
+  color: #3f4a5f;
+}
+
+.serviceTab:active {
+  transform: scale(0.985);
+}
+
+.serviceTab:focus-visible {
+  outline: 2px solid rgba(49, 87, 213, 0.42);
+  outline-offset: 2px;
+}
+
+.serviceTabActive {
+  background: #ffffff;
+  color: #2849b8;
+  box-shadow: 0 1px 4px rgba(31, 45, 72, 0.1);
+}
+
+.servicePanel {
+  padding: 30px 26px 44px;
+  animation: service-fade-in 220ms ease-out;
+}
+
+.serviceHeading {
+  padding: 4px 0 28px;
+}
+
+.serviceHeading span {
+  color: #8b94a3;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.serviceHeading h2 {
+  margin: 7px 0 0;
+  color: #202a3e;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+
+.section {
+  border-top: 1px solid #e8ebf0;
+  padding: 38px 0 44px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 24px;
+}
+
+.sectionHeader > span {
+  display: grid;
+  width: 31px;
+  height: 23px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 5px;
+  background: #eef2ff;
+  color: #3157d5;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.05em;
+}
+
+.sectionHeader h3 {
+  margin: 0;
+  color: #253047;
+  font-size: 18px;
+  font-weight: 680;
+  letter-spacing: -0.025em;
+}
+
+.sectionHeader p {
+  margin: 7px 0 0;
+  color: #788192;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.summaryPlaceholder,
+.summaryContent {
+  border: 1px dashed #d7dce5;
+  border-radius: 13px;
+  background: #fbfcfd;
+  padding: 25px;
+}
+
+.summaryMessage {
+  margin: 0;
+  color: #5f697a;
+  font-size: 16px;
+  font-weight: 620;
+  letter-spacing: -0.02em;
+}
+
+.summaryPlaceholder .summaryMessage,
+.effectPlaceholder,
+.placeholderText,
+.flowEmpty,
+.mobileFrame > span,
+.prototypePlaceholder p {
+  color: #929aa8;
+}
+
+.metricGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.metric {
+  border-left: 2px solid #dbe2f6;
+  background: #ffffff;
+  padding: 14px 16px;
+}
+
+.metric > span {
+  color: #707a8b;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.metric > div {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 9px;
+}
+
+.metric strong {
+  color: #3c475c;
+  font-size: 12px;
+}
+
+.isPlaceholder {
+  border-left-style: dashed;
+}
+
+.isPlaceholder strong {
+  color: #9aa2af;
+  font-weight: 600;
+}
+
+.effectPlaceholder,
+.summaryEffect {
+  margin: 18px 0 0;
+  font-size: 12px;
+}
+
+.summaryEffect {
+  color: #5d6879;
+}
+
+.flowComparison {
+  overflow: hidden;
+  border: 1px solid #e2e6ed;
+  border-radius: 13px;
+}
+
+.flowLane {
+  display: grid;
+  min-height: 104px;
+  align-items: center;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 17px;
+  padding: 20px;
+}
+
+.flowLane + .flowLane {
+  border-top: 1px solid #edf0f4;
+  background: #fbfcff;
+}
+
+.comparisonLabel {
+  display: inline-flex;
+  width: fit-content;
+  height: 24px;
+  align-items: center;
+  border-radius: 5px;
+  padding: 0 8px;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+}
+
+.asIsLabel {
+  background: #eef0f3;
+  color: #687181;
+}
+
+.toBeLabel {
+  background: #eef2ff;
+  color: #3157d5;
+}
+
+.flowSteps {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 2px;
+}
+
+.flowStepGroup {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.flowStep {
+  min-width: 132px;
+  border: 1px solid #dfe4eb;
+  border-radius: 9px;
+  background: #ffffff;
+  padding: 13px;
+}
+
+.flowStep strong,
+.flowStep span {
+  display: block;
+}
+
+.flowStep strong {
+  color: #435066;
+  font-size: 12px;
+}
+
+.flowStep span {
+  margin-top: 5px;
+  color: #828b9a;
+  font-size: 10px;
+}
+
+.flowEmpty {
+  display: flex;
+  min-height: 58px;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed #d6dce5;
+  border-radius: 9px;
+  background: #ffffff;
+  font-size: 12px;
+}
+
+.arrow {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: #a2aab7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+
+.arrowLarge {
+  width: 25px;
+  height: 25px;
+}
+
+.itemList {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.comparisonItem {
+  border: 1px solid #e0e5ec;
+  border-radius: 13px;
+  background: #ffffff;
+  padding: 22px;
+}
+
+.itemHeader {
+  padding-bottom: 18px;
+  border-bottom: 1px solid #eef0f4;
+}
+
+.itemHeader span {
+  color: #75809a;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+}
+
+.itemHeader h4 {
+  margin: 6px 0 0;
+  color: #4d586b;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.screenPair,
+.consolidationPair {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1fr);
+  gap: 20px;
+  padding: 26px 7%;
+}
+
+.screenColumn {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.screenColumnCompact .mobileFrame {
+  width: 126px;
+}
+
+.frameSequence {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.mobileFrame {
+  position: relative;
+  display: flex;
+  width: 154px;
+  height: 292px;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed #cbd2dc;
+  border-radius: 22px;
+  background: #fafbfc;
+  padding: 24px 15px;
+  text-align: center;
+}
+
+.mobileFrameCompact {
+  width: 126px;
+  height: 238px;
+}
+
+.mobileFrame > span:not(.mobileSpeaker) {
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.mobileSpeaker {
+  position: absolute;
+  top: 11px;
+  width: 30px;
+  height: 3px;
+  border-radius: 999px;
+  background: #dce1e8;
+}
+
+.mobileFrame > i {
+  position: absolute;
+  bottom: 8px;
+  width: 38px;
+  height: 3px;
+  border-radius: 999px;
+  background: #e1e5eb;
+}
+
+.detailRows {
+  margin: 0;
+  border-top: 1px solid #eef0f4;
+}
+
+.detailRows > div {
+  display: grid;
+  min-height: 45px;
+  align-items: center;
+  grid-template-columns: 105px minmax(0, 1fr);
+  gap: 18px;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.detailRows > div:last-child {
+  border-bottom: 0;
+}
+
+.detailRows dt {
+  color: #5b6679;
+  font-size: 11px;
+  font-weight: 670;
+}
+
+.detailRows dd {
+  margin: 0;
+  color: #626d7f;
+  font-size: 11px;
+}
+
+.prototypeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.prototypeSlot {
+  min-width: 0;
+}
+
+.prototypeSlot > .comparisonLabel {
+  margin-bottom: 11px;
+}
+
+.prototypeArea {
+  display: grid;
+  min-height: 420px;
+  place-items: center;
+  overflow: hidden;
+  border: 1px dashed #d1d7e0;
+  border-radius: 13px;
+  background: #fafbfc;
+}
+
+.prototypePlaceholder {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.prototypePlaceholder > span {
+  display: block;
+  width: 76px;
+  height: 145px;
+  border: 1px dashed #d4dae3;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.prototypePlaceholder p {
+  margin: 0;
+  font-size: 11px;
+}
+
+@keyframes service-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 1050px) {
+  .screenPair,
+  .consolidationPair {
+    padding-right: 2%;
+    padding-left: 2%;
+  }
+
+  .prototypeGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .servicePanel {
+    animation: none;
+  }
+}

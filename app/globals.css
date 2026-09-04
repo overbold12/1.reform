@@ -378,69 +378,6 @@ button {
   width: 52%;
 }
 
-.comparison-grid {
-  display: grid;
-  min-height: 503px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
-  background: #f9fafc;
-  padding: 26px;
-}
-
-.comparison-slot {
-  min-width: 0;
-  border: 1px dashed #d5dae3;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.78);
-  padding: 22px;
-}
-
-.slot-heading {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.slot-heading span {
-  border-radius: 5px;
-  background: #edf0f5;
-  padding: 4px 7px;
-  color: #7a8495;
-  font-size: 9px;
-  font-weight: 750;
-  letter-spacing: 0.08em;
-}
-
-.slot-heading strong {
-  color: #4a5467;
-  font-size: 13px;
-  font-weight: 650;
-}
-
-.slot-placeholder {
-  display: flex;
-  height: 360px;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 9px;
-}
-
-.slot-placeholder div {
-  width: 74px;
-  height: 6px;
-  border-radius: 99px;
-  background: #e6eaf0;
-}
-
-.slot-placeholder div:nth-child(2) {
-  width: 55px;
-}
-
-.slot-placeholder div:nth-child(3) {
-  width: 35px;
-}
-
 @keyframes panel-in {
   from {
     opacity: 0;
