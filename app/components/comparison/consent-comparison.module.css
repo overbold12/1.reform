@@ -235,8 +235,21 @@
   width: 100%;
   min-height: 34px;
   align-items: center;
-  grid-template-columns: 17px minmax(0, 1fr) 14px;
+  grid-template-columns: 17px minmax(0, 1fr);
   gap: 2px;
+  padding: 4px 0;
+}
+
+.consentGroup .documentButton {
+  padding-left: 5px;
+}
+
+.documentButton > button:last-child {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
   border: 0;
   background: transparent;
   padding: 4px 0;
@@ -245,21 +258,12 @@
   text-align: left;
 }
 
-.consentGroup .documentButton {
-  padding-left: 31px;
-}
-
-.documentButton > span:first-child {
-  color: #b8bdc5;
-  font-size: 11px;
-}
-
-.documentButton > span:nth-child(2) {
+.documentButton > button:last-child span {
   font-size: 11px;
   line-height: 1.4;
 }
 
-.documentButton b {
+.documentButton > button:last-child b {
   color: #8c939e;
   font-size: 14px;
   font-weight: 500;
@@ -354,7 +358,7 @@
 
 .subConsentRow {
   min-height: 38px;
-  padding-left: 31px;
+  padding-left: 5px;
 }
 
 .subConsentRow > button:last-child {

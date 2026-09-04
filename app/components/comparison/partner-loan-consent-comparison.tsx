@@ -59,6 +59,14 @@ const requiredConsentItems = [
   },
 ];
 
+function requiredDocumentId(groupId: string, document: string) {
+  return `${groupId}:${document}`;
+}
+
+const requiredDocumentIds = requiredConsentItems.flatMap((item) =>
+  item.documents.map((document) => requiredDocumentId(item.id, document)),
+);
+
 const identityConsentItems = [
   "휴대폰 본인확인 서비스 동의",
   "모바일안심플러스 서비스 동의",
@@ -101,7 +109,7 @@ function AsIsConsentPrototype() {
   const [step, setStep] = useState<AsIsStep>("required");
   const [detailTitle, setDetailTitle] = useState<string | null>(null);
   const [requiredChecks, setRequiredChecks] = useState<Record<string, boolean>>(
-    emptySelection(requiredConsentItems.map((item) => item.id)),
+    emptySelection(requiredDocumentIds),
   );
   const [phoneNumber, setPhoneNumber] = useState("");
   const [identityChecks, setIdentityChecks] = useState<Record<string, boolean>>(
@@ -119,7 +127,7 @@ function AsIsConsentPrototype() {
   function reset() {
     setStep("required");
     setDetailTitle(null);
-    setRequiredChecks(emptySelection(requiredConsentItems.map((item) => item.id)));
+    setRequiredChecks(emptySelection(requiredDocumentIds));
     setPhoneNumber("");
     setIdentityChecks(emptySelection(identityConsentItems));
     setTermsOneChecks(emptySelection(termsOneItems));
@@ -206,7 +214,25 @@ function RequiredConsentAsIsScreen({
   onBack: () => void;
   onNext: () => void;
 }) {
-  const allChecked = requiredConsentItems.every((item) => checks[item.id]);
+  const allChecked = requiredDocumentIds.every((id) => checks[id]);
+
+  function isGroupChecked(groupId: string, documents: string[]) {
+    return documents.every((document) => checks[requiredDocumentId(groupId, document)]);
+  }
+
+  function toggleGroup(groupId: string, documents: string[]) {
+    const nextValue = !isGroupChecked(groupId, documents);
+    const next = { ...checks };
+    documents.forEach((document) => {
+      next[requiredDocumentId(groupId, document)] = nextValue;
+    });
+    onChange(next);
+  }
+
+  function toggleDocument(groupId: string, document: string) {
+    const id = requiredDocumentId(groupId, document);
+    onChange({ ...checks, [id]: !checks[id] });
+  }
 
   return (
     <AsIsScreen>
@@ -221,15 +247,23 @@ function RequiredConsentAsIsScreen({
             <section className={styles.consentGroup} key={item.id}>
               <div className={styles.groupTitle}>
                 <AgreementCheck
-                  checked={Boolean(checks[item.id])}
-                  label={`${item.title} ${checks[item.id] ? "동의 해제" : "동의"}`}
-                  onChange={() => onChange({ ...checks, [item.id]: !checks[item.id] })}
+                  checked={isGroupChecked(item.id, item.documents)}
+                  label={`${item.title} ${
+                    isGroupChecked(item.id, item.documents) ? "동의 해제" : "동의"
+                  }`}
+                  onChange={() => toggleGroup(item.id, item.documents)}
                   prominent
                 />
                 <strong>{item.title}</strong>
               </div>
               {item.documents.map((document) => (
-                <DocumentButton title={document} key={document} onClick={() => onDetail(document)} />
+                <DocumentButton
+                  checked={Boolean(checks[requiredDocumentId(item.id, document)])}
+                  title={document}
+                  key={document}
+                  onCheck={() => toggleDocument(item.id, document)}
+                  onDetail={() => onDetail(document)}
+                />
               ))}
             </section>
           ))}
@@ -489,11 +523,22 @@ function SimpleNav({ onBack }: { onBack: () => void }) {
   );
 }
 
-function DocumentButton({ title, onClick }: { title: string; onClick: () => void }) {
+function DocumentButton({
+  title,
+  checked,
+  onCheck,
+  onDetail,
+}: {
+  title: string;
+  checked: boolean;
+  onCheck: () => void;
+  onDetail: () => void;
+}) {
   return (
-    <button type="button" className={styles.documentButton} onClick={onClick}>
-      <span>✓</span><span>{title}</span><b>⌄</b>
-    </button>
+    <div className={styles.documentButton}>
+      <SubAgreementCheck checked={checked} label={`${title} 동의`} onChange={onCheck} />
+      <button type="button" onClick={onDetail}><span>{title}</span><b>⌄</b></button>
+    </div>
   );
 }
 
