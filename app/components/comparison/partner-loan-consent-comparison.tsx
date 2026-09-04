@@ -1,6 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { useRef, useState } from "react";
+import stepperFront03 from "../../../references/compare/Stepper-front-03.png";
 import {
   allAgreementGroups,
   loanAgreementGroups,
@@ -291,12 +293,15 @@ function IdentityConsentAsIsScreen({
             checked={Boolean(checks[item])}
             title={item}
             key={item}
+            sub
             onCheck={() => onChange({ ...checks, [item]: !checks[item] })}
             onDetail={() => onDetail(item)}
           />
         ))}
+        {canContinue ? (
+          <InlineNext placement="identity" onClick={onNext} />
+        ) : null}
       </main>
-      {canContinue ? <FloatingNext onClick={onNext} /> : null}
     </AsIsScreen>
   );
 }
@@ -328,23 +333,25 @@ function TermsConsentAsIsScreen({
     <AsIsScreen inverse>
       <div className={styles.termsNav}>
         <button type="button" onClick={onBack} aria-label="이전 화면으로 돌아가기">×</button>
-        <span>•• <b>3</b> 약관동의 <i>4</i><i>5</i></span>
+        <Image
+          className={styles.stepperImage}
+          src={stepperFront03}
+          alt="3단계 약관동의, 이후 4단계와 5단계"
+        />
       </div>
       <div className={styles.termsSheet}>
         <span className={styles.sheetHandle} aria-hidden="true" />
+        <h3>대출신청을 위해 필수 약관에<br />동의해 주세요</h3>
         {step === "3" ? (
-          <>
-            <h3>대출신청을 위해 필수 약관에<br />동의해 주세요</h3>
-            <div className={styles.termsMaster}>
-              <AgreementCheck
-                checked={allChecked}
-                label="서비스 이용약관 전체 동의"
-                onChange={toggleAll}
-                prominent
-              />
-              <strong>서비스 이용약관</strong>
-            </div>
-          </>
+          <div className={styles.termsMaster}>
+            <AgreementCheck
+              checked={allChecked}
+              label="서비스 이용약관 전체 동의"
+              onChange={toggleAll}
+              prominent
+            />
+            <strong>서비스 이용약관</strong>
+          </div>
         ) : null}
         <div className={styles.termsRows}>
           {items.map((item) => (
@@ -359,7 +366,9 @@ function TermsConsentAsIsScreen({
             />
           ))}
         </div>
-        {allChecked ? <FloatingNext onClick={onNext} /> : null}
+        {allChecked ? (
+          <InlineNext placement={step === "3" ? "terms-one" : "terms-two"} onClick={onNext} />
+        ) : null}
       </div>
     </AsIsScreen>
   );
@@ -547,11 +556,40 @@ function SubAgreementCheck({
   );
 }
 
-function FloatingNext({ label = "다음", onClick }: { label?: string; onClick: () => void }) {
+function FloatingNext({
+  label = "다음",
+  onClick,
+}: {
+  label?: string;
+  onClick: () => void;
+}) {
   return (
     <div className={styles.floatingNext}>
       <button type="button" onClick={onClick}>
         <span>{label}</span>
+        <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" /></svg></i>
+      </button>
+    </div>
+  );
+}
+
+function InlineNext({
+  placement,
+  onClick,
+}: {
+  placement: "identity" | "terms-one" | "terms-two";
+  onClick: () => void;
+}) {
+  const placementClass = {
+    identity: styles.identityInlineNext,
+    "terms-one": styles.termsOneInlineNext,
+    "terms-two": styles.termsTwoInlineNext,
+  }[placement];
+
+  return (
+    <div className={`${styles.inlineNext} ${placementClass}`}>
+      <button type="button" onClick={onClick}>
+        <span>다음</span>
         <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" /></svg></i>
       </button>
     </div>
