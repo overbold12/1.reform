@@ -220,9 +220,36 @@
 }
 
 .flowComparison {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.procedureComparison {
   overflow: hidden;
   border: 1px solid #e2e6ed;
   border-radius: 13px;
+}
+
+.procedureHeader {
+  border-bottom: 1px solid #e9edf2;
+  background: #ffffff;
+  padding: 17px 20px;
+}
+
+.procedureHeader span {
+  color: #8a93a2;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+}
+
+.procedureHeader h4 {
+  margin: 6px 0 0;
+  color: #344056;
+  font-size: 14px;
+  font-weight: 680;
+  letter-spacing: -0.02em;
 }
 
 .flowLane {
@@ -237,6 +264,19 @@
 .flowLane + .flowLane {
   border-top: 1px solid #edf0f4;
   background: #fbfcff;
+}
+
+.flowLaneHeader {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.flowLaneHeader > span:last-child:not(.comparisonLabel) {
+  color: #8a93a1;
+  font-size: 10px;
+  font-weight: 650;
 }
 
 .comparisonLabel {
@@ -259,31 +299,6 @@
 .toBeLabel {
   background: #eef2ff;
   color: #3157d5;
-}
-
-.flowGroups {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.flowGroup {
-  min-width: 0;
-}
-
-.flowGroup + .flowGroup {
-  border-top: 1px dashed #e0e4ea;
-  padding-top: 19px;
-}
-
-.flowGroupTitle {
-  display: block;
-  margin-bottom: 10px;
-  color: #4b566a;
-  font-size: 12px;
-  font-weight: 680;
-  letter-spacing: -0.015em;
 }
 
 .flowSteps {

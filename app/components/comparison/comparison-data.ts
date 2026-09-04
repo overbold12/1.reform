@@ -67,7 +67,7 @@ export const comparisonServices: Record<ServiceId, ComparisonService> = {
     asIsFlow: [
       {
         id: "required-consent",
-        title: "필수 동의 절차 (4단계)",
+        title: "필수 동의 절차",
         steps: [
           {
             id: "credit-public-data-consent",
@@ -81,7 +81,7 @@ export const comparisonServices: Record<ServiceId, ComparisonService> = {
       },
       {
         id: "information-review",
-        title: "정보 확인 절차 (5단계)",
+        title: "정보 확인 절차",
         steps: [
           { id: "suitability", title: "적합성 원칙 확인" },
           { id: "payday", title: "급여일 확인" },
@@ -94,7 +94,7 @@ export const comparisonServices: Record<ServiceId, ComparisonService> = {
     toBeFlow: [
       {
         id: "required-consent",
-        title: "필수 동의 절차 (1단계)",
+        title: "필수 동의 절차",
         steps: [
           {
             id: "integrated-required-consent",
@@ -105,7 +105,7 @@ export const comparisonServices: Record<ServiceId, ComparisonService> = {
       },
       {
         id: "information-review",
-        title: "정보 확인 절차 (1단계)",
+        title: "정보 확인 절차",
         steps: [
           {
             id: "integrated-information-review",

@@ -91,48 +91,84 @@ export function FlowComparison({
   asIsFlow: FlowGroupData[];
   toBeFlow: FlowGroupData[];
 }) {
+  const groupIds = Array.from(
+    new Set([...asIsFlow.map((group) => group.id), ...toBeFlow.map((group) => group.id)]),
+  );
+
+  if (groupIds.length === 0) {
+    return (
+      <div className={styles.flowComparison}>
+        <ProcedureComparison />
+      </div>
+    );
+  }
+
   return (
     <div className={styles.flowComparison}>
-      <FlowLane label="AS-IS" groups={asIsFlow} emptyText="AS-IS 프로세스 입력 예정" />
-      <FlowLane label="TO-BE" groups={toBeFlow} emptyText="TO-BE 프로세스 입력 예정" />
+      {groupIds.map((groupId) => {
+        const asIsGroup = asIsFlow.find((group) => group.id === groupId);
+        const toBeGroup = toBeFlow.find((group) => group.id === groupId);
+
+        return (
+          <ProcedureComparison
+            asIsGroup={asIsGroup}
+            key={groupId}
+            title={asIsGroup?.title ?? toBeGroup?.title}
+            toBeGroup={toBeGroup}
+          />
+        );
+      })}
     </div>
+  );
+}
+
+function ProcedureComparison({
+  title,
+  asIsGroup,
+  toBeGroup,
+}: {
+  title?: string;
+  asIsGroup?: FlowGroupData;
+  toBeGroup?: FlowGroupData;
+}) {
+  return (
+    <article className={styles.procedureComparison}>
+      <header className={styles.procedureHeader}>
+        <span>PROCEDURE</span>
+        <h4>{title ?? "절차 비교 항목 입력 예정"}</h4>
+      </header>
+      <FlowLane label="AS-IS" group={asIsGroup} emptyText="AS-IS 프로세스 입력 예정" />
+      <FlowLane label="TO-BE" group={toBeGroup} emptyText="TO-BE 프로세스 입력 예정" />
+    </article>
   );
 }
 
 function FlowLane({
   label,
-  groups,
+  group,
   emptyText,
 }: {
   label: "AS-IS" | "TO-BE";
-  groups: FlowGroupData[];
+  group?: FlowGroupData;
   emptyText: string;
 }) {
   return (
     <div className={styles.flowLane}>
-      <ComparisonLabel kind={label} />
-      <div className={styles.flowGroups}>
-        {groups.length > 0 ? (
-          groups.map((group) => <FlowGroup group={group} key={group.id} />)
+      <div className={styles.flowLaneHeader}>
+        <ComparisonLabel kind={label} />
+        {group ? <span>{group.steps.length}단계</span> : null}
+      </div>
+      <div className={styles.flowSteps}>
+        {group && group.steps.length > 0 ? (
+          group.steps.map((step, index) => (
+            <div className={styles.flowStepGroup} key={step.id}>
+              <FlowStep step={step} />
+              {index < group.steps.length - 1 ? <ComparisonArrow /> : null}
+            </div>
+          ))
         ) : (
           <div className={styles.flowEmpty}>{emptyText}</div>
         )}
-      </div>
-    </div>
-  );
-}
-
-function FlowGroup({ group }: { group: FlowGroupData }) {
-  return (
-    <div className={styles.flowGroup}>
-      <strong className={styles.flowGroupTitle}>{group.title}</strong>
-      <div className={styles.flowSteps}>
-        {group.steps.map((step, index) => (
-          <div className={styles.flowStepGroup} key={step.id}>
-            <FlowStep step={step} />
-            {index < group.steps.length - 1 ? <ComparisonArrow /> : null}
-          </div>
-        ))}
       </div>
     </div>
   );
