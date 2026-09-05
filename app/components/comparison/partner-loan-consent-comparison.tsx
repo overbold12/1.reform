@@ -308,7 +308,7 @@ function IdentityConsentAsIsScreen({
           id="as-is-phone"
           inputMode="numeric"
           value={phoneNumber}
-          placeholder="숫자만 입력"
+          placeholder="'-'없이 입력"
           onChange={(event) =>
             onPhoneNumberChange(event.target.value.replace(/\D/g, "").slice(0, 11))
           }
