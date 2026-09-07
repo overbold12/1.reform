@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import styles from "./loan-prototype.module.css";
 
 type AgreementCheckProps = {
@@ -5,7 +6,7 @@ type AgreementCheckProps = {
   label: string;
   onChange: () => void;
   prominent?: boolean;
-  visibleLabel?: string;
+  visibleLabel?: ReactNode;
 };
 
 export function AgreementCheck({

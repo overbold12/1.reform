@@ -35,7 +35,7 @@ const requiredConsentItems = [
   },
   {
     id: "public-collect",
-    title: "공공마이데이터 개인(신용)정보 수집 · 이용 동의",
+    title: "공공마이데이터 개인(신용)정보 수집·이용 동의",
     documents: [
       "개인(신용) 필수적 정보 수집 · 이용 동의",
       "고유식별정보 수집 · 이용 동의",
@@ -245,7 +245,11 @@ function RequiredConsentAsIsScreen({
         <div className={styles.consentSections}>
           {requiredConsentItems.map((item) => (
             <section className={styles.consentGroup} key={item.id}>
-              <div className={styles.groupTitle}>
+              <div
+                className={`${styles.groupTitle} ${
+                  item.id === "public-collect" ? styles.topAlignedGroupTitle : ""
+                }`}
+              >
                 <AgreementCheck
                   checked={isGroupChecked(item.id, item.documents)}
                   label={`${item.title} ${
@@ -253,7 +257,11 @@ function RequiredConsentAsIsScreen({
                   }`}
                   onChange={() => toggleGroup(item.id, item.documents)}
                   prominent
-                  visibleLabel={item.title}
+                  visibleLabel={
+                    item.id === "public-collect" ? (
+                      <>공공마이데이터 개인(신용)정보 수집·이<br />용 동의</>
+                    ) : item.title
+                  }
                 />
               </div>
               {item.documents.map((document) => (
