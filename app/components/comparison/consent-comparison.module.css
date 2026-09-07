@@ -235,8 +235,8 @@
   width: 100%;
   min-height: 34px;
   align-items: center;
-  grid-template-columns: 17px minmax(0, 1fr);
-  gap: 2px;
+  grid-template-columns: minmax(0, 1fr) 34px;
+  gap: 0;
   padding: 4px 0;
 }
 
@@ -244,11 +244,12 @@
   padding-left: 5px;
 }
 
-.documentButton > button:last-child {
+.consentToggleArea {
   display: flex;
   min-width: 0;
+  min-height: 34px;
+  flex: 1;
   align-items: center;
-  justify-content: space-between;
   gap: 6px;
   border: 0;
   background: transparent;
@@ -256,14 +257,38 @@
   color: #4f555e;
   cursor: pointer;
   text-align: left;
+  transition: opacity 120ms ease;
 }
 
-.documentButton > button:last-child span {
+.consentToggleArea:active {
+  opacity: 0.6;
+}
+
+.documentButton .consentToggleArea > span:last-child {
   font-size: 11px;
   line-height: 1.4;
 }
 
-.documentButton > button:last-child b {
+.consentChevronButton {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 120ms ease, transform 100ms ease;
+}
+
+.consentChevronButton:active {
+  background: #f1f2f4;
+  transform: scale(0.92);
+}
+
+.consentChevronButton b {
   color: #8c939e;
   font-size: 14px;
   font-weight: 500;
@@ -327,30 +352,21 @@
   display: flex;
   min-height: 43px;
   align-items: center;
-  gap: 3px;
+  gap: 0;
 }
 
-.consentDocumentRow > button:last-child {
-  display: flex;
-  min-width: 0;
-  flex: 1;
-  align-items: center;
-  justify-content: space-between;
-  gap: 7px;
-  border: 0;
-  background: transparent;
+.consentDocumentRow .consentToggleArea {
+  min-height: 43px;
   padding: 8px 0;
   color: inherit;
-  cursor: pointer;
-  text-align: left;
 }
 
-.consentDocumentRow > button:last-child span {
+.consentDocumentRow .consentToggleArea > span:last-child {
   font-size: 12px;
   line-height: 1.4;
 }
 
-.consentDocumentRow > button:last-child b {
+.consentDocumentRow .consentChevronButton b {
   color: #8b929d;
   font-size: 20px;
   font-weight: 400;
@@ -361,11 +377,11 @@
   padding-left: 5px;
 }
 
-.subConsentRow > button:last-child {
+.subConsentRow .consentToggleArea {
   padding: 6px 0;
 }
 
-.subConsentRow > button:last-child span {
+.subConsentRow .consentToggleArea > span:last-child {
   color: #4f5661;
   font-size: 11px;
   font-weight: 500;
@@ -385,12 +401,8 @@
   background: transparent;
   padding: 0;
   color: #b9bec6;
-  cursor: pointer;
+  pointer-events: none;
   transition: color 140ms ease, transform 100ms ease;
-}
-
-.subCheck:active {
-  transform: scale(0.88);
 }
 
 .subCheck svg {
@@ -407,6 +419,22 @@
   color: #ed252b;
 }
 
+.prominentCheckMark {
+  width: 24px;
+  height: 24px;
+  flex-basis: 24px;
+  border: 1px solid #cdd1d6;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #c9cdd2;
+}
+
+.prominentCheckMark.subCheckSelected {
+  border-color: #ed252b;
+  background: #ed252b;
+  color: #ffffff;
+}
+
 .prominentConsentRow {
   min-height: 66px;
   align-items: flex-start;
@@ -414,16 +442,12 @@
   padding: 10px 0;
 }
 
-.prominentConsentRow > button:first-child {
-  margin-top: 4px;
-}
-
-.prominentConsentRow > button:last-child {
+.prominentConsentRow .consentToggleArea {
   align-items: flex-start;
   padding: 4px 0;
 }
 
-.prominentConsentRow > button:last-child span {
+.prominentConsentRow .consentToggleArea > span:last-child {
   color: #3f454e;
   font-size: 15px;
   font-weight: 700;

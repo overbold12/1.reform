@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import depositorGuideImage from "../../../references/to-be(platform)/입금자명 확인.png";
 import stopImage from "../../../references/to-be(platform)/Stop-4.png";
+import { AgreementDetail } from "./agreement-detail";
 import { MobileStatusBar } from "./mobile-status-bar";
 import styles from "./loan-prototype.module.css";
 
@@ -155,6 +156,7 @@ export function AccountNumberScreen({ accountNumber, agreed, onAccountNumberChan
   onBack: () => void;
   onNext: () => void;
 }) {
+  const [showAgreementDetail, setShowAgreementDetail] = useState(false);
   const canShowNext = accountNumber.length > 0 && agreed;
 
   return (
@@ -164,12 +166,17 @@ export function AccountNumberScreen({ accountNumber, agreed, onAccountNumberChan
         <input id="payment-account-number" type="text" inputMode="numeric" autoComplete="off"
           value={accountNumber} maxLength={16}
           onChange={(event) => onAccountNumberChange(event.target.value.replace(/\D/g, "").slice(0, 16))} />
-        <button type="button" role="checkbox" aria-checked={agreed} className={styles.accountAgreement}
-          onClick={() => onAgreementChange(!agreed)}>
-          <span className={agreed ? styles.accountAgreementChecked : ""} aria-hidden="true">✓</span>
-          <strong>자동이체 신청 약관 동의</strong>
-          <svg viewBox="0 0 12 20" aria-hidden="true"><path d="m2 2 7 8-7 8" /></svg>
-        </button>
+        <div className={styles.accountAgreementRow}>
+          <button type="button" role="checkbox" aria-checked={agreed} className={styles.accountAgreement}
+            onClick={() => onAgreementChange(!agreed)}>
+            <span className={agreed ? styles.accountAgreementChecked : ""} aria-hidden="true">✓</span>
+            <strong>자동이체 신청 약관 동의</strong>
+          </button>
+          <button type="button" className={styles.accountAgreementDetail}
+            aria-label="자동이체 신청 약관 상세보기" onClick={() => setShowAgreementDetail(true)}>
+            <svg viewBox="0 0 12 20" aria-hidden="true"><path d="m2 2 7 8-7 8" /></svg>
+          </button>
+        </div>
         <Image className={styles.accountStopImage} src={stopImage}
           alt="로또 피해 및 코인 손실 보상, 검사 및 금감원 재산 보호 등을 주장하는 대출 전화는 보이스피싱입니다." priority />
         {canShowNext ? (
@@ -178,6 +185,9 @@ export function AccountNumberScreen({ accountNumber, agreed, onAccountNumberChan
           </button>
         ) : null}
       </section>
+      {showAgreementDetail ? (
+        <AgreementDetail title="자동이체 신청 약관 동의" onClose={() => setShowAgreementDetail(false)} />
+      ) : null}
     </PaymentScreenShell>
   );
 }

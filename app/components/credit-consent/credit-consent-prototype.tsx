@@ -82,17 +82,20 @@ function BackButton({ label, onClick }: { label: string; onClick: () => void }) 
   return <button type="button" className={styles.backButton} onClick={onClick} aria-label={label}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 4-8 8 8 8" /></svg></button>;
 }
 
-function Check({ checked, label, onClick, large = false }: { checked: boolean; label: string; onClick: () => void; large?: boolean }) {
+function Check({ checked, label, onClick, large = false, visibleLabel }: { checked: boolean; label: string; onClick: () => void; large?: boolean; visibleLabel?: string }) {
+  if (visibleLabel) {
+    return <button type="button" role="checkbox" aria-checked={checked} aria-label={label} className={styles.checkTouchArea} onClick={onClick}><span className={`${styles.check} ${checked ? styles.checkSelected : ""} ${large ? styles.checkLarge : ""}`} aria-hidden="true"><svg viewBox="0 0 20 20"><path d="m5.2 10.1 3.1 3.1 6.5-7" /></svg></span><span>{visibleLabel}</span></button>;
+  }
   return <button type="button" role="checkbox" aria-checked={checked} aria-label={label} className={`${styles.check} ${checked ? styles.checkSelected : ""} ${large ? styles.checkLarge : ""}`} onClick={onClick}><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5.2 10.1 3.1 3.1 6.5-7" /></svg></button>;
 }
 
 function AgreementSection({ group, checked, expanded, onCheck, onExpand, onOpen }: { group: AgreementGroup; checked: boolean; expanded: boolean; onCheck: () => void; onExpand: () => void; onOpen: (title: string) => void }) {
   return <div className={styles.agreementSection}>
     <div className={styles.agreementRow}>
-      <Check checked={checked} label={`${group.title} ${checked ? "동의 해제" : "동의"}`} onClick={onCheck} />
-      <button type="button" className={styles.expandButton} onClick={onExpand} aria-expanded={expanded}><span>{group.title}</span><svg className={expanded ? styles.chevronOpen : ""} viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg></button>
+      <Check checked={checked} label={`${group.title} ${checked ? "동의 해제" : "동의"}`} onClick={onCheck} visibleLabel={group.title} />
+      <button type="button" className={styles.chevronButton} onClick={onExpand} aria-expanded={expanded} aria-label={`${group.title} ${expanded ? "동의서 닫기" : "동의서 열기"}`}><svg className={expanded ? styles.chevronOpen : ""} viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg></button>
     </div>
-    <div className={`${styles.documentList} ${expanded ? styles.documentListOpen : ""}`}><div>{group.documents.map((document) => <button type="button" className={styles.documentRow} key={document} onClick={() => onOpen(document)}><span>·&nbsp; {document}</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5" /></svg></button>)}</div></div>
+    <div className={`${styles.documentList} ${expanded ? styles.documentListOpen : ""}`}><div>{group.documents.map((document) => <div className={styles.documentRow} key={document}><span>·&nbsp; {document}</span><button type="button" className={styles.detailChevronButton} aria-label={`${document} 상세보기`} onClick={() => onOpen(document)}><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5" /></svg></button></div>)}</div></div>
   </div>;
 }
 
@@ -168,7 +171,7 @@ function RequiredAgreementScreen({ agreements, expanded, scrollRef, onBack, onCo
     <StatusBar /><div className={styles.appNav}><BackButton label="이전 화면으로 돌아가기" onClick={onBack} /></div>
     <div className={styles.agreementScroll} ref={scrollRef}>
       <header className={styles.agreementTitle}><h2>대출 신청에 필요한<br />필수 동의예요</h2></header>
-      <section className={styles.agreementBlock}><div className={styles.masterRow}><Check checked={allLoanChecked} label="대출조회 필수 동의 전체 선택" onClick={onToggleLoanAll} large /><strong>대출조회 필수 동의</strong></div>{loanAgreementGroups.map((group) => <AgreementSection key={group.id} group={group} checked={Boolean(agreements[group.id])} expanded={expanded.has(group.id)} onCheck={() => onToggle(group.id)} onExpand={() => onExpand(group.id)} onOpen={onOpen} />)}</section>
+      <section className={styles.agreementBlock}><div className={styles.masterRow}><Check checked={allLoanChecked} label="대출조회 필수 동의 전체 선택" onClick={onToggleLoanAll} large visibleLabel="대출조회 필수 동의" /></div>{loanAgreementGroups.map((group) => <AgreementSection key={group.id} group={group} checked={Boolean(agreements[group.id])} expanded={expanded.has(group.id)} onCheck={() => onToggle(group.id)} onExpand={() => onExpand(group.id)} onOpen={onOpen} />)}</section>
       <section className={`${styles.agreementBlock} ${styles.publicBlock}`}><h3>공공마이데이터 활용 필수 동의</h3><p>안전한 서류 확인을 위해 항목별 동의가 필요합니다</p>{publicDataAgreementGroups.map((group) => <AgreementSection key={group.id} group={group} checked={Boolean(agreements[group.id])} expanded={expanded.has(group.id)} onCheck={() => onToggle(group.id)} onExpand={() => onExpand(group.id)} onOpen={onOpen} />)}</section><div className={styles.scrollSpacer} />
     </div>
     {allChecked && !showSheet ? <div className={styles.floatingNext}><button type="button" onClick={onContinue}><span>다음</span><NextArrow /></button></div> : null}

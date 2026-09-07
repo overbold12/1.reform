@@ -66,8 +66,8 @@ export function OptionalAgreementScreen({
               label={`선택 약관 모두 ${allOptionalChecked ? "동의 해제" : "동의"}`}
               onChange={onToggleAll}
               prominent
+              visibleLabel="[선택]모두 동의하기"
             />
-            <strong>[선택]모두 동의하기</strong>
           </div>
 
           <div className={styles.agreementGroupList}>

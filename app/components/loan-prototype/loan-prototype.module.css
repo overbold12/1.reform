@@ -429,6 +429,34 @@
   color: #ffffff;
 }
 
+.checkTouchArea {
+  display: flex;
+  min-width: 0;
+  min-height: 44px;
+  flex: 1;
+  align-items: center;
+  gap: 9px;
+  border: 0;
+  background: transparent;
+  padding: 5px 0;
+  color: #252525;
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 480;
+  letter-spacing: -0.025em;
+  line-height: 1.45;
+  text-align: left;
+  transition: opacity 120ms ease;
+}
+
+.checkTouchArea:active {
+  opacity: 0.6;
+}
+
+.checkTouchArea > .checkButton {
+  pointer-events: none;
+}
+
 .prominentCheck {
   width: 24px;
   height: 24px;
@@ -447,28 +475,64 @@
 .agreementHeadingRow {
   display: flex;
   min-height: 40px;
-  align-items: flex-start;
-  gap: 5px;
+  align-items: center;
+  gap: 0;
 }
 
-.agreementHeadingRow > .checkButton {
+.agreementHeadingRow .checkTouchArea > .checkButton {
   width: 17px;
   height: 17px;
   flex-basis: 17px;
-  margin-top: 10px;
   border-color: transparent;
   color: #c3c7cc;
 }
 
-.agreementHeadingRow > .checkButton svg {
+.agreementHeadingRow .checkTouchArea > .checkButton svg {
   width: 14px;
   height: 14px;
 }
 
-.agreementHeadingRow > .checkButton.checked {
+.agreementHeadingRow .checkTouchArea > .checkButton.checked {
   border-color: transparent;
   background: transparent;
   color: #ef2b30;
+}
+
+.chevronButton,
+.detailChevronButton {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  padding: 0;
+  color: #7e8389;
+  cursor: pointer;
+  transition: background-color 120ms ease, transform 100ms ease;
+}
+
+.chevronButton:active,
+.detailChevronButton:active {
+  background: #f3f4f6;
+  transform: scale(0.92);
+}
+
+.chevronButton svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.3;
+  transition: transform 180ms ease;
+}
+
+.chevronButton svg.chevronOpen {
+  transform: rotate(180deg);
 }
 
 .accordionButton {
@@ -541,7 +605,7 @@
   background: transparent;
   padding: 7px 0 7px 24px;
   color: #9a9da2;
-  cursor: pointer;
+  cursor: default;
   font-size: 11.5px;
   letter-spacing: -0.025em;
   line-height: 1.5;
@@ -550,10 +614,6 @@
 
 .documentRow:hover {
   color: #666a70;
-}
-
-.documentRow:active {
-  opacity: 0.5;
 }
 
 .documentRow svg {
@@ -566,6 +626,13 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 1.4;
+}
+
+.documentRow .detailChevronButton {
+  width: 34px;
+  height: 34px;
+  flex-basis: 34px;
+  margin: -7px -9px -7px 0;
 }
 
 .channelRow {
@@ -2967,11 +3034,19 @@
   border-bottom-color: #22252a;
 }
 
-.accountAgreement {
-  display: grid;
+.accountAgreementRow {
+  display: flex;
   width: 100%;
   height: 69px;
-  grid-template-columns: 24px minmax(0, 1fr) 12px;
+  align-items: center;
+}
+
+.accountAgreement {
+  display: grid;
+  min-width: 0;
+  height: 69px;
+  flex: 1;
+  grid-template-columns: 24px minmax(0, 1fr);
   align-items: center;
   gap: 9px;
   border: 0;
@@ -3012,7 +3087,26 @@
   letter-spacing: -0.045em;
 }
 
-.accountAgreement svg {
+.accountAgreementDetail {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 120ms ease, transform 100ms ease;
+}
+
+.accountAgreementDetail:active {
+  background: #f3f4f6;
+  transform: scale(0.92);
+}
+
+.accountAgreementDetail svg {
   width: 8px;
   height: 14px;
   fill: none;

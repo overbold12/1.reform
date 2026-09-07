@@ -31,14 +31,15 @@ export function OptionalAgreementSection({
           checked={Boolean(agreements[group.id])}
           label={`${group.title} ${agreements[group.id] ? "동의 해제" : "동의"}`}
           onChange={onCheck}
+          visibleLabel={group.title}
         />
         <button
           type="button"
-          className={styles.accordionButton}
+          className={styles.chevronButton}
           aria-expanded={expanded}
+          aria-label={`${group.title} ${expanded ? "동의서 닫기" : "동의서 열기"}`}
           onClick={onToggle}
         >
-          <span>{group.title}</span>
           <svg
             className={expanded ? styles.chevronOpen : ""}
             viewBox="0 0 16 16"
@@ -73,17 +74,19 @@ export function OptionalAgreementSection({
                 <span>{child}</span>
               </button>
             ) : (
-              <button
-                type="button"
-                className={styles.documentRow}
-                key={child}
-                onClick={() => onDocumentOpen(child)}
-              >
+              <div className={styles.documentRow} key={child}>
                 <span>·&nbsp; {child}</span>
-                <svg viewBox="0 0 16 16" aria-hidden="true">
-                  <path d="m6 3.5 4.5 4.5L6 12.5" />
-                </svg>
-              </button>
+                <button
+                  type="button"
+                  className={styles.detailChevronButton}
+                  aria-label={`${child} 상세보기`}
+                  onClick={() => onDocumentOpen(child)}
+                >
+                  <svg viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="m6 3.5 4.5 4.5L6 12.5" />
+                  </svg>
+                </button>
+              </div>
             ),
           )}
         </div>

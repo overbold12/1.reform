@@ -253,8 +253,8 @@ function RequiredConsentAsIsScreen({
                   }`}
                   onChange={() => toggleGroup(item.id, item.documents)}
                   prominent
+                  visibleLabel={item.title}
                 />
-                <strong>{item.title}</strong>
               </div>
               {item.documents.map((document) => (
                 <DocumentButton
@@ -319,8 +319,8 @@ function IdentityConsentAsIsScreen({
             label="필수약관 전체 동의"
             onChange={toggleAll}
             prominent
+            visibleLabel="필수약관 전체 동의"
           />
-          <strong>필수약관 전체 동의</strong>
         </div>
         {identityConsentItems.map((item, index) => (
           <ConsentDocumentRow
@@ -384,8 +384,8 @@ function TermsConsentAsIsScreen({
               label="서비스 이용약관 전체 동의"
               onChange={toggleAll}
               prominent
+              visibleLabel="서비스 이용약관"
             />
-            <strong>서비스 이용약관</strong>
           </div>
         ) : null}
         <div className={styles.termsRows}>
@@ -537,8 +537,23 @@ function DocumentButton({
 }) {
   return (
     <div className={styles.documentButton}>
-      <SubAgreementCheck checked={checked} label={`${title} 동의`} onChange={onCheck} />
-      <button type="button" onClick={onDetail}><span>{title}</span><b>⌄</b></button>
+      <button
+        type="button"
+        role="checkbox"
+        aria-checked={checked}
+        aria-label={`${title} ${checked ? "동의 해제" : "동의"}`}
+        className={styles.consentToggleArea}
+        onClick={onCheck}
+      >
+        <ConsentCheckMark checked={checked} />
+        <span>{title}</span>
+      </button>
+      <button
+        type="button"
+        className={styles.consentChevronButton}
+        aria-label={`${title} 상세보기`}
+        onClick={onDetail}
+      ><b>⌄</b></button>
     </div>
   );
 }
@@ -566,41 +581,43 @@ function ConsentDocumentRow({
         prominent ? styles.prominentConsentRow : ""
       } ${pullUp ? styles.pullUpConsentRow : ""}`}
     >
-      {sub ? (
-        <SubAgreementCheck checked={checked} label={`${title} 동의`} onChange={onCheck} />
-      ) : (
-        <AgreementCheck
-          checked={checked}
-          label={`${title} 동의`}
-          onChange={onCheck}
-          prominent={prominent}
-        />
-      )}
-      <button type="button" onClick={onDetail}><span>{title}</span><b>›</b></button>
+      <button
+        type="button"
+        role="checkbox"
+        aria-checked={checked}
+        aria-label={`${title} ${checked ? "동의 해제" : "동의"}`}
+        className={styles.consentToggleArea}
+        onClick={onCheck}
+      >
+        <ConsentCheckMark checked={checked} prominent={prominent && !sub} />
+        <span>{title}</span>
+      </button>
+      <button
+        type="button"
+        className={styles.consentChevronButton}
+        aria-label={`${title} 상세보기`}
+        onClick={onDetail}
+      ><b>›</b></button>
     </div>
   );
 }
 
-function SubAgreementCheck({
+function ConsentCheckMark({
   checked,
-  label,
-  onChange,
+  prominent = false,
 }: {
   checked: boolean;
-  label: string;
-  onChange: () => void;
+  prominent?: boolean;
 }) {
   return (
-    <button
-      type="button"
-      role="checkbox"
-      aria-checked={checked}
-      aria-label={label}
-      className={`${styles.subCheck} ${checked ? styles.subCheckSelected : ""}`}
-      onClick={onChange}
+    <span
+      className={`${styles.subCheck} ${checked ? styles.subCheckSelected : ""} ${
+        prominent ? styles.prominentCheckMark : ""
+      }`}
+      aria-hidden="true"
     >
       <svg viewBox="0 0 18 18" aria-hidden="true"><path d="m4.5 9.2 2.8 2.8 6.1-6.4" /></svg>
-    </button>
+    </span>
   );
 }
 

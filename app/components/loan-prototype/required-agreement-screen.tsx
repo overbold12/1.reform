@@ -62,8 +62,8 @@ export function RequiredAgreementScreen({
               label={`대출조회 필수 동의 ${allLoanAgreementsChecked ? "해제" : "선택"}`}
               onChange={onToggleLoanAll}
               prominent
+              visibleLabel="대출조회 필수 동의"
             />
-            <strong>대출조회 필수 동의</strong>
           </div>
 
           <div className={styles.agreementGroupList}>
