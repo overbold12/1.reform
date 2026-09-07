@@ -385,9 +385,10 @@
   margin-bottom: 6px;
 }
 
-.masterAgreementRow strong {
-  font-size: 15px;
-  font-weight: 730;
+.masterAgreementRow .checkTouchArea {
+  color: #111111;
+  font-size: 16px;
+  font-weight: 760;
   letter-spacing: -0.02em;
 }
 
@@ -785,10 +786,6 @@
 
 .optionalAgreementBlock .masterAgreementRow {
   margin-bottom: 6px;
-}
-
-.optionalAgreementBlock .masterAgreementRow strong {
-  font-size: 15px;
 }
 
 .optionalAgreementBlock .agreementHeadingRow {

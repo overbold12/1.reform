@@ -58,7 +58,7 @@
 .agreementTitle h2 { margin: 0; font-size: 24px; font-weight: 760; letter-spacing: -.045em; line-height: 1.45; }
 .agreementBlock { padding: 0 48px; }
 .masterRow { display: flex; min-height: 44px; align-items: center; gap: 9px; margin-bottom: 6px; }
-.masterRow strong { font-size: 15px; font-weight: 730; letter-spacing: -.02em; }
+.masterRow .checkTouchArea { color: #111; font-size: 16px; font-weight: 760; letter-spacing: -.02em; }
 .check { display: grid; width: 17px; height: 17px; flex: 0 0 17px; place-items: center; border: 0; border-radius: 50%; background: transparent; padding: 0; color: #c3c7cc; cursor: pointer; transition: color 150ms ease,background-color 150ms ease,transform 120ms ease; }
 .check:active { transform: scale(.86); }
 .check svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.7; }
