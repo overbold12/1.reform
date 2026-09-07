@@ -83,7 +83,15 @@ const asIsLabels: Record<AsIsStep, string> = {
 };
 
 function emptyChecks(groups: AgreementGroup[]) {
-  return Object.fromEntries(groups.map((group) => [group.id, false]));
+  return Object.fromEntries(
+    groups.flatMap((group) =>
+      group.documents.map((document) => [documentId(group.id, document), false]),
+    ),
+  );
+}
+
+function documentId(groupId: string, document: string) {
+  return `${groupId}:${document}`;
 }
 
 export function CreditConsentInteractionComparison() {
@@ -162,6 +170,10 @@ function AsIsCreditConsentPrototype() {
   }
 
   function back() {
+    if (vehicleTimerRef.current) {
+      clearTimeout(vehicleTimerRef.current);
+      vehicleTimerRef.current = null;
+    }
     const previous = history.at(-1);
     if (!previous) return;
     setStep(previous);
@@ -174,7 +186,7 @@ function AsIsCreditConsentPrototype() {
     vehicleTimerRef.current = setTimeout(() => {
       go(choice === "yes" ? "vehicle-number" : "auth-method");
       vehicleTimerRef.current = null;
-    }, 1800);
+    }, 1200);
   }
 
   return (
@@ -182,7 +194,7 @@ function AsIsCreditConsentPrototype() {
       <span className={styles.stepPill}>{asIsLabels[step]}</span>
       {step === "primary-type" || step === "primary-consent" ? (
         <AgreementScreen
-          title="신용정보조회 약관에\n동의해주세요"
+          title={<>신용정보 조회 약관에<br />동의해 주세요</>}
           groups={primaryGroups}
           checks={primaryChecks}
           expanded={expanded}
@@ -211,7 +223,7 @@ function AsIsCreditConsentPrototype() {
       ) : null}
       {step === "sunshine-type" || step === "sunshine-consent" ? (
         <AgreementScreen
-          title="햇살론 대출 신청을 위한\n필수 약관에 동의해주세요"
+          title={<>햇살론 대출 신청을 위한<br />필수 약관에 동의해 주세요</>}
           groups={sunshineGroups}
           checks={sunshineChecks}
           expanded={expanded}
@@ -233,7 +245,7 @@ function AsIsCreditConsentPrototype() {
           value={vehicleChoice}
           onChange={handleVehicleChoice}
           onBack={back}
-          pending={Boolean(vehicleChoice)}
+          plain
         />
       ) : null}
       {step === "vehicle-number" ? (
@@ -251,10 +263,8 @@ function AsIsCreditConsentPrototype() {
         <CarrierScreen
           selected={selectedCarrier}
           onBack={back}
-          onSelect={(carrier) => {
-            setSelectedCarrier(carrier);
-            setCompleted(true);
-          }}
+          onSelect={setSelectedCarrier}
+          onComplete={() => setCompleted(true)}
         />
       ) : null}
       {detailTitle ? (
@@ -280,7 +290,7 @@ function AgreementScreen({
   onAgreementTypeChange,
   onSheetConfirm,
 }: {
-  title: string;
+  title: ReactNode;
   groups: AgreementGroup[];
   checks: Record<string, boolean>;
   expanded: Set<string>;
@@ -294,7 +304,9 @@ function AgreementScreen({
   onAgreementTypeChange: (type: AgreementType) => void;
   onSheetConfirm: () => void;
 }) {
-  const allChecked = groups.every((group) => checks[group.id]);
+  const allChecked = groups.every((group) =>
+    group.documents.every((document) => checks[documentId(group.id, document)]),
+  );
 
   function toggleExpanded(id: string) {
     const next = new Set(expanded);
@@ -306,12 +318,12 @@ function AgreementScreen({
   return (
     <ScreenShell onBack={onBack}>
       <div className={styles.agreementScroll}>
-        <h2 className={styles.agreementTitle}>
-          {title.split("\n").map((line) => <span key={line}>{line}</span>)}
-        </h2>
+        <h2 className={styles.agreementTitle}>{title}</h2>
         <div className={styles.agreementGroups}>
           {groups.map((group) => {
-            const checked = Boolean(checks[group.id]);
+            const checked = group.documents.every(
+              (document) => checks[documentId(group.id, document)],
+            );
             const isExpanded = expanded.has(group.id);
             return (
               <section className={styles.agreementGroup} key={group.id}>
@@ -321,9 +333,15 @@ function AgreementScreen({
                     role="checkbox"
                     aria-checked={checked}
                     className={styles.agreementCheckArea}
-                    onClick={() => onChecksChange({ ...checks, [group.id]: !checked })}
+                    onClick={() => {
+                      const next = { ...checks };
+                      group.documents.forEach((document) => {
+                        next[documentId(group.id, document)] = !checked;
+                      });
+                      onChecksChange(next);
+                    }}
                   >
-                    <CheckMark checked={checked} />
+                    <CheckMark checked={checked} filled />
                     <strong>{group.title}</strong>
                   </button>
                   <button
@@ -340,8 +358,20 @@ function AgreementScreen({
                   <div>
                     {group.documents.map((document) => (
                       <div className={styles.agreementDocument} key={document}>
-                        <span>✓&nbsp; {document}</span>
-                        <button type="button" aria-label={`${document} 상세보기`} onClick={() => onDetail(document)}>
+                        <button
+                          type="button"
+                          role="checkbox"
+                          aria-checked={Boolean(checks[documentId(group.id, document)])}
+                          className={styles.documentCheckArea}
+                          onClick={() => {
+                            const id = documentId(group.id, document);
+                            onChecksChange({ ...checks, [id]: !checks[id] });
+                          }}
+                        >
+                          <CheckMark checked={Boolean(checks[documentId(group.id, document)])} />
+                          <span>{document}</span>
+                        </button>
+                        <button type="button" className={styles.documentDetailButton} aria-label={`${document} 상세보기`} onClick={() => onDetail(document)}>
                           <svg viewBox="0 0 16 16"><path d="m6 3.5 4.5 4.5L6 12.5" /></svg>
                         </button>
                       </div>
@@ -401,7 +431,7 @@ function ChoiceScreen({
   onBack,
   actionLabel,
   onAction,
-  pending = false,
+  plain = false,
 }: {
   title: ReactNode;
   description?: string;
@@ -410,7 +440,7 @@ function ChoiceScreen({
   onBack: () => void;
   actionLabel?: string;
   onAction?: () => void;
-  pending?: boolean;
+  plain?: boolean;
 }) {
   return (
     <ScreenShell onBack={onBack}>
@@ -423,16 +453,19 @@ function ChoiceScreen({
               type="button"
               role="radio"
               aria-checked={value === choice}
+              className={`${plain ? styles.plainChoice : ""} ${
+                plain && value === choice ? styles.plainChoiceSelected : ""
+              }`}
               key={choice}
               onClick={() => onChange(choice)}
             >
-              <CheckMark checked={value === choice} filled />
+              {plain ? null : <CheckMark checked={value === choice} filled />}
               <strong>{choice === "yes" ? "네" : "아니오"}</strong>
               {choice === "no" && description ? <small>(담보는 원하지 않아요)</small> : null}
+              {plain ? <SelectionCheck selected={value === choice} /> : null}
             </button>
           ))}
         </div>
-        {pending ? <p className={styles.pendingText}>선택을 반영하고 있어요…</p> : null}
         {value && actionLabel && onAction ? (
           <div className={styles.choiceAction}><RoundAction label={actionLabel} onClick={onAction} /></div>
         ) : null}
@@ -452,7 +485,13 @@ function VehicleNumberScreen({
   onBack: () => void;
   onNext: () => void;
 }) {
+  const composingRef = useRef(false);
   const valid = /^\d{2,3}[가-힣]\d{4}$/.test(value);
+
+  function normalizeVehicleNumber(input: string) {
+    return input.replace(/[^0-9ㄱ-ㅎㅏ-ㅣ가-힣]/g, "").slice(0, 8);
+  }
+
   return (
     <ScreenShell onBack={onBack}>
       <main className={styles.vehicleContent}>
@@ -462,7 +501,23 @@ function VehicleNumberScreen({
           value={value}
           placeholder="33가 3456"
           maxLength={8}
-          onChange={(event) => onChange(event.target.value.replace(/[^0-9가-힣]/g, "").slice(0, 8))}
+          autoComplete="off"
+          autoCapitalize="none"
+          spellCheck={false}
+          lang="ko"
+          onChange={(event) => {
+            const next = composingRef.current
+              ? event.target.value.slice(0, 8)
+              : normalizeVehicleNumber(event.target.value);
+            onChange(next);
+          }}
+          onCompositionStart={() => {
+            composingRef.current = true;
+          }}
+          onCompositionEnd={(event) => {
+            composingRef.current = false;
+            onChange(normalizeVehicleNumber(event.currentTarget.value));
+          }}
         />
         <p><span>i</span> 자동차 번호를 입력하면 더 좋은 조건을 받으실 수 있어요.</p>
         {valid ? <div className={styles.vehicleAction}><RoundAction label="다음" onClick={onNext} /></div> : null}
@@ -473,18 +528,37 @@ function VehicleNumberScreen({
 
 function AuthMethodScreen({ onBack, onNext }: { onBack: () => void; onNext: () => void }) {
   const [selected, setSelected] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    },
+    [],
+  );
 
   function select() {
+    if (timerRef.current) clearTimeout(timerRef.current);
     setSelected(true);
-    requestAnimationFrame(onNext);
+    timerRef.current = setTimeout(() => {
+      onNext();
+      timerRef.current = null;
+    }, 450);
   }
 
   return (
     <ScreenShell onBack={onBack}>
       <main className={styles.authContent}>
         <h2>자동차를 가지고 계신가요?</h2>
-        <button type="button" role="radio" aria-checked={selected} onClick={select}>
-          휴대폰 본인인증
+        <button
+          type="button"
+          role="radio"
+          aria-checked={selected}
+          className={styles.authOption}
+          onClick={select}
+        >
+          <span>휴대폰 본인인증</span>
+          <SelectionCheck selected={selected} />
         </button>
       </main>
     </ScreenShell>
@@ -495,12 +569,32 @@ function CarrierScreen({
   selected,
   onBack,
   onSelect,
+  onComplete,
 }: {
   selected: string | null;
   onBack: () => void;
   onSelect: (carrier: string) => void;
+  onComplete: () => void;
 }) {
   const carriers = ["SKT", "KT", "LG U+", "알뜰폰"];
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    },
+    [],
+  );
+
+  function selectCarrier(carrier: string) {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    onSelect(carrier);
+    timerRef.current = setTimeout(() => {
+      onComplete();
+      timerRef.current = null;
+    }, 1800);
+  }
+
   return (
     <ScreenShell onBack={onBack}>
       <main className={styles.carrierContent}>
@@ -513,7 +607,7 @@ function CarrierScreen({
               aria-checked={selected === carrier}
               className={selected === carrier ? styles.carrierSelected : ""}
               key={carrier}
-              onClick={() => onSelect(carrier)}
+              onClick={() => selectCarrier(carrier)}
             >
               {carrier}
             </button>
@@ -544,6 +638,18 @@ function CheckMark({ checked, filled = false }: { checked: boolean; filled?: boo
     <span className={`${styles.checkMark} ${filled ? styles.checkMarkFilled : ""} ${checked ? styles.checkMarkChecked : ""}`} aria-hidden="true">
       <svg viewBox="0 0 18 18"><path d="m4.5 9.2 2.8 2.8 6.1-6.4" /></svg>
     </span>
+  );
+}
+
+function SelectionCheck({ selected }: { selected: boolean }) {
+  return (
+    <svg
+      className={`${styles.selectionCheck} ${selected ? styles.selectionCheckVisible : ""}`}
+      viewBox="0 0 22 22"
+      aria-hidden="true"
+    >
+      <path d="m5.5 11.2 3.5 3.5 7.5-8" />
+    </svg>
   );
 }
 

@@ -182,7 +182,7 @@
 }
 
 .chevronButton,
-.agreementDocument button {
+.documentDetailButton {
   display: grid;
   width: 40px;
   height: 40px;
@@ -198,13 +198,13 @@
 }
 
 .chevronButton:active,
-.agreementDocument button:active {
+.documentDetailButton:active {
   background: #f2f3f5;
   transform: scale(0.92);
 }
 
 .chevronButton svg,
-.agreementDocument svg {
+.documentDetailButton svg {
   width: 15px;
   height: 15px;
   fill: none;
@@ -246,15 +246,36 @@
   color: #656a72;
 }
 
-.agreementDocument > span {
+.documentCheckArea {
+  display: flex;
   min-width: 0;
+  min-height: 35px;
   flex: 1;
+  align-items: flex-start;
+  gap: 5px;
+  border: 0;
+  background: transparent;
   padding: 7px 0;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: opacity 120ms ease;
+}
+
+.documentCheckArea:active {
+  opacity: 0.6;
+}
+
+.documentCheckArea > span:last-child {
   font-size: 11px;
   line-height: 1.5;
 }
 
-.agreementDocument button {
+.documentCheckArea .checkMark {
+  margin-top: 1px;
+}
+
+.agreementDocument .documentDetailButton {
   width: 34px;
   height: 34px;
   flex-basis: 34px;
@@ -345,7 +366,7 @@
   line-height: 1.45;
 }
 
-.choiceContent > p:not(.pendingText) {
+.choiceContent > p {
   margin: 9px 0 0;
   color: #a0a3a8;
   font-size: 12px;
@@ -374,6 +395,36 @@
   opacity: 0.65;
 }
 
+.choiceList .plainChoice {
+  min-height: 34px;
+  justify-content: flex-start;
+  padding: 0;
+}
+
+.choiceList .plainChoiceSelected {
+  color: #60636a;
+}
+
+.selectionCheck {
+  width: 23px;
+  height: 23px;
+  margin-right: 4px;
+  margin-left: auto;
+  fill: none;
+  opacity: 0;
+  stroke: #ed252b;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.4;
+  transform: scale(0.8);
+  transition: opacity 140ms ease, transform 140ms ease;
+}
+
+.selectionCheckVisible {
+  opacity: 1;
+  transform: scale(1);
+}
+
 .choiceList strong {
   font-size: 17px;
   font-weight: 650;
@@ -389,13 +440,6 @@
   display: flex;
   justify-content: flex-end;
   margin-top: 43px;
-}
-
-.pendingText {
-  margin: 23px 0 0;
-  color: #7d8796;
-  font-size: 11px;
-  animation: pulse 900ms ease-in-out infinite alternate;
 }
 
 .roundAction {
@@ -529,6 +573,14 @@
   font-weight: 720;
 }
 
+.authContent > .authOption {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+}
+
 .authContent > button:active {
   opacity: 0.62;
 }
@@ -594,11 +646,6 @@
 
 @keyframes dim-in {
   from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes pulse {
-  from { opacity: 0.55; }
   to { opacity: 1; }
 }
 
