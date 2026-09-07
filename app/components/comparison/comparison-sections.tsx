@@ -9,6 +9,7 @@ import type {
 } from "./comparison-data";
 import { PartnerLoanConsentComparison } from "./partner-loan-consent-comparison";
 import { PartnerLoanInformationComparison } from "./partner-loan-information-comparison";
+import { CreditConsentInteractionComparison } from "./credit-consent-interaction-comparison";
 import styles from "./comparison.module.css";
 
 type ComparisonSectionProps = {
@@ -202,6 +203,10 @@ export function InteractiveComparison({
   const [activeProcedure, setActiveProcedure] =
     useState<ProcedureId>("required-consent");
   const procedureItems = items.filter((item) => item.procedure === activeProcedure);
+
+  if (serviceId === "creditConsent") {
+    return <CreditConsentInteractionComparison />;
+  }
 
   return (
     <div>

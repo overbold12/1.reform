@@ -338,6 +338,175 @@ function ApplicationCompleteScreen() {
   );
 }
 
+export function CreditConsentFirstNinePrototype({
+  onComplete,
+}: {
+  onComplete?: () => void;
+}) {
+  const [step, setStep] = useState<Step>("counselor");
+  const [counselorNumber, setCounselorNumber] = useState("");
+  const [agreementType, setAgreementType] = useState<AgreementType>("summary");
+  const [agreements, setAgreements] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(allGroups.map((group) => [group.id, false])),
+  );
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const [detailTitle, setDetailTitle] = useState<string | null>(null);
+  const [selectedCarrier, setSelectedCarrier] = useState<Carrier | null>(null);
+  const [customerName, setCustomerName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("01012345678");
+  const [birthDate, setBirthDate] = useState("");
+  const [genderDigit, setGenderDigit] = useState("");
+  const [privateDigits, setPrivateDigits] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
+  const [vehicleNumber, setVehicleNumber] = useState("");
+  const [noVehicle, setNoVehicle] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const genderInputRef = useRef<HTMLInputElement>(null);
+  const privateInputRef = useRef<HTMLInputElement>(null);
+  const carrierTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (carrierTimerRef.current) clearTimeout(carrierTimerRef.current);
+    },
+    [],
+  );
+
+  function navigate(next: Step) {
+    if (carrierTimerRef.current) clearTimeout(carrierTimerRef.current);
+    carrierTimerRef.current = null;
+    setDetailTitle(null);
+    setStep(next);
+    requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
+  }
+
+  function handleCarrierSelect(carrier: Carrier) {
+    if (carrierTimerRef.current) clearTimeout(carrierTimerRef.current);
+    setSelectedCarrier(carrier);
+    carrierTimerRef.current = setTimeout(() => {
+      setStep("name-input");
+      carrierTimerRef.current = null;
+    }, 500);
+  }
+
+  function toggleAgreement(id: string) {
+    setAgreements((current) => ({ ...current, [id]: !current[id] }));
+  }
+
+  function toggleLoanAll() {
+    const checked = loanAgreementGroups.every((group) => agreements[group.id]);
+    setAgreements((current) => {
+      const next = { ...current };
+      loanAgreementGroups.forEach((group) => {
+        next[group.id] = !checked;
+      });
+      return next;
+    });
+  }
+
+  function toggleExpanded(id: string) {
+    setExpanded((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  return (
+    <div className={styles.phoneFrame}>
+      {step === "counselor" ? (
+        <CounselorScreen
+          value={counselorNumber}
+          onChange={setCounselorNumber}
+          onNext={() => navigate("agreement-type")}
+        />
+      ) : null}
+      {step === "agreement-type" || step === "required-agreement" ? (
+        <RequiredAgreementScreen
+          agreements={agreements}
+          expanded={expanded}
+          scrollRef={scrollRef}
+          onBack={() => navigate(step === "agreement-type" ? "counselor" : "agreement-type")}
+          onContinue={() => navigate("carrier-selection")}
+          onToggle={toggleAgreement}
+          onToggleLoanAll={toggleLoanAll}
+          onExpand={toggleExpanded}
+          onOpen={setDetailTitle}
+          showSheet={step === "agreement-type"}
+          agreementType={agreementType}
+          onAgreementTypeChange={setAgreementType}
+          onConfirmType={() => navigate("required-agreement")}
+        />
+      ) : null}
+      {step === "carrier-selection" ? (
+        <CarrierSelectionScreen
+          selectedCarrier={selectedCarrier}
+          onBack={() => navigate("required-agreement")}
+          onSelect={handleCarrierSelect}
+        />
+      ) : null}
+      {step === "name-input" ? (
+        <NameInputScreen
+          name={customerName}
+          onNameChange={setCustomerName}
+          onBack={() => navigate("carrier-selection")}
+          onNext={() => navigate("phone-input")}
+        />
+      ) : null}
+      {step === "phone-input" ? (
+        <PhoneInputScreen
+          phoneNumber={phoneNumber}
+          onPhoneNumberChange={setPhoneNumber}
+          onBack={() => navigate("name-input")}
+          onNext={() => navigate("resident-input")}
+        />
+      ) : null}
+      {step === "resident-input" ? (
+        <ResidentInputScreen
+          birthDate={birthDate}
+          genderDigit={genderDigit}
+          privateDigits={privateDigits}
+          genderInputRef={genderInputRef}
+          privateInputRef={privateInputRef}
+          onBirthDateChange={setBirthDate}
+          onGenderDigitChange={setGenderDigit}
+          onPrivateDigitsChange={setPrivateDigits}
+          onBack={() => navigate("phone-input")}
+          onRequestVerification={() => navigate("verification-code")}
+        />
+      ) : null}
+      {step === "verification-code" ? (
+        <VerificationCodeScreen
+          code={verificationCode}
+          onCodeChange={setVerificationCode}
+          onBack={() => navigate("resident-input")}
+          onNext={() => navigate("vehicle-number")}
+        />
+      ) : null}
+      {step === "vehicle-number" ? (
+        <VehicleNumberScreen
+          value={vehicleNumber}
+          noVehicle={noVehicle}
+          onValueChange={(value) => {
+            setVehicleNumber(value);
+            setNoVehicle(false);
+          }}
+          onNoVehicleChange={(selected) => {
+            setNoVehicle(selected);
+            setVehicleNumber(selected ? "자동차 없음" : "");
+          }}
+          onBack={() => navigate("verification-code")}
+          onNext={() => onComplete?.()}
+        />
+      ) : null}
+      {detailTitle ? (
+        <AgreementDetail title={detailTitle} onClose={() => setDetailTitle(null)} />
+      ) : null}
+    </div>
+  );
+}
+
 export function CreditConsentPrototype() {
   const [step, setStep] = useState<Step>("counselor");
   const [counselorNumber, setCounselorNumber] = useState("");
