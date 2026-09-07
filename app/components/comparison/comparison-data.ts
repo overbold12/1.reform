@@ -129,7 +129,7 @@ export const comparisonServices: Record<ServiceId, ComparisonService> = {
         {
           id: "total-pages",
           label: "전체 페이지 수",
-          asIs: "16 페이지",
+          asIs: "18 페이지",
           toBe: "13 페이지",
         },
         {
@@ -147,8 +147,33 @@ export const comparisonServices: Record<ServiceId, ComparisonService> = {
       ],
       effect: "고객이 상품이나 차량 정보 조건과 관계없이 동일한 순서로 진행하며, 한 번의 동의만으로 절차를 마칠 수 있습니다.",
     },
-    asIsFlow: [],
-    toBeFlow: [],
+    asIsFlow: [
+      {
+        id: "credit-consent-process",
+        title: "신용정보조회동의 절차",
+        steps: [
+          { id: "primary-required-consent", title: "필수 동의", description: "1차" },
+          { id: "sunshine-loan-check", title: "햇살론 진행여부" },
+          {
+            id: "sunshine-required-consent",
+            title: "필수 동의",
+            description: "2차 · 햇살론",
+          },
+          { id: "vehicle-ownership-check", title: "자동차 보유여부" },
+          { id: "vehicle-number-input", title: "자동차번호 입력" },
+        ],
+      },
+    ],
+    toBeFlow: [
+      {
+        id: "credit-consent-process",
+        title: "신용정보조회동의 절차",
+        steps: [
+          { id: "integrated-required-consent", title: "필수 동의" },
+          { id: "vehicle-number-input", title: "자동차번호 입력" },
+        ],
+      },
+    ],
     comparisonItems: [],
   },
 };
