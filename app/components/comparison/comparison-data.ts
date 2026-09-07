@@ -122,7 +122,31 @@ export const comparisonServices: Record<ServiceId, ComparisonService> = {
   creditConsent: {
     id: "creditConsent",
     title: "신용정보조회동의",
-    summary: null,
+    summary: {
+      message:
+        "불필요한 조건 분기와 반복 동의를 걷어내, 모든 고객이 더 짧고 일관된 흐름으로 신용정보조회 동의를 완료할 수 있도록 개선했습니다.",
+      metrics: [
+        {
+          id: "total-pages",
+          label: "전체 페이지 수",
+          asIs: "16 페이지",
+          toBe: "13 페이지",
+        },
+        {
+          id: "conditional-flow",
+          label: "고객 진행 경로",
+          asIs: "햇살론·자동차번호 여부에 따라 분기",
+          toBe: "조건 분기 없는 공통 흐름",
+        },
+        {
+          id: "consent-process",
+          label: "동의 절차",
+          asIs: "단계별 개별 동의",
+          toBe: "한 번의 통합 동의",
+        },
+      ],
+      effect: "고객이 상품이나 차량 정보 조건과 관계없이 동일한 순서로 진행하며, 한 번의 동의만으로 절차를 마칠 수 있습니다.",
+    },
     asIsFlow: [],
     toBeFlow: [],
     comparisonItems: [],
