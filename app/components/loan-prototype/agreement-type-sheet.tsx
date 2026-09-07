@@ -8,15 +8,10 @@ type AgreementTypeSheetProps = {
   onConfirm: () => void;
 };
 
-const options: Array<{
-  id: AgreementType;
-  label: string;
-  description?: string;
-}> = [
+const options: Array<{ id: AgreementType; label: string }> = [
   {
     id: "summary",
     label: "요약동의서로 볼게요",
-    description: "핵심 내용을 간결하게 확인해요",
   },
   { id: "full", label: "전체동의서로 볼게요" },
 ];
@@ -56,7 +51,6 @@ export function AgreementTypeSheet({
                 </span>
                 <span>
                   <strong>{option.label}</strong>
-                  {option.description ? <small>{option.description}</small> : null}
                 </span>
               </button>
             );

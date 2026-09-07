@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { CreditConsentFirstNinePrototype } from "../credit-consent/credit-consent-prototype";
+import { CreditConsentStepsThreeToNinePrototype } from "../credit-consent/credit-consent-prototype";
 import { AgreementDetail } from "../loan-prototype/agreement-detail";
 import { MobileStatusBar } from "../loan-prototype/mobile-status-bar";
 import loanStyles from "../loan-prototype/loan-prototype.module.css";
@@ -9,17 +9,14 @@ import layoutStyles from "./consent-comparison.module.css";
 import styles from "./credit-consent-interaction.module.css";
 
 type AsIsStep =
-  | "primary-type"
   | "primary-consent"
   | "sunshine-choice"
-  | "sunshine-type"
   | "sunshine-consent"
   | "vehicle-choice"
   | "vehicle-number"
   | "auth-method"
   | "carrier";
 
-type AgreementType = "summary" | "full";
 type YesNo = "yes" | "no";
 type AgreementGroup = { id: string; title: string; documents: string[] };
 
@@ -71,15 +68,13 @@ const sunshineGroups: AgreementGroup[] = [
 ];
 
 const asIsLabels: Record<AsIsStep, string> = {
-  "primary-type": "1. 동의서 선택",
-  "primary-consent": "2. 필수 동의",
-  "sunshine-choice": "3. 햇살론 진행여부",
-  "sunshine-type": "4. 햇살론 동의서 선택",
-  "sunshine-consent": "5. 햇살론 필수동의",
-  "vehicle-choice": "6. 자동차 보유여부",
-  "vehicle-number": "7. 자동차번호 입력",
-  "auth-method": "8. 인증방법 선택",
-  carrier: "9. 통신사 선택",
+  "primary-consent": "1. 필수 동의",
+  "sunshine-choice": "2. 햇살론 진행여부",
+  "sunshine-consent": "3. 햇살론 필수동의",
+  "vehicle-choice": "4. 자동차 보유여부",
+  "vehicle-number": "5. 자동차번호 입력",
+  "auth-method": "6. 인증방법 선택",
+  carrier: "7. 통신사 선택",
 };
 
 function emptyChecks(groups: AgreementGroup[]) {
@@ -103,7 +98,7 @@ export function CreditConsentInteractionComparison() {
     <div className={layoutStyles.comparisonGrid}>
       <PrototypeColumn
         label="AS-IS"
-        meta="9개 화면 · 조건 분기형"
+        meta="7개 화면 · 조건 분기형"
         onReset={() => setAsIsResetKey((key) => key + 1)}
       >
         <AsIsCreditConsentPrototype key={asIsResetKey} />
@@ -117,18 +112,18 @@ export function CreditConsentInteractionComparison() {
 
       <PrototypeColumn
         label="TO-BE"
-        meta="01–09 · 일관된 흐름"
+        meta="03–09 · 일관된 흐름"
         onReset={() => {
           setToBeComplete(false);
           setToBeResetKey((key) => key + 1);
         }}
       >
         <div className={styles.toBeFrameWrap}>
-          <CreditConsentFirstNinePrototype
+          <CreditConsentStepsThreeToNinePrototype
             key={toBeResetKey}
             onComplete={() => setToBeComplete(true)}
           />
-          {toBeComplete ? <CompletionToast>TO-BE 01–09 체험을 완료했습니다.</CompletionToast> : null}
+          {toBeComplete ? <CompletionToast>TO-BE 03–09 체험을 완료했습니다.</CompletionToast> : null}
         </div>
       </PrototypeColumn>
     </div>
@@ -136,10 +131,8 @@ export function CreditConsentInteractionComparison() {
 }
 
 function AsIsCreditConsentPrototype() {
-  const [step, setStep] = useState<AsIsStep>("primary-type");
+  const [step, setStep] = useState<AsIsStep>("primary-consent");
   const [history, setHistory] = useState<AsIsStep[]>([]);
-  const [primaryType, setPrimaryType] = useState<AgreementType>("summary");
-  const [sunshineType, setSunshineType] = useState<AgreementType>("summary");
   const [primaryChecks, setPrimaryChecks] = useState<Record<string, boolean>>(() =>
     emptyChecks(primaryGroups),
   );
@@ -192,7 +185,7 @@ function AsIsCreditConsentPrototype() {
   return (
     <div className={loanStyles.phoneFrame}>
       <span className={styles.stepPill}>{asIsLabels[step]}</span>
-      {step === "primary-type" || step === "primary-consent" ? (
+      {step === "primary-consent" ? (
         <AgreementScreen
           title={<>신용정보 조회 약관에<br />동의해 주세요</>}
           groups={primaryGroups}
@@ -203,10 +196,6 @@ function AsIsCreditConsentPrototype() {
           onDetail={setDetailTitle}
           onBack={back}
           onNext={() => go("sunshine-choice")}
-          sheet={step === "primary-type"}
-          agreementType={primaryType}
-          onAgreementTypeChange={setPrimaryType}
-          onSheetConfirm={() => go("primary-consent")}
         />
       ) : null}
       {step === "sunshine-choice" ? (
@@ -217,11 +206,11 @@ function AsIsCreditConsentPrototype() {
           onBack={back}
           actionLabel="확인"
           onAction={() =>
-            sunshineChoice && go(sunshineChoice === "yes" ? "sunshine-type" : "vehicle-choice")
+            sunshineChoice && go(sunshineChoice === "yes" ? "sunshine-consent" : "vehicle-choice")
           }
         />
       ) : null}
-      {step === "sunshine-type" || step === "sunshine-consent" ? (
+      {step === "sunshine-consent" ? (
         <AgreementScreen
           title={<>햇살론 대출 신청을 위한<br />필수 약관에 동의해 주세요</>}
           groups={sunshineGroups}
@@ -232,10 +221,6 @@ function AsIsCreditConsentPrototype() {
           onDetail={setDetailTitle}
           onBack={back}
           onNext={() => go("vehicle-choice")}
-          sheet={step === "sunshine-type"}
-          agreementType={sunshineType}
-          onAgreementTypeChange={setSunshineType}
-          onSheetConfirm={() => go("sunshine-consent")}
         />
       ) : null}
       {step === "vehicle-choice" ? (
@@ -285,10 +270,6 @@ function AgreementScreen({
   onDetail,
   onBack,
   onNext,
-  sheet,
-  agreementType,
-  onAgreementTypeChange,
-  onSheetConfirm,
 }: {
   title: ReactNode;
   groups: AgreementGroup[];
@@ -299,10 +280,6 @@ function AgreementScreen({
   onDetail: (title: string) => void;
   onBack: () => void;
   onNext: () => void;
-  sheet: boolean;
-  agreementType: AgreementType;
-  onAgreementTypeChange: (type: AgreementType) => void;
-  onSheetConfirm: () => void;
 }) {
   const allChecked = groups.every((group) =>
     group.documents.every((document) => checks[documentId(group.id, document)]),
@@ -384,42 +361,8 @@ function AgreementScreen({
         </div>
         <div className={styles.agreementBottomSpace} />
       </div>
-      {allChecked && !sheet ? <RoundAction label="다음" onClick={onNext} floating /> : null}
-      {sheet ? (
-        <AgreementTypeSheet
-          selected={agreementType}
-          onSelect={onAgreementTypeChange}
-          onConfirm={onSheetConfirm}
-        />
-      ) : null}
+      {allChecked ? <RoundAction label="다음" onClick={onNext} floating /> : null}
     </ScreenShell>
-  );
-}
-
-function AgreementTypeSheet({
-  selected,
-  onSelect,
-  onConfirm,
-}: {
-  selected: AgreementType;
-  onSelect: (type: AgreementType) => void;
-  onConfirm: () => void;
-}) {
-  return (
-    <div className={styles.sheetLayer} role="dialog" aria-modal="true" aria-label="동의서 종류 선택">
-      <div className={styles.dimLayer} aria-hidden="true" />
-      <section className={styles.bottomSheet}>
-        <h3>동의서 종류를 선택해주세요</h3>
-        <p>요약동의서는 전체동의서의 핵심내용을<br />알기 쉽게 요약한 동의서입니다</p>
-        <button type="button" className={styles.sheetOption} onClick={() => onSelect("summary")}>
-          <CheckMark checked={selected === "summary"} filled /><span>요약동의서로 볼게요</span>
-        </button>
-        <button type="button" className={styles.sheetOption} onClick={() => onSelect("full")}>
-          <CheckMark checked={selected === "full"} filled /><span>전체동의서로 볼게요</span>
-        </button>
-        <button type="button" className={styles.sheetConfirm} onClick={onConfirm}>확인</button>
-      </section>
-    </div>
   );
 }
 

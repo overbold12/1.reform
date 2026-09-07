@@ -153,14 +153,15 @@ export const comparisonServices: Record<ServiceId, ComparisonService> = {
         title: "신용정보조회동의 절차",
         steps: [
           { id: "primary-required-consent", title: "필수 동의", description: "1차" },
-          { id: "sunshine-loan-check", title: "햇살론 진행여부" },
+          { id: "sunshine-loan-check", title: "햇살론 진행 여부" },
           {
             id: "sunshine-required-consent",
             title: "필수 동의",
-            description: "2차 · 햇살론",
+            description: "2차, 햇살론",
           },
           { id: "vehicle-ownership-check", title: "자동차 보유여부" },
           { id: "vehicle-number-input", title: "자동차번호 입력" },
+          { id: "mobile-authentication", title: "휴대폰 본인인증" },
         ],
       },
     ],
@@ -170,6 +171,7 @@ export const comparisonServices: Record<ServiceId, ComparisonService> = {
         title: "신용정보조회동의 절차",
         steps: [
           { id: "integrated-required-consent", title: "필수 동의" },
+          { id: "mobile-authentication", title: "휴대폰 본인인증" },
           { id: "vehicle-number-input", title: "자동차번호 입력" },
         ],
       },

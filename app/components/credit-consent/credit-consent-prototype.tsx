@@ -149,13 +149,13 @@ function CounselorScreen({ value, onChange, onNext }: { value: string; onChange:
 }
 
 function AgreementTypeSheet({ selected, onSelect, onConfirm }: { selected: AgreementType; onSelect: (type: AgreementType) => void; onConfirm: () => void }) {
-  const options: Array<{ id: AgreementType; label: string; description?: string }> = [
-    { id: "summary", label: "요약동의서로 볼게요", description: "전체동의서의 핵심내용을 알기 쉽게 요약한 동의서입니다" },
+  const options: Array<{ id: AgreementType; label: string }> = [
+    { id: "summary", label: "요약동의서로 볼게요" },
     { id: "full", label: "전체동의서로 볼게요" },
   ];
   return <div className={styles.sheetLayer} role="dialog" aria-modal="true" aria-labelledby="agreement-sheet-title"><div className={styles.dimLayer} aria-hidden="true" /><section className={styles.bottomSheet}>
     <h2 id="agreement-sheet-title">동의서 종류를 선택해주세요</h2><p>요약동의서는 전체동의서의 핵심내용을<br />알기 쉽게 요약한 동의서입니다</p>
-    <div className={styles.radioList} role="radiogroup" aria-label="동의서 종류">{options.map((option) => { const isSelected = selected === option.id; return <button type="button" role="radio" aria-checked={isSelected} className={styles.radioOption} key={option.id} onClick={() => onSelect(option.id)}><span className={`${styles.radioMark} ${isSelected ? styles.radioSelected : ""}`}><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5.3 10.1 3 3 6.4-7" /></svg></span><span><strong>{option.label}</strong>{option.description ? <small>{option.description}</small> : null}</span></button>; })}</div>
+    <div className={styles.radioList} role="radiogroup" aria-label="동의서 종류">{options.map((option) => { const isSelected = selected === option.id; return <button type="button" role="radio" aria-checked={isSelected} className={styles.radioOption} key={option.id} onClick={() => onSelect(option.id)}><span className={`${styles.radioMark} ${isSelected ? styles.radioSelected : ""}`}><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5.3 10.1 3 3 6.4-7" /></svg></span><span><strong>{option.label}</strong></span></button>; })}</div>
     <button type="button" className={styles.confirmButton} onClick={onConfirm}>확인</button>
   </section></div>;
 }
@@ -338,14 +338,12 @@ function ApplicationCompleteScreen() {
   );
 }
 
-export function CreditConsentFirstNinePrototype({
+export function CreditConsentStepsThreeToNinePrototype({
   onComplete,
 }: {
   onComplete?: () => void;
 }) {
-  const [step, setStep] = useState<Step>("counselor");
-  const [counselorNumber, setCounselorNumber] = useState("");
-  const [agreementType, setAgreementType] = useState<AgreementType>("summary");
+  const [step, setStep] = useState<Step>("required-agreement");
   const [agreements, setAgreements] = useState<Record<string, boolean>>(() =>
     Object.fromEntries(allGroups.map((group) => [group.id, false])),
   );
@@ -415,28 +413,20 @@ export function CreditConsentFirstNinePrototype({
 
   return (
     <div className={styles.phoneFrame}>
-      {step === "counselor" ? (
-        <CounselorScreen
-          value={counselorNumber}
-          onChange={setCounselorNumber}
-          onNext={() => navigate("agreement-type")}
-        />
-      ) : null}
-      {step === "agreement-type" || step === "required-agreement" ? (
+      {step === "required-agreement" ? (
         <RequiredAgreementScreen
           agreements={agreements}
           expanded={expanded}
           scrollRef={scrollRef}
-          onBack={() => navigate(step === "agreement-type" ? "counselor" : "agreement-type")}
+          onBack={() => undefined}
           onContinue={() => navigate("carrier-selection")}
           onToggle={toggleAgreement}
           onToggleLoanAll={toggleLoanAll}
           onExpand={toggleExpanded}
           onOpen={setDetailTitle}
-          showSheet={step === "agreement-type"}
-          agreementType={agreementType}
-          onAgreementTypeChange={setAgreementType}
-          onConfirmType={() => navigate("required-agreement")}
+          agreementType="summary"
+          onAgreementTypeChange={() => undefined}
+          onConfirmType={() => undefined}
         />
       ) : null}
       {step === "carrier-selection" ? (
